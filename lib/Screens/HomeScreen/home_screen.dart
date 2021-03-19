@@ -132,18 +132,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),
-                      label: 'Home',
+                      label: 'Лента',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.search),
-                      label: 'Search',
+                      label: 'Поиск',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(
                         Icons.add_box_rounded,
-                        color: Color.fromRGBO(0, 255, 204, 1.0),
+                        color: footyColor,
                       ),
-                      label: 'Writing',
+                      label: 'Добавить',
                     ),
                     BottomNavigationBarItem(
                       icon: isNotif
@@ -175,7 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             )
                           : Icon(Icons.person),
-                      label: 'Profile',
+                      label: 'Профиль',
                     ),
                   ],
                   currentIndex: _selectedIndex,

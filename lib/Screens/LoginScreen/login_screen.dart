@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: size.height * 0.5 - 280),
                     CardW(
                       shadow: whiteColor,
-                      ph: codeSent ? 650 : 475,
+                      ph: codeSent ? 670 : 495,
                       width: 0.6,
                       child: Form(
                         key: _formKey,
@@ -150,10 +150,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ph: 55,
                                     text: 'Поменять номер телефона',
                                     press: () {
-                                      Navigator.push(
-                                          context,
-                                          SlideRightRoute(
-                                              page: LoginScreen()));
+                                      Navigator.push(context,
+                                          SlideRightRoute(page: LoginScreen()));
                                     },
                                     color: lightPrimaryColor,
                                     textColor: whiteColor,
@@ -170,6 +168,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   textStyle: TextStyle(
                                     color: Colors.red,
                                     fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                                  size.width * 0.05, 0, size.width * 0.05, 0),
+                              child: Text(
+                                'Продолжая вы принимаете все правила пользования приложением и нашу Политику Конфиденциальности',
+                                textScaleFactor: 1,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w100,
                                   ),
                                 ),
                               ),

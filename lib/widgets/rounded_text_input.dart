@@ -10,6 +10,8 @@ class RoundedTextInput extends StatelessWidget {
   final IconData icon;
   final ValueChanged<String> onChanged;
   final TextEditingController controller;
+  final int length;
+  final double height;
   const RoundedTextInput({
     Key key,
     this.hintText,
@@ -18,21 +20,24 @@ class RoundedTextInput extends StatelessWidget {
     this.icon = Icons.person,
     this.onChanged,
     this.controller,
+    this.length: null,
+    this.height: 90,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      height: 90,
+      height: height,
       child: TextFieldContainer(
         child: TextFormField(
+          // maxLength: length != null ? length : double.infinity.toInt(),
+          maxLength: length,
           style: TextStyle(color: primaryColor),
           controller: controller,
           validator: validator,
           keyboardType: type,
           onChanged: onChanged,
-          cursorColor: whiteColor,
           decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(),
