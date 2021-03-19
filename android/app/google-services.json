@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "131662116631",
+    "project_id": "lycread",
+    "storage_bucket": "lycread.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131662116631:android:22d16b6ceaaade7f47e952",
+        "android_client_info": {
+          "package_name": "com.example.lycread"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3pNI-g2xjTDfIfwHtpT_NtfHaGcQLihM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
