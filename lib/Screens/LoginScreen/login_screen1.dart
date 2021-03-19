@@ -3,15 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/HomeScreen/home_screen.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
-
 import '../../constants.dart';
 import '../loading_screen.dart';
-import 'components/background.dart';
 
 class LoginScreen1 extends StatefulWidget {
   final String errors;
@@ -112,13 +111,11 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                       background: Colors.red,
                                     );
                                   });
-                                  // Navigator.push(
-                                  //     context,
-                                  //     SlideRightRoute(
-                                  //       page: AddPlaceScreen(
-                                  //         username: this.owner,
-                                  //       ),
-                                  //     ));
+                                  Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: HomeScreen(),
+                                      ));
                                   setState(() {
                                     loading = false;
                                     this.name = '';

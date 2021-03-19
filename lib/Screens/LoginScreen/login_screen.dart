@@ -44,148 +44,146 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(height: size.height*0.5 - 225),
-                    Center(
-                      child: CardW(
-                        shadow: whiteColor,
-                        ph: 650,
-                        width: 0.5,
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(height:10),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Center(
-                                  child: Text(
-                                    'LycRead',
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Center(
-                                  child: Text(
-                                    'Добро пожаловать',
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 30),
-                              !codeSent
-                                  ? RoundedPhoneInputField(
-                                      hintText: "Номер телефона",
-                                      onChanged: (value) {
-                                        this.phoneNo = value;
-                                      },
-                                    )
-                                  : SizedBox(height: size.height * 0),
-                              codeSent
-                                  ? RoundedTextInput(
-                                      validator: (val) =>
-                                          val.length == 6 ? null : 'Минимум 6 символов',
-                                      hintText: "Введите код",
-                                      type: TextInputType.number,
-                                      onChanged: (value) {
-                                        this.smsCode = value;
-                                      },
-                                    )
-                                  : SizedBox(height: size.height * 0),
-                              codeSent
-                                  ? SizedBox(height: 20)
-                                  : SizedBox(height: size.height * 0),
-
-                              // RoundedPasswordField(
-                              //   hintText: "Password",
-                              //   onChanged: (value) {},
-                              // ),
-                              SizedBox(height: 20),
-                              RoundedButton(
-                                width: 0.7,
-                                ph: 55,
-                                text: codeSent ? 'GO' : 'ОТПРАВИТЬ КОД',
-                                press: () async {
-                                  if (_formKey.currentState.validate()) {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    if (codeSent) {
-                                      dynamic res = await AuthService().signInWithOTP(
-                                          smsCode, verificationId, context);
-                                      if (res == null) {
-                                        setState(() {
-                                          error = 'Неверные данные';
-                                          loading = false;
-                                        });
-                                      }
-                                    } else {
-                                      await verifyPhone(phoneNo);
-                                    }
-                                  }
-                                },
-                                color: darkPrimaryColor,
-                                textColor: whiteColor,
-                              ),
-                              codeSent
-                                  ? SizedBox(height: 55)
-                                  : SizedBox(height: size.height * 0),
-                              codeSent
-                                  ? RoundedButton(
-                                      width: 0.7,
-                                      ph: 55,
-                                      text: 'Поменять номер телефона',
-                                      press: () {
-                                        Navigator.push(context,
-                                            SlideRightRoute(page: LoginScreen()));
-                                      },
-                                      color: lightPrimaryColor,
-                                      textColor: whiteColor,
-                                    )
-                                  : SizedBox(height: size.height * 0),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Text(
-                                  error,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // RoundedButton(
-                              //   text: 'REGISTER',
-                              //   press: () {
-                              //     Navigator.push(
-                              //         context, SlideRightRoute(page: RegisterScreen()));
-                              //   },
-                              //   color: lightPrimaryColor,
-                              //   textColor: darkPrimaryColor,
-                              // ),
-                            ],
+                    SizedBox(
+                      height: 60,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Center(
+                        child: Text(
+                          'LycRead',
+                          textScaleFactor: 1,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              color: whiteColor,
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: size.height * 0.5 - 280),
+                    CardW(
+                      shadow: whiteColor,
+                      ph: codeSent ? 650 : 475,
+                      width: 0.6,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Добро пожаловать',
+                              textScaleFactor: 1,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 30),
+                            !codeSent
+                                ? RoundedPhoneInputField(
+                                    hintText: "Номер телефона",
+                                    onChanged: (value) {
+                                      this.phoneNo = value;
+                                    },
+                                  )
+                                : SizedBox(height: size.height * 0),
+                            codeSent
+                                ? RoundedTextInput(
+                                    validator: (val) => val.length == 6
+                                        ? null
+                                        : 'Минимум 6 символов',
+                                    hintText: "Введите код",
+                                    type: TextInputType.number,
+                                    onChanged: (value) {
+                                      this.smsCode = value;
+                                    },
+                                  )
+                                : SizedBox(height: size.height * 0),
+                            codeSent
+                                ? SizedBox(height: 20)
+                                : SizedBox(height: size.height * 0),
+
+                            // RoundedPasswordField(
+                            //   hintText: "Password",
+                            //   onChanged: (value) {},
+                            // ),
+                            SizedBox(height: 20),
+                            RoundedButton(
+                              width: 0.7,
+                              ph: 55,
+                              text: codeSent ? 'GO' : 'ОТПРАВИТЬ КОД',
+                              press: () async {
+                                if (_formKey.currentState.validate()) {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  if (codeSent) {
+                                    dynamic res = await AuthService()
+                                        .signInWithOTP(
+                                            smsCode, verificationId, context);
+                                    if (res == null) {
+                                      setState(() {
+                                        error = 'Неверные данные';
+                                        loading = false;
+                                      });
+                                    }
+                                  } else {
+                                    await verifyPhone(phoneNo);
+                                  }
+                                }
+                              },
+                              color: darkPrimaryColor,
+                              textColor: whiteColor,
+                            ),
+                            codeSent
+                                ? SizedBox(height: 55)
+                                : SizedBox(height: size.height * 0),
+                            codeSent
+                                ? RoundedButton(
+                                    width: 0.7,
+                                    ph: 55,
+                                    text: 'Поменять номер телефона',
+                                    press: () {
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                              page: LoginScreen()));
+                                    },
+                                    color: lightPrimaryColor,
+                                    textColor: whiteColor,
+                                  )
+                                : SizedBox(height: size.height * 0),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Text(
+                                error,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // RoundedButton(
+                            //   text: 'REGISTER',
+                            //   press: () {
+                            //     Navigator.push(
+                            //         context, SlideRightRoute(page: RegisterScreen()));
+                            //   },
+                            //   color: lightPrimaryColor,
+                            //   textColor: darkPrimaryColor,
+                            // ),
+                          ],
                         ),
                       ),
                     ),
