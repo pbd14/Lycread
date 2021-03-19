@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
 
-class ManagementScreen extends StatefulWidget {
+class WritingScreen extends StatefulWidget {
   @override
-  _ManagementScreenState createState() => _ManagementScreenState();
+  _WritingScreenState createState() => _WritingScreenState();
 }
 
-class _ManagementScreenState extends State<ManagementScreen> {
+class _WritingScreenState extends State<WritingScreen> {
   @override
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class _ManagementScreenState extends State<ManagementScreen> {
           SizedBox(height: 200),
           Center(
             child: Text(
-              'Management Screen',
+              'Writing Screen',
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: GoogleFonts.montserrat(

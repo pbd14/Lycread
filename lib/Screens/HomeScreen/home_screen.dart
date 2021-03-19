@@ -1,21 +1,14 @@
 import 'dart:async';
-import 'dart:collection';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart' as geolocator;
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/DashboardScreen/dashboard_screen.dart';
-import 'package:lycread/Screens/HistoryScreen/history_screen.dart';
 import 'package:lycread/Screens/LoginScreen/login_screen1.dart';
-import 'package:lycread/Screens/ManagementScreen/management_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/profile_screen.dart';
+import 'package:lycread/Screens/SearchScreen/search_screen.dart';
+import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
-import 'package:overlay_support/overlay_support.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -36,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
   StreamSubscription<QuerySnapshot> subscription;
   List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
-    ManagementScreen(),
-    HistoryScreen(),
+    SearchScreen(),
+    WritingScreen(),
     ProfileScreen(),
   ];
 
@@ -129,67 +122,72 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return loading
         ? LoadingScreen()
-        : !can ? LoginScreen1() : Scaffold(
-            body: Center(
-              child: _widgetOptions.elementAt(_selectedIndex),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Dashboard',
+        : !can
+            ? LoginScreen1()
+            : Scaffold(
+                body: Center(
+                  child: _widgetOptions.elementAt(_selectedIndex),
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.apartment_rounded),
-                  label: 'Management',
-                ),
-                BottomNavigationBarItem(
-                  icon: isNotif
-                      ? new Stack(
-                          children: <Widget>[
-                            new Icon(Icons.access_alarm),
-                            new Positioned(
-                              right: 0,
-                              child: new Container(
-                                padding: EdgeInsets.all(1),
-                                decoration: new BoxDecoration(
-                                  color: Colors.red,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                constraints: BoxConstraints(
-                                  minWidth: 15,
-                                  minHeight: 15,
-                                ),
-                                child: new Text(
-                                  notifCounter.toString(),
-                                  style: new TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 8,
+                bottomNavigationBar: BottomNavigationBar(
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.home),
+                      label: 'Home',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.search),
+                      label: 'Search',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        Icons.add_box_rounded,
+                        color: Color.fromRGBO(0, 255, 204, 1.0),
+                      ),
+                      label: 'Writing',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: isNotif
+                          ? new Stack(
+                              children: <Widget>[
+                                new Icon(Icons.access_alarm),
+                                new Positioned(
+                                  right: 0,
+                                  child: new Container(
+                                    padding: EdgeInsets.all(1),
+                                    decoration: new BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    constraints: BoxConstraints(
+                                      minWidth: 15,
+                                      minHeight: 15,
+                                    ),
+                                    child: new Text(
+                                      notifCounter.toString(),
+                                      style: new TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 8,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                                )
+                              ],
                             )
-                          ],
-                        )
-                      : Icon(Icons.access_alarm),
-                  label: 'History',
+                          : Icon(Icons.person),
+                      label: 'Profile',
+                    ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  selectedItemColor: darkPrimaryColor,
+                  unselectedItemColor: primaryColor,
+                  onTap: _onItemTapped,
+                  backgroundColor: whiteColor,
+                  elevation: 50,
+                  iconSize: 33.0,
+                  selectedFontSize: 17.0,
+                  type: BottomNavigationBarType.fixed,
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-              ],
-              currentIndex: _selectedIndex,
-              selectedItemColor: darkPrimaryColor,
-              unselectedItemColor: primaryColor,
-              onTap: _onItemTapped,
-              backgroundColor: whiteColor,
-              elevation: 50,
-              iconSize: 33.0,
-              selectedFontSize: 17.0,
-              type: BottomNavigationBarType.fixed,
-            ),
-          );
+              );
   }
 }

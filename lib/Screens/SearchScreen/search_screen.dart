@@ -3,12 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../constants.dart';
 
-class HistoryScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   @override
-  _HistoryScreenState createState() => _HistoryScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _SearchScreenState extends State<SearchScreen> {
   @override
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           SizedBox(height: 200),
           Center(
             child: Text(
-              'History Screen',
+              'Search Screen',
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
               style: GoogleFonts.montserrat(
