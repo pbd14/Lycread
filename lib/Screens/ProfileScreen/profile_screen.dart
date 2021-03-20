@@ -15,19 +15,7 @@ class ProfileScreen extends StatefulWidget {
 class _PlaceScreenState extends State<ProfileScreen> {
   String name;
 
-  Future<void> prepare() async {
-    var doc = await FirebaseFirestore.instance
-        .collection('companies')
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .get();
-    if (this.mounted) {
-      setState(() {
-        name = doc.data()['name'];
-      });
-    } else {
-      name = doc.data()['name'];
-    }
-  }
+  Future<void> prepare() async {}
 
   @override
   void initState() {
@@ -70,5 +58,3 @@ class _PlaceScreenState extends State<ProfileScreen> {
     );
   }
 }
-
-class AddPlaceScreen {}

@@ -99,6 +99,8 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                       FirebaseAuth
                                           .instance.currentUser.phoneNumber
                                     ]),
+                                    'followers_num': 0,
+                                    'id': FirebaseAuth.instance.currentUser.uid,
                                   }).catchError((error) {
                                     PushNotificationMessage notification =
                                         PushNotificationMessage(

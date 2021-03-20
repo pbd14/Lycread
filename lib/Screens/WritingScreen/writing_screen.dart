@@ -144,6 +144,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                 isExpanded: true,
                                 hint: Text(
                                   category != null ? category : 'Жанры',
+                                  textScaleFactor: 1,
                                   style: GoogleFonts.montserrat(
                                     textStyle: TextStyle(
                                       color: darkPrimaryColor,
@@ -155,13 +156,13 @@ class _WritingScreenState extends State<WritingScreen> {
                                     ? categs.map((dynamic value) {
                                         return new DropdownMenuItem<String>(
                                           value: value.toString().toUpperCase(),
-                                          child: new Text(value),
+                                          child: new Text(value, textScaleFactor: 1,),
                                         );
                                       }).toList()
                                     : [
                                         new DropdownMenuItem<String>(
                                           value: '-',
-                                          child: new Text('-'),
+                                          child: new Text('-', textScaleFactor: 1,),
                                         )
                                       ],
                                 onChanged: (value) {
@@ -212,6 +213,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                     padding: const EdgeInsets.all(20.0),
                                     child: Text(
                                       error,
+                                      textScaleFactor: 1,
                                       style: GoogleFonts.montserrat(
                                         textStyle: TextStyle(
                                           color: Colors.red,

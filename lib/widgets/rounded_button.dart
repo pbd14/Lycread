@@ -32,6 +32,7 @@ class RoundedButton extends StatelessWidget {
           onPressed: press,
           child: Text(
             text,
+            textScaleFactor: 1,
             style: GoogleFonts.montserrat(
                 textStyle: TextStyle(
               color: textColor,
