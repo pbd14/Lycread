@@ -3,7 +3,7 @@ import '../constants.dart';
 
 // ignore: must_be_immutable
 class CardW extends StatelessWidget {
-  double height, width, pw, ph;
+  double height, width, pw, ph, hormargin;
   Widget child;
   Color bgColor;
   Color shadow;
@@ -15,13 +15,14 @@ class CardW extends StatelessWidget {
       this.pw,
       this.ph,
       this.bgColor: whiteColor,
-      this.shadow: darkPrimaryColor})
+      this.shadow: darkPrimaryColor, 
+      this.hormargin : 20.0,})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20.0),
+      margin: EdgeInsets.symmetric(horizontal: hormargin),
       height: ph == null ? size.height * height : ph,
       child: Card(
         color: bgColor,

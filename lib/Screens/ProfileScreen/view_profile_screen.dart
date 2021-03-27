@@ -23,11 +23,31 @@ class _VPlaceScreenState extends State<VProfileScreen> {
   bool loading = false;
   bool isSame = false;
   int fnum = 0;
+  int following = 0;
+  String fnum1 = '';
+  String fnum2 = '';
+  List writings = [];
 
   StreamSubscription<DocumentSnapshot> subscription;
 
+  Future<void> prepare() async {
+    var data = await FirebaseFirestore.instance
+        .collection('writings')
+        .where('author', isEqualTo: widget.data.data()['id'])
+        .orderBy('date', descending: true)
+        .get();
+    if (this.mounted) {
+      setState(() {
+        writings = data.docs;
+      });
+    } else {
+      writings = data.docs;
+    }
+  }
+
   @override
   void initState() {
+    prepare();
     if (FirebaseAuth.instance.currentUser.uid == widget.data.data()['id']) {
       if (this.mounted) {
         setState(() {
@@ -37,6 +57,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
         isSame = true;
       }
     }
+
     super.initState();
     subscription = FirebaseFirestore.instance
         .collection('users')
@@ -47,9 +68,49 @@ class _VPlaceScreenState extends State<VProfileScreen> {
         if (this.mounted) {
           setState(() {
             fnum = docsnap.data()['followers_num'];
+            following = docsnap.data()['following_num'];
+            if (fnum > 999999) {
+              double numb = fnum / 1000000;
+              fnum1 = numb.toStringAsFixed(1) + 'M';
+            } else if (fnum > 999) {
+              double numb = fnum / 1000;
+              fnum1 = numb.toStringAsFixed(1) + 'K';
+            } else {
+              fnum1 = fnum.toString();
+            }
+
+            if (following > 999999) {
+              double numb = following / 1000000;
+              fnum2 = numb.toStringAsFixed(1) + 'M';
+            } else if (following > 999) {
+              double numb = following / 1000;
+              fnum2 = numb.toStringAsFixed(1) + 'K';
+            } else {
+              fnum2 = following.toString();
+            }
           });
         } else {
           fnum = docsnap.data()['followers_num'];
+          following = docsnap.data()['following_num'];
+          if (fnum > 999999) {
+            double numb = fnum / 1000000;
+            fnum1 = numb.toStringAsFixed(1) + 'M';
+          } else if (fnum > 999) {
+            double numb = fnum / 1000;
+            fnum1 = numb.toStringAsFixed(1) + 'K';
+          } else {
+            fnum1 = fnum.toString();
+          }
+
+          if (following > 999999) {
+            double numb = following / 1000000;
+            fnum2 = numb.toStringAsFixed(1) + 'M';
+          } else if (following > 999) {
+            double numb = following / 1000;
+            fnum2 = numb.toStringAsFixed(1) + 'K';
+          } else {
+            fnum2 = following.toString();
+          }
         }
       }
     });
@@ -73,7 +134,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                             color: darkPrimaryColor,
-                            fontSize: 50,
+                            fontSize: 30,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -116,7 +177,8 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                   .doc(FirebaseAuth.instance.currentUser.uid)
                                   .update({
                                 'following': FieldValue.arrayUnion(
-                                    [widget.data.data()['id']])
+                                    [widget.data.data()['id']]),
+                                'following_num': following + 1,
                               }).catchError((error) {
                                 PushNotificationMessage notification =
                                     PushNotificationMessage(
@@ -164,7 +226,8 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                   .doc(FirebaseAuth.instance.currentUser.uid)
                                   .update({
                                 'following': FieldValue.arrayRemove(
-                                    [widget.data.data()['id']])
+                                    [widget.data.data()['id']]),
+                                'following_num': following - 1,
                               }).catchError((error) {
                                 PushNotificationMessage notification =
                                     PushNotificationMessage(
@@ -188,28 +251,25 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                           },
                         )
                       : Container(),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   Container(
-                    width: size.width * 1,
-                    child: CardW(
-                      bgColor: primaryColor,
-                      width: 1,
-                      ph: 200,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
+                      height: 130,
+                      child: GridView.count(
+                        physics: new NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        crossAxisCount: 2,
+                        children: [
+                          Column(
                             children: [
                               Text(
-                                fnum.toString(),
+                                fnum1,
                                 textScaleFactor: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
                                   textStyle: TextStyle(
-                                      color: footyColor,
-                                      fontSize: 45,
-                                      fontWeight: FontWeight.w200),
+                                      color: darkPrimaryColor,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                               SizedBox(
@@ -221,17 +281,152 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
                                   textStyle: TextStyle(
-                                      color: footyColor,
+                                      color: primaryColor,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w200),
                                 ),
                               ),
                             ],
                           ),
+                          Column(
+                            children: [
+                              Text(
+                                fnum2,
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                'Подписок',
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w200),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )),
+                  CardW(
+                    ph: 70,
+                    bgColor: primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          writings.length.toString() + ' Истории',
+                          textScaleFactor: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: footyColor,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w400),
+                          ),
                         ),
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  writings.length != 0
+                      ? ListView.builder(
+                          physics: new NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(bottom: 10),
+                          itemCount: writings.length,
+                          itemBuilder: (BuildContext context, int index) => Row(
+                            children: [
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                width: size.width * 0.35,
+                                child: FadeInImage.assetNetwork(
+                                  height: 150,
+                                  width: 150,
+                                  placeholder: 'assets/images/1.png',
+                                  image: writings[index].data()['images'][0],
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                writings[index].data()['name'],
+                                                textScaleFactor: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 25,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Text(
+                                                writings[index].data()['genre'],
+                                                overflow: TextOverflow.ellipsis,
+                                                textScaleFactor: 1,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w300,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Divider(
+                                color: darkPrimaryColor,
+                              ),
+                            ],
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            'Нет историй',
+                            textScaleFactor: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: lightPrimaryColor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w200),
+                            ),
+                          ),
+                        ),
                 ],
               ),
             ),

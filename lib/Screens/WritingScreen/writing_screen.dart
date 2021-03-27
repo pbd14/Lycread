@@ -156,13 +156,19 @@ class _WritingScreenState extends State<WritingScreen> {
                                     ? categs.map((dynamic value) {
                                         return new DropdownMenuItem<String>(
                                           value: value.toString().toUpperCase(),
-                                          child: new Text(value, textScaleFactor: 1,),
+                                          child: new Text(
+                                            value,
+                                            textScaleFactor: 1,
+                                          ),
                                         );
                                       }).toList()
                                     : [
                                         new DropdownMenuItem<String>(
                                           value: '-',
-                                          child: new Text('-', textScaleFactor: 1,),
+                                          child: new Text(
+                                            '-',
+                                            textScaleFactor: 1,
+                                          ),
                                         )
                                       ],
                                 onChanged: (value) {
@@ -257,6 +263,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                         await a1.ref.getDownloadURL(),
                                       ],
                                       'genre': category.toLowerCase(),
+                                      'date': DateTime.now(),
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
