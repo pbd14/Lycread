@@ -38,8 +38,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
     if (widget.id != null) {
       widget.data = await FirebaseFirestore.instance
           .collection('users')
-          .where('id', isEqualTo: widget.data)
-          .orderBy('date', descending: true)
+          .doc(widget.id)
           .get();
     }
     var data = await FirebaseFirestore.instance
@@ -185,7 +184,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                   .doc(widget.data.data()['id'])
                                   .update({
                                 'followers': FieldValue.arrayUnion(
-                                    [widget.data.data()['id']]),
+                                    [FirebaseAuth.instance.currentUser.uid]),
                                 'followers_num': fnum + 1,
                               }).catchError((error) {
                                 PushNotificationMessage notification =
@@ -234,7 +233,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                   .doc(widget.data.data()['id'])
                                   .update({
                                 'followers': FieldValue.arrayRemove(
-                                    [widget.data.data()['id']]),
+                                    [FirebaseAuth.instance.currentUser.uid]),
                                 'followers_num': fnum - 1,
                               }).catchError((error) {
                                 PushNotificationMessage notification =

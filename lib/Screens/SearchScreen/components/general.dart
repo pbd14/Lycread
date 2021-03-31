@@ -20,7 +20,8 @@ class _SearchScreenGState extends State<SearchScreenG> {
   List results = [];
   bool loading = true;
   bool loading1 = false;
-  String author;
+  String author = '';
+  Map names = {};
 
   Future<void> prepare() async {
     QuerySnapshot qs = await FirebaseFirestore.instance
@@ -38,12 +39,19 @@ class _SearchScreenGState extends State<SearchScreenG> {
       results = qs.docs;
       loading = false;
     }
-  }
-
-  Future<String> getAuthor(String id) async {
-    DocumentSnapshot data =
-        await FirebaseFirestore.instance.collection('users').doc(id).get();
-    return data.data()['name'];
+    for (var res in results) {
+      var data = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(res.data()['author'])
+          .get();
+      if (this.mounted) {
+        setState(() {
+          names.addAll({res.data()['author']: data.data()['name']});
+        });
+      } else {
+        names.addAll({res.data()['author']: data.data()['name']});
+      }
+    }
   }
 
   Future<void> search(String st) async {
@@ -67,6 +75,19 @@ class _SearchScreenGState extends State<SearchScreenG> {
       loading1 = false;
       preresults = [];
     });
+    for (var res in results) {
+      var data = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(res.data()['author'])
+          .get();
+      if (this.mounted) {
+        setState(() {
+          names.addAll({res.data()['author']: data.data()['name']});
+        });
+      } else {
+        names.addAll({res.data()['author']: data.data()['name']});
+      }
+    }
   }
 
   @override
@@ -156,39 +177,20 @@ class _SearchScreenGState extends State<SearchScreenG> {
                                               SizedBox(
                                                 height: 10,
                                               ),
-                                              FlatButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    loading = true;
-                                                  });
-                                                  Navigator.push(
-                                                      context,
-                                                      SlideRightRoute(
-                                                        page: VProfileScreen(
-                                                          id: results[index]
-                                                              .data()['author'],
-                                                        ),
-                                                      ));
-                                                  setState(() {
-                                                    loading = false;
-                                                  });
-                                                },
-                                                child: Text(
-                                                  // getAuthor(results[index]
-                                                  //         .data()['author'])
-                                                  //     .toString(),
-                                                  results[index]
-                                                      .data()['author'],
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                    ),
+                                              Text(
+                                                names[results[index].data()[
+                                                            'author']] !=
+                                                        null
+                                                    ? names[results[index]
+                                                        .data()['author']]
+                                                    : 'Loading',
+                                                overflow: TextOverflow.ellipsis,
+                                                textScaleFactor: 1,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w300,
                                                   ),
                                                 ),
                                               ),
