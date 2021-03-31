@@ -46,7 +46,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                     Expanded(
                       child: Column(
                         children: [
@@ -61,7 +61,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          SizedBox(height: 4),
+                          SizedBox(height: 10),
                           Text(
                             'By ' + widget.author,
                             textScaleFactor: 1,
@@ -78,6 +78,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                     ),
                     IconButton(icon: Icon(Icons.bedtime), onPressed: null),
                   ]),
+                  SizedBox(height: 10),
+                  Divider(
+                    thickness: 2,
+                  ),
                   SizedBox(
                     height: 20,
                   ),

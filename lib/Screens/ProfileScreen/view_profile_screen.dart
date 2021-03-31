@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/follow_button.dart';
+import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import '../../constants.dart';
@@ -376,78 +378,103 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                           shrinkWrap: true,
                           padding: EdgeInsets.only(bottom: 10),
                           itemCount: writings.length,
-                          itemBuilder: (BuildContext context, int index) => Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              writings[index].data()['images'] != 'No Image'
-                                  ? Container(
-                                      width: size.width * 0.35,
-                                      child: FadeInImage.assetNetwork(
-                                        height: 150,
-                                        width: 150,
-                                        placeholder: 'assets/images/1.png',
-                                        image: writings[index].data()['images']
-                                            [0],
-                                      ),
-                                    )
-                                  : Container(
-                                      width: size.width * 0.35,
-                                      child: Image.asset(
-                                        'assets/images/1.png',
-                                        height: 150,
-                                        width: 150,
-                                      ),
+                          itemBuilder: (BuildContext context, int index) =>
+                              FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: ReadingScreen(
+                                      data: writings[index],
+                                      author: widget.data.data()['name'],
                                     ),
-                              Expanded(
-                                child: Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                writings[index].data()['name'],
-                                                textScaleFactor: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: TextStyle(
-                                                    color: primaryColor,
-                                                    fontSize: 25,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                writings[index].data()['genre'],
-                                                overflow: TextOverflow.ellipsis,
-                                                textScaleFactor: 1,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: TextStyle(
-                                                    color: primaryColor,
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w300,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                  ));
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                writings[index].data()['images'] != 'No Image'
+                                    ? Container(
+                                        width: size.width * 0.35,
+                                        child: FadeInImage.assetNetwork(
+                                          height: 150,
+                                          width: 150,
+                                          placeholder: 'assets/images/1.png',
+                                          image: writings[index]
+                                              .data()['images'][0],
                                         ),
-                                      ],
+                                      )
+                                    : Container(
+                                        width: size.width * 0.35,
+                                        child: Image.asset(
+                                          'assets/images/1.png',
+                                          height: 150,
+                                          width: 150,
+                                        ),
+                                      ),
+                                Expanded(
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  writings[index]
+                                                      .data()['name'],
+                                                  textScaleFactor: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: TextStyle(
+                                                      color: primaryColor,
+                                                      fontSize: 25,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  writings[index]
+                                                      .data()['genre'],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textScaleFactor: 1,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: TextStyle(
+                                                      color: primaryColor,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Divider(
-                                color: darkPrimaryColor,
-                              ),
-                            ],
+                                Divider(
+                                  color: darkPrimaryColor,
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       : Center(

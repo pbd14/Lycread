@@ -131,123 +131,136 @@ class _SearchScreenGState extends State<SearchScreenG> {
                           padding: EdgeInsets.only(bottom: 10),
                           itemCount: results.length,
                           itemBuilder: (BuildContext context, int index) =>
-                              FlatButton(
-                            onPressed: () {
-                              setState(() {
-                                loading = true;
-                              });
-                              Navigator.push(
-                                  context,
-                                  SlideRightRoute(
-                                    page: ReadingScreen(
-                                      data: results[index],
-                                      author: names[
-                                          results[index].data()['author']],
+                              Container(
+                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            child: Card(
+                              elevation: 10,
+                              child: FlatButton(
+                                onPressed: () {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: ReadingScreen(
+                                          data: results[index],
+                                          author: names[
+                                              results[index].data()['author']],
+                                        ),
+                                      ));
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
                                     ),
-                                  ));
-                              setState(() {
-                                loading = false;
-                              });
-                            },
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                results[index].data()['images'] != 'No Image'
-                                    ? Container(
-                                        width: size.width * 0.35,
-                                        child: FadeInImage.assetNetwork(
-                                          height: 150,
-                                          width: 150,
-                                          placeholder: 'assets/images/1.png',
-                                          image: results[index].data()['images']
-                                              [0],
-                                        ),
-                                      )
-                                    : Container(
-                                        width: size.width * 0.35,
-                                        child: Image.asset(
-                                          'assets/images/1.png',
-                                          height: 150,
-                                          width: 150,
-                                        ),
-                                      ),
-                                Expanded(
-                                  child: Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  results[index].data()['name'],
-                                                  textScaleFactor: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 25,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  names[results[index].data()[
-                                                              'author']] !=
-                                                          null
-                                                      ? names[results[index]
-                                                          .data()['author']]
-                                                      : 'Loading',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  results[index]
-                                                      .data()['genre'],
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w300,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                    results[index].data()['images'] !=
+                                            'No Image'
+                                        ? Container(
+                                            width: size.width * 0.35,
+                                            child: FadeInImage.assetNetwork(
+                                              height: 150,
+                                              width: 150,
+                                              placeholder:
+                                                  'assets/images/1.png',
+                                              image: results[index]
+                                                  .data()['images'][0],
+                                            ),
+                                          )
+                                        : Container(
+                                            width: size.width * 0.35,
+                                            child: Image.asset(
+                                              'assets/images/1.png',
+                                              height: 150,
+                                              width: 150,
                                             ),
                                           ),
-                                        ],
+                                    Expanded(
+                                      child: Container(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      results[index]
+                                                          .data()['name'],
+                                                      textScaleFactor: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 25,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      names[results[index]
+                                                                      .data()[
+                                                                  'author']] !=
+                                                              null
+                                                          ? names[results[index]
+                                                              .data()['author']]
+                                                          : 'Loading',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    Text(
+                                                      results[index]
+                                                          .data()['genre'],
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    Divider(
+                                      color: darkPrimaryColor,
+                                    ),
+                                  ],
                                 ),
-                                Divider(
-                                  color: darkPrimaryColor,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
