@@ -23,12 +23,15 @@ class _VPlaceScreenState extends State<VProfileScreen> {
   bool loading = false;
   bool isSame = false;
   int fnum = 0;
+
   int following = 0;
+  int followingUser = 0;
   String fnum1 = '';
   String fnum2 = '';
   List writings = [];
 
   StreamSubscription<DocumentSnapshot> subscription;
+  StreamSubscription<DocumentSnapshot> follwSub;
 
   Future<void> prepare() async {
     var data = await FirebaseFirestore.instance
@@ -68,7 +71,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
         if (this.mounted) {
           setState(() {
             fnum = docsnap.data()['followers_num'];
-            following = docsnap.data()['following_num'];
+            followingUser = docsnap.data()['following_num'];
             if (fnum > 999999) {
               double numb = fnum / 1000000;
               fnum1 = numb.toStringAsFixed(1) + 'M';
@@ -79,19 +82,19 @@ class _VPlaceScreenState extends State<VProfileScreen> {
               fnum1 = fnum.toString();
             }
 
-            if (following > 999999) {
-              double numb = following / 1000000;
+            if (followingUser > 999999) {
+              double numb = followingUser / 1000000;
               fnum2 = numb.toStringAsFixed(1) + 'M';
-            } else if (following > 999) {
-              double numb = following / 1000;
+            } else if (followingUser > 999) {
+              double numb = followingUser / 1000;
               fnum2 = numb.toStringAsFixed(1) + 'K';
             } else {
-              fnum2 = following.toString();
+              fnum2 = followingUser.toString();
             }
           });
         } else {
           fnum = docsnap.data()['followers_num'];
-          following = docsnap.data()['following_num'];
+          followingUser = docsnap.data()['following_num'];
           if (fnum > 999999) {
             double numb = fnum / 1000000;
             fnum1 = numb.toStringAsFixed(1) + 'M';
@@ -102,15 +105,31 @@ class _VPlaceScreenState extends State<VProfileScreen> {
             fnum1 = fnum.toString();
           }
 
-          if (following > 999999) {
-            double numb = following / 1000000;
+          if (followingUser > 999999) {
+            double numb = followingUser / 1000000;
             fnum2 = numb.toStringAsFixed(1) + 'M';
-          } else if (following > 999) {
-            double numb = following / 1000;
+          } else if (followingUser > 999) {
+            double numb = followingUser / 1000;
             fnum2 = numb.toStringAsFixed(1) + 'K';
           } else {
-            fnum2 = following.toString();
+            fnum2 = followingUser.toString();
           }
+        }
+      }
+    });
+
+    follwSub = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .snapshots()
+        .listen((docsnap) {
+      if (docsnap.data()['following_num'] != null) {
+        if (this.mounted) {
+          setState(() {
+            following = docsnap.data()['following_num'];
+          });
+        } else {
+          following = docsnap.data()['following_num'];
         }
       }
     });
@@ -183,7 +202,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                 PushNotificationMessage notification =
                                     PushNotificationMessage(
                                   title: 'Fail',
-                                  body: 'Failed to update followings',
+                                  body: 'Failed to update followers',
                                 );
                                 showSimpleNotification(
                                   Container(child: Text(notification.body)),
@@ -355,15 +374,25 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                               SizedBox(
                                 width: 10,
                               ),
-                              Container(
-                                width: size.width * 0.35,
-                                child: FadeInImage.assetNetwork(
-                                  height: 150,
-                                  width: 150,
-                                  placeholder: 'assets/images/1.png',
-                                  image: writings[index].data()['images'][0],
-                                ),
-                              ),
+                              writings[index].data()['images'] != 'No Image'
+                                  ? Container(
+                                      width: size.width * 0.35,
+                                      child: FadeInImage.assetNetwork(
+                                        height: 150,
+                                        width: 150,
+                                        placeholder: 'assets/images/1.png',
+                                        image: writings[index].data()['images']
+                                            [0],
+                                      ),
+                                    )
+                                  : Container(
+                                      width: size.width * 0.35,
+                                      child: Image.asset(
+                                        'assets/images/1.png',
+                                        height: 150,
+                                        width: 150,
+                                      ),
+                                    ),
                               Expanded(
                                 child: Container(
                                   child: Padding(

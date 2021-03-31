@@ -121,7 +121,7 @@ class _WritingScreenState extends State<WritingScreen> {
                               child: TextFormField(
                                 maxLines: null,
                                 style: TextStyle(color: primaryColor),
-                                validator: (val) => val.length > 2
+                                validator: (val) => val.length > 1
                                     ? null
                                     : 'Минимум 2 символов',
                                 keyboardType: TextInputType.multiline,
@@ -290,6 +290,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                           FirebaseAuth.instance.currentUser.uid,
                                       'images': 'No Image',
                                       'genre': category.toLowerCase(),
+                                      'date': DateTime.now().toString(),
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
