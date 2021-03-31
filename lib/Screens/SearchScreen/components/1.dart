@@ -44,7 +44,7 @@ class _SearchScreen1State extends State<SearchScreen1> {
     setState(() {
       List preresults = [];
       for (var doc in qs.docs) {
-        if (doc.data()['name'].contains(st)) {
+        if (doc.data()['name'].toLowerCase().contains(st.toLowerCase())) {
           preresults.add(doc);
         }
       }
@@ -71,7 +71,7 @@ class _SearchScreen1State extends State<SearchScreen1> {
                 Center(
                   child: RoundedTextInput(
                     validator: (val) =>
-                        val.length > 2 ? null : 'Минимум 2 символов',
+                        val.length > 1 ? null : 'Минимум 2 символов',
                     hintText: "Имя",
                     type: TextInputType.text,
                     length: 30,
@@ -87,72 +87,73 @@ class _SearchScreen1State extends State<SearchScreen1> {
                 ),
                 SizedBox(height: 20),
                 Expanded(
-                    child: loading1
-                        ? LoadingScreen()
-                        : ListView.builder(
-                            padding: EdgeInsets.only(bottom: 10),
-                            itemCount: results.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                FlatButton(
-                              onPressed: () {
-                                setState(() {
-                                  loading = true;
-                                });
-                                Navigator.push(
-                                    context,
-                                    SlideRightRoute(
-                                      page: VProfileScreen(
-                                        data: results[index],
-                                      ),
-                                    ));
-                                setState(() {
-                                  loading = false;
-                                });
-                              },
-                              child: CardW(
-                                ph: 125,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Text(
-                                            results[index].data()['name'],
-                                            textScaleFactor: 1,
-                                            style: GoogleFonts.montserrat(
-                                              textStyle: TextStyle(
-                                                color: primaryColor,
-                                                fontSize: 25, 
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                  child: loading1
+                      ? LoadingScreen()
+                      : ListView.builder(
+                          padding: EdgeInsets.only(bottom: 10),
+                          itemCount: results.length,
+                          itemBuilder: (BuildContext context, int index) =>
+                              FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: VProfileScreen(
+                                      data: results[index],
+                                    ),
+                                  ));
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: CardW(
+                              ph: 125,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text(
+                                          results[index].data()['name'],
+                                          textScaleFactor: 1,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            results[index]
-                                                    .data()['followers_num']
-                                                    .toString() +
-                                                ' подписчиков',
-                                            textScaleFactor: 1,
-                                            style: GoogleFonts.montserrat(
-                                              textStyle: TextStyle(
-                                                color: primaryColor,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w300,
-                                              ),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          results[index]
+                                                  .data()['followers_num']
+                                                  .toString() +
+                                              ' подписчиков',
+                                          textScaleFactor: 1,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w300,
                                             ),
                                           ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
-                          )),
+                          ),
+                        ),
+                ),
               ],
             ),
           );

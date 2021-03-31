@@ -13,7 +13,8 @@ import '../loading_screen.dart';
 
 class VProfileScreen extends StatefulWidget {
   dynamic data;
-  VProfileScreen({Key key, this.data}) : super(key: key);
+  String id;
+  VProfileScreen({Key key, this.data, this.id}) : super(key: key);
   @override
   _VPlaceScreenState createState() => _VPlaceScreenState();
 }
@@ -34,6 +35,13 @@ class _VPlaceScreenState extends State<VProfileScreen> {
   StreamSubscription<DocumentSnapshot> follwSub;
 
   Future<void> prepare() async {
+    if (widget.id != null) {
+      widget.data = await FirebaseFirestore.instance
+          .collection('users')
+          .where('id', isEqualTo: widget.data)
+          .orderBy('date', descending: true)
+          .get();
+    }
     var data = await FirebaseFirestore.instance
         .collection('writings')
         .where('author', isEqualTo: widget.data.data()['id'])
