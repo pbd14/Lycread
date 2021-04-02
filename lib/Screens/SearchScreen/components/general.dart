@@ -27,7 +27,7 @@ class _SearchScreenGState extends State<SearchScreenG> {
   Future<void> prepare() async {
     QuerySnapshot qs = await FirebaseFirestore.instance
         .collection('writings')
-        // .orderBy('rating', descending: true)
+        .orderBy('rating', descending: true)
         .where('genre', isEqualTo: widget.data.toLowerCase())
         .limit(20)
         .get();

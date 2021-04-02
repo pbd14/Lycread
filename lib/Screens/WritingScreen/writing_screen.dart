@@ -265,6 +265,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'genre': category.toLowerCase(),
                                       'date': DateTime.now(),
                                       'rating': 0,
+                                      'users_rated': [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
@@ -293,6 +294,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'genre': category.toLowerCase(),
                                       'date': DateTime.now().toString(),
                                       'rating': 0,
+                                      'users_rated': [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
