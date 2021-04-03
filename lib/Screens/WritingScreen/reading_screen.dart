@@ -22,8 +22,8 @@ class ReadingScreen extends StatefulWidget {
 
 class _ReadingScreenState extends State<ReadingScreen> {
   bool loading = false;
-  Color firstColor = whiteColor;
-  Color secondColor = Colors.black;
+  Color firstColor = Color.fromRGBO(250, 244, 227, 1.0);
+  Color secondColor = Color.fromRGBO(43, 43, 43, 1.0);
   int rates = 0;
   String ratStr = '';
   StreamSubscription<DocumentSnapshot> subscription;
@@ -94,280 +94,282 @@ class _ReadingScreenState extends State<ReadingScreen> {
             //   ),
             // ),
             body: SingleChildScrollView(
-                child: Container(
-              padding: EdgeInsets.fromLTRB(25.0, 30, 25, 30),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                    Column(
-                      children: [
-                        UpButton(
-                          isC: false,
-                          reverse: FirebaseFirestore.instance
-                              .collection('writings')
-                              .doc(widget.data.id),
-                          containsValue: FirebaseAuth.instance.currentUser.uid,
-                          color1: footyColor,
-                          color2: secondColor,
-                          ph: 45,
-                          pw: 45,
-                          size: 40,
-                          onTap: () {
-                            setState(() {
-                              FirebaseFirestore.instance
-                                  .collection('writings')
-                                  .doc(widget.data.id)
-                                  .update({
-                                'rating': rates + 1,
-                                'users_rated': FieldValue.arrayUnion(
-                                    [FirebaseAuth.instance.currentUser.uid])
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to up',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                                if (this.mounted) {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                } else {
-                                  loading = false;
-                                }
-                              });
-                            });
-                            // Scaffold.of(context).showSnackBar(
-                            //   SnackBar(
-                            //     duration: Duration(seconds: 2),
-                            //     backgroundColor: darkPrimaryColor,
-                            //     content: Text(
-                            //       'Успешно',
-                            //       style: GoogleFonts.montserrat(
-                            //         textStyle: TextStyle(
-                            //           color: whiteColor,
-                            //           fontSize: 15,
-                            //         ),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                          onTap2: () {
-                            setState(() {
-                              FirebaseFirestore.instance
-                                  .collection('writings')
-                                  .doc(widget.data.id)
-                                  .update({
-                                'rating': rates - 1,
-                                'users_rated': FieldValue.arrayRemove(
-                                    [FirebaseAuth.instance.currentUser.uid])
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed tp up',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                                if (this.mounted) {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                } else {
-                                  loading = false;
-                                }
-                              });
-                            });
-                            // Scaffold.of(context).showSnackBar(
-                            //   SnackBar(
-                            //     duration: Duration(seconds: 2),
-                            //     backgroundColor: Colors.red,
-                            //     content: Text(
-                            //       'Removed from favourites',
-                            //       style: GoogleFonts.montserrat(
-                            //         textStyle: TextStyle(
-                            //           color: whiteColor,
-                            //           fontSize: 15,
-                            //         ),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                        ),
-                        Text(
-                          ratStr,
-                          textScaleFactor: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.montserrat(
-                            textStyle: TextStyle(
-                                color: secondColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
+              child: Container(
+                padding: EdgeInsets.fromLTRB(25.0, 30, 25, 30),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
                     ),
-                    Expanded(
-                      child: Column(
+                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                      Column(
                         children: [
+                          UpButton(
+                            isC: false,
+                            reverse: FirebaseFirestore.instance
+                                .collection('writings')
+                                .doc(widget.data.id),
+                            containsValue:
+                                FirebaseAuth.instance.currentUser.uid,
+                            color1: footyColor,
+                            color2: secondColor,
+                            ph: 45,
+                            pw: 45,
+                            size: 40,
+                            onTap: () {
+                              setState(() {
+                                FirebaseFirestore.instance
+                                    .collection('writings')
+                                    .doc(widget.data.id)
+                                    .update({
+                                  'rating': rates + 1,
+                                  'users_rated': FieldValue.arrayUnion(
+                                      [FirebaseAuth.instance.currentUser.uid])
+                                }).catchError((error) {
+                                  PushNotificationMessage notification =
+                                      PushNotificationMessage(
+                                    title: 'Fail',
+                                    body: 'Failed to up',
+                                  );
+                                  showSimpleNotification(
+                                    Container(child: Text(notification.body)),
+                                    position: NotificationPosition.top,
+                                    background: Colors.red,
+                                  );
+                                  if (this.mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  } else {
+                                    loading = false;
+                                  }
+                                });
+                              });
+                              // Scaffold.of(context).showSnackBar(
+                              //   SnackBar(
+                              //     duration: Duration(seconds: 2),
+                              //     backgroundColor: darkPrimaryColor,
+                              //     content: Text(
+                              //       'Успешно',
+                              //       style: GoogleFonts.montserrat(
+                              //         textStyle: TextStyle(
+                              //           color: whiteColor,
+                              //           fontSize: 15,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // );
+                            },
+                            onTap2: () {
+                              setState(() {
+                                FirebaseFirestore.instance
+                                    .collection('writings')
+                                    .doc(widget.data.id)
+                                    .update({
+                                  'rating': rates - 1,
+                                  'users_rated': FieldValue.arrayRemove(
+                                      [FirebaseAuth.instance.currentUser.uid])
+                                }).catchError((error) {
+                                  PushNotificationMessage notification =
+                                      PushNotificationMessage(
+                                    title: 'Fail',
+                                    body: 'Failed tp up',
+                                  );
+                                  showSimpleNotification(
+                                    Container(child: Text(notification.body)),
+                                    position: NotificationPosition.top,
+                                    background: Colors.red,
+                                  );
+                                  if (this.mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  } else {
+                                    loading = false;
+                                  }
+                                });
+                              });
+                              // Scaffold.of(context).showSnackBar(
+                              //   SnackBar(
+                              //     duration: Duration(seconds: 2),
+                              //     backgroundColor: Colors.red,
+                              //     content: Text(
+                              //       'Removed from favourites',
+                              //       style: GoogleFonts.montserrat(
+                              //         textStyle: TextStyle(
+                              //           color: whiteColor,
+                              //           fontSize: 15,
+                              //         ),
+                              //       ),
+                              //     ),
+                              //   ),
+                              // );
+                            },
+                          ),
                           Text(
-                            widget.data.data()['name'],
+                            ratStr,
                             textScaleFactor: 1,
                             overflow: TextOverflow.ellipsis,
                             style: GoogleFonts.montserrat(
                               textStyle: TextStyle(
                                   color: secondColor,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'By ' + widget.author,
-                            textScaleFactor: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                  color: footyColor,
                                   fontSize: 15,
-                                  fontWeight: FontWeight.w300),
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                          color: secondColor,
-                          icon: Icon(Icons.bedtime),
-                          onPressed: () {
-                            Color _1 = secondColor;
-                            Color _2 = firstColor;
-                            setState(() {
-                              firstColor = _1;
-                              secondColor = _2;
-                            });
-                          },
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.data.data()['name'],
+                              textScaleFactor: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                    color: secondColor,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              'By ' + widget.author,
+                              textScaleFactor: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                    color: footyColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w300),
+                              ),
+                            ),
+                          ],
                         ),
-                        LabelButton(
-                          isC: false,
-                          reverse: FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(FirebaseAuth.instance.currentUser.uid),
-                          containsValue: widget.data.id,
-                          color1: footyColor,
-                          color2: secondColor,
-                          ph: 45,
-                          pw: 45,
-                          size: 40,
-                          onTap: () {
-                            setState(() {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser.uid)
-                                  .update({
-                                'favourites':
-                                    FieldValue.arrayUnion([widget.data.id])
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to update favourites',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                                if (this.mounted) {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                } else {
-                                  loading = false;
-                                }
+                      ),
+                      Column(
+                        children: [
+                          IconButton(
+                            color: secondColor,
+                            icon: Icon(Icons.bedtime),
+                            onPressed: () {
+                              Color _1 = secondColor;
+                              Color _2 = firstColor;
+                              setState(() {
+                                firstColor = _1;
+                                secondColor = _2;
                               });
-                            });
-                          },
-                          onTap2: () {
-                            setState(() {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser.uid)
-                                  .update({
-                                'favourites':
-                                    FieldValue.arrayRemove([widget.data.id])
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to update favourites',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                                if (this.mounted) {
-                                  setState(() {
+                            },
+                          ),
+                          LabelButton(
+                            isC: false,
+                            reverse: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(FirebaseAuth.instance.currentUser.uid),
+                            containsValue: widget.data.id,
+                            color1: footyColor,
+                            color2: secondColor,
+                            ph: 45,
+                            pw: 45,
+                            size: 40,
+                            onTap: () {
+                              setState(() {
+                                FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(FirebaseAuth.instance.currentUser.uid)
+                                    .update({
+                                  'favourites':
+                                      FieldValue.arrayUnion([widget.data.id])
+                                }).catchError((error) {
+                                  PushNotificationMessage notification =
+                                      PushNotificationMessage(
+                                    title: 'Fail',
+                                    body: 'Failed to update favourites',
+                                  );
+                                  showSimpleNotification(
+                                    Container(child: Text(notification.body)),
+                                    position: NotificationPosition.top,
+                                    background: Colors.red,
+                                  );
+                                  if (this.mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  } else {
                                     loading = false;
-                                  });
-                                } else {
-                                  loading = false;
-                                }
+                                  }
+                                });
                               });
-                            });
-                          },
-                        ),
-                      ],
+                            },
+                            onTap2: () {
+                              setState(() {
+                                FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(FirebaseAuth.instance.currentUser.uid)
+                                    .update({
+                                  'favourites':
+                                      FieldValue.arrayRemove([widget.data.id])
+                                }).catchError((error) {
+                                  PushNotificationMessage notification =
+                                      PushNotificationMessage(
+                                    title: 'Fail',
+                                    body: 'Failed to update favourites',
+                                  );
+                                  showSimpleNotification(
+                                    Container(child: Text(notification.body)),
+                                    position: NotificationPosition.top,
+                                    background: Colors.red,
+                                  );
+                                  if (this.mounted) {
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  } else {
+                                    loading = false;
+                                  }
+                                });
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ]),
+                    SizedBox(height: 10),
+                    Divider(
+                      color: secondColor,
+                      thickness: 2,
                     ),
-                  ]),
-                  SizedBox(height: 10),
-                  Divider(
-                    color: secondColor,
-                    thickness: 2,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                    child: FadeInImage.assetNetwork(
-                      placeholder: 'assets/images/1.png',
-                      image: widget.data.data()['images'][0],
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: Container(
-                      width: double.infinity,
-                      child: Text(
-                        widget.data.data()['text'],
-                        textScaleFactor: 1,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              color: secondColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300),
+                    Container(
+                      child: FadeInImage.assetNetwork(
+                        placeholder: 'assets/images/1.png',
+                        image: widget.data.data()['images'][0],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          widget.data.data()['text'],
+                          textScaleFactor: 1,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: secondColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            )),
+            ),
           );
   }
 }

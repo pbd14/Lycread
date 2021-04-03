@@ -115,37 +115,40 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Column(
-                                      children: [
-                                        Text(
-                                          results[index].data()['name'],
-                                          textScaleFactor: 1,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: primaryColor,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold,
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            results[index].data()['name'],
+                                            textScaleFactor: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                color: primaryColor,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          results[index]
-                                                  .data()['followers_num']
-                                                  .toString() +
-                                              ' подписчиков',
-                                          textScaleFactor: 1,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: primaryColor,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.w300,
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            results[index]
+                                                    .data()['followers_num']
+                                                    .toString() +
+                                                ' подписчиков',
+                                            textScaleFactor: 1,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                color: primaryColor,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w300,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     )
                                   ],
                                 ),
