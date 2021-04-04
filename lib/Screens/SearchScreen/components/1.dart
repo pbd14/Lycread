@@ -74,7 +74,6 @@ class _SearchScreen1State extends State<SearchScreen1> {
                         val.length > 1 ? null : 'Минимум 2 символов',
                     hintText: "Имя",
                     type: TextInputType.text,
-                    length: 30,
                     height: 100,
                     onChanged: (value) {
                       value != null

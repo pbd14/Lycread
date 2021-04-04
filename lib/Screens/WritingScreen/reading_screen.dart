@@ -2,10 +2,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/widgets/label_button.dart';
+import 'package:lycread/widgets/rounded_button.dart';
+import 'package:lycread/widgets/rounded_text_input.dart';
+import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/up_button.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -21,12 +25,27 @@ class ReadingScreen extends StatefulWidget {
 }
 
 class _ReadingScreenState extends State<ReadingScreen> {
+  final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  Color firstColor = Color.fromRGBO(250, 244, 227, 1.0);
+  bool isComm = false;
+  Color firstColor = Color.fromRGBO(245, 245, 230, 1.0);
   Color secondColor = Color.fromRGBO(43, 43, 43, 1.0);
   int rates = 0;
   String ratStr = '';
+  String commentText = '';
   StreamSubscription<DocumentSnapshot> subscription;
+  List comments = [];
+
+  String getName(String id) {
+    String name;
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .get()
+        .then((value) => name = value.data()['name']);
+    print('HERE DONE');
+    return name;
+  }
 
   @override
   void initState() {
@@ -39,6 +58,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
       if (docsnap.data()['rating'] != null) {
         if (this.mounted) {
           setState(() {
+            docsnap.data()['comments'].length != 0
+                ? comments = docsnap.data()['comments']
+                : comments = [];
             if (docsnap.data()['rating'] > 999999) {
               rates = docsnap.data()['rating'];
               double numb = docsnap.data()['rating'] / 1000000;
@@ -53,6 +75,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
             }
           });
         } else {
+          docsnap.data()['comments'].length != 0
+              ? comments = docsnap.data()['comments']
+              : comments = [];
           if (docsnap.data()['rating'] > 999999) {
             rates = docsnap.data()['rating'];
             double numb = docsnap.data()['rating'] / 1000000;
@@ -364,6 +389,208 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                 fontWeight: FontWeight.w300),
                           ),
                         ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Divider(
+                      color: secondColor,
+                      thickness: 2,
+                    ),
+                    SizedBox(height: 10),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  cursorColor: secondColor,
+                                  maxLines: null,
+                                  style: TextStyle(color: secondColor),
+                                  validator: (val) => val.length > 1
+                                      ? null
+                                      : 'Минимум 2 символов',
+                                  keyboardType: TextInputType.multiline,
+                                  maxLength: 500,
+                                  onChanged: (value) {
+                                    commentText = value;
+                                  },
+                                  decoration: InputDecoration(
+                                    counterStyle: TextStyle(color: secondColor),
+                                    hintText: "Коммент",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              RoundedButton(
+                                width: 0.2,
+                                ph: 45,
+                                text: 'Ок',
+                                press: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    await FirebaseFirestore.instance
+                                        .collection('writings')
+                                        .doc(widget.data.id)
+                                        .update({
+                                      'comments': FieldValue.arrayUnion([
+                                        {
+                                          'date': DateTime.now(),
+                                          'text': commentText,
+                                          'author': FirebaseAuth
+                                              .instance.currentUser.displayName,
+                                        }
+                                      ])
+                                    }).catchError((error) {
+                                      PushNotificationMessage notification =
+                                          PushNotificationMessage(
+                                        title: 'Ошибка',
+                                        body: 'Неудалось добавить комментарий',
+                                      );
+                                      showSimpleNotification(
+                                        Container(
+                                            child: Text(notification.body)),
+                                        position: NotificationPosition.top,
+                                        background: Colors.red,
+                                      );
+                                    });
+                                    PushNotificationMessage notification =
+                                        PushNotificationMessage(
+                                      title: 'Успех',
+                                      body: 'Комментарий добавлен',
+                                    );
+                                    showSimpleNotification(
+                                      Container(child: Text(notification.body)),
+                                      position: NotificationPosition.top,
+                                      background: footyColor,
+                                    );
+                                    setState(() {
+                                      loading = false;
+                                      commentText = '';
+                                    });
+                                  }
+                                },
+                                color: darkPrimaryColor,
+                                textColor: whiteColor,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          comments.length != 0
+                              ? Center(
+                                  child: ListView.builder(
+                                    physics: new NeverScrollableScrollPhysics(),
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    itemCount: comments.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) =>
+                                            Card(
+                                      shadowColor: secondColor,
+                                      color: firstColor,
+                                      elevation: 10,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(12.0),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            comments[index]
+                                                                ['text'],
+                                                            textScaleFactor: 1,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    secondColor,
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Text(
+                                                            comments[index][
+                                                                        'author'] !=
+                                                                    null
+                                                                ? comments[
+                                                                        index]
+                                                                    ['author']
+                                                                : 'No author',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textScaleFactor: 1,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    secondColor,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(
+                                            thickness: 0.1,
+                                            color: secondColor,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Center(
+                                  child: Text(
+                                    'No comments',
+                                    textScaleFactor: 1,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: secondColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                ),
+                        ],
                       ),
                     ),
                   ],

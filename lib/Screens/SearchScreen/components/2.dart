@@ -10,14 +10,12 @@ import 'package:lycread/widgets/slide_right_route_animation.dart';
 
 import '../../../constants.dart';
 
-class SearchScreenG extends StatefulWidget {
-  String data;
-  SearchScreenG({Key key, this.data}) : super(key: key);
+class SecondScreen extends StatefulWidget {
   @override
-  _SearchScreenGState createState() => _SearchScreenGState();
+  _SecondScreenState createState() => _SecondScreenState();
 }
 
-class _SearchScreenGState extends State<SearchScreenG> {
+class _SecondScreenState extends State<SecondScreen> {
   List results = [];
   bool loading = true;
   bool loading1 = false;
@@ -28,7 +26,6 @@ class _SearchScreenGState extends State<SearchScreenG> {
     QuerySnapshot qs = await FirebaseFirestore.instance
         .collection('writings')
         .orderBy('rating', descending: true)
-        .where('genre', isEqualTo: widget.data.toLowerCase())
         .limit(20)
         .get();
     if (this.mounted) {
@@ -62,7 +59,6 @@ class _SearchScreenGState extends State<SearchScreenG> {
     QuerySnapshot qs = await FirebaseFirestore.instance
         .collection('writings')
         // .orderBy('rating', descending: true)
-        .where('genre', isEqualTo: widget.data.toLowerCase())
         .limit(20)
         .get();
     setState(() {

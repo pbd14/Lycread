@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/SearchScreen/components/1.dart';
+import 'package:lycread/Screens/SearchScreen/components/2.dart';
 import 'package:lycread/Screens/SearchScreen/components/general.dart';
 
 import '../../constants.dart';
@@ -17,11 +18,22 @@ class _SearchScreenState extends State<SearchScreen> {
   List categs;
   List<Widget> tbvList = [
     SearchScreen1(),
+    SecondScreen(),
   ];
   List<Widget> tabs = [
     Tab(
       child: Text(
         'Писатели',
+        textScaleFactor: 1,
+        style: GoogleFonts.montserrat(
+          textStyle: TextStyle(
+              color: whiteColor, fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+      ),
+    ),
+    Tab(
+      child: Text(
+        'Истории',
         textScaleFactor: 1,
         style: GoogleFonts.montserrat(
           textStyle: TextStyle(
@@ -115,7 +127,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return loading
         ? LoadingScreen()
         : DefaultTabController(
-            length: categs.length + 1,
+            length: categs.length + 2,
             child: Scaffold(
               backgroundColor: whiteColor,
               appBar: AppBar(

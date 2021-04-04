@@ -266,6 +266,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'date': DateTime.now(),
                                       'rating': 0,
                                       'users_rated': [],
+                                      'comments' : [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
@@ -292,9 +293,10 @@ class _WritingScreenState extends State<WritingScreen> {
                                           FirebaseAuth.instance.currentUser.uid,
                                       'images': 'No Image',
                                       'genre': category.toLowerCase(),
-                                      'date': DateTime.now().toString(),
+                                      'date': DateTime.now(),
                                       'rating': 0,
                                       'users_rated': [],
+                                      'comments' : [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
