@@ -153,6 +153,24 @@ class _VPlaceScreenState extends State<VProfileScreen> {
             body: SingleChildScrollView(
               child: Column(
                 children: [
+                  SizedBox(height: 75),
+                  Container(
+                    width: size.width * 0.4,
+                    height: size.width * 0.4,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25.0),
+                      child: widget.data.data()['photo'] != null
+                          ? FadeInImage.assetNetwork(
+                              fit: BoxFit.cover,
+                              placeholder: 'assets/images/User.png',
+                              image: widget.data.data()['photo'],
+                            )
+                          : Image.asset(
+                              'assets/images/User.png',
+                              fit: BoxFit.cover,
+                            ),
+                    ),
+                  ),
                   SizedBox(height: 50),
                   Center(
                     child: Text(

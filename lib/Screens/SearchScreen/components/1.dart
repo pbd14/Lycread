@@ -17,6 +17,21 @@ class _SearchScreen1State extends State<SearchScreen1> {
   List results = [];
   bool loading = true;
   bool loading1 = false;
+  Size size;
+
+  String getFnum(int fnum) {
+    String fnum1 = '';
+    if (fnum > 999999) {
+      double numb = fnum / 1000000;
+      fnum1 = numb.toStringAsFixed(1) + 'M';
+    } else if (fnum > 999) {
+      double numb = fnum / 1000;
+      fnum1 = numb.toStringAsFixed(1) + 'K';
+    } else {
+      fnum1 = fnum.toString();
+    }
+    return fnum1 + ' подписчиков';
+  }
 
   Future<void> prepare() async {
     QuerySnapshot qs = await FirebaseFirestore.instance
@@ -62,6 +77,7 @@ class _SearchScreen1State extends State<SearchScreen1> {
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : Scaffold(
@@ -114,7 +130,8 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Flexible(
+                                    Expanded(
+                                      flex: 8,
                                       child: Column(
                                         children: [
                                           Text(
@@ -133,10 +150,8 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                             height: 10,
                                           ),
                                           Text(
-                                            results[index]
-                                                    .data()['followers_num']
-                                                    .toString() +
-                                                ' подписчиков',
+                                            getFnum(results[index]
+                                                .data()['followers_num']),
                                             textScaleFactor: 1,
                                             style: GoogleFonts.montserrat(
                                               textStyle: TextStyle(
@@ -148,7 +163,51 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                           ),
                                         ],
                                       ),
-                                    )
+                                    ),
+                                    Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Container(
+                                          width: 50,
+                                          height: 50,
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                            child: results[index]
+                                                        .data()['photo'] !=
+                                                    null
+                                                ? FadeInImage.assetNetwork(
+                                                    fit: BoxFit.cover,
+                                                    placeholder:
+                                                        'assets/images/User.png',
+                                                    image: results[index]
+                                                        .data()['photo'],
+                                                  )
+                                                : Image.asset(
+                                                    'assets/images/User.png',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                          ),
+                                        ),
+                                        // Container(
+                                        //   height: 50,
+                                        //   width: 50,
+                                        //   decoration: ShapeDecoration(
+                                        //     shape: CircleBorder(
+                                        //       side: BorderSide(
+                                        //           width: 1, color: footyColor),
+                                        //     ),
+                                        //     image: DecorationImage(
+                                        //       image: AssetImage(results[index]
+                                        //                   .data()['photo'] !=
+                                        //               null
+                                        //           ? results[index].data()['photo']
+                                        //           : 'assets/images/User.png'),
+                                        //       fit: BoxFit.cover,
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        ),
+                                    SizedBox(width: 15),
                                   ],
                                 ),
                               ),

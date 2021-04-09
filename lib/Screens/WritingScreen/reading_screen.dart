@@ -43,8 +43,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
         .doc(id)
         .get()
         .then((value) => name = value.data()['name']);
-    print('HERE DONE');
-    return name;
   }
 
   @override
