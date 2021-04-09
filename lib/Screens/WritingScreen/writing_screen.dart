@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -45,7 +44,10 @@ class _WritingScreenState extends State<WritingScreen> {
   }
 
   Future _getImage() async {
-    var picker = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var picker = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 25,
+    );
 
     setState(() {
       if (picker != null) {
@@ -266,7 +268,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'date': DateTime.now(),
                                       'rating': 0,
                                       'users_rated': [],
-                                      'comments' : [],
+                                      'comments': [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
@@ -296,7 +298,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'date': DateTime.now(),
                                       'rating': 0,
                                       'users_rated': [],
-                                      'comments' : [],
+                                      'comments': [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);

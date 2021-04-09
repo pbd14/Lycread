@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,9 +25,10 @@ class ReadingScreen extends StatefulWidget {
 
 class _ReadingScreenState extends State<ReadingScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool loading = false;
+  bool loading = true;
   bool isComm = false;
-  Color firstColor = Color.fromRGBO(245, 245, 230, 1.0);
+  Color firstColor = whiteColor;
+  Color yellowColor = Color.fromRGBO(245, 245, 230, 1.0);
   Color secondColor = Color.fromRGBO(43, 43, 43, 1.0);
   int rates = 0;
   String ratStr = '';
@@ -101,6 +101,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
     return loading
         ? LoadingScreen()
         : Scaffold(
+            appBar: AppBar(
+              backgroundColor: secondColor,
+            ),
             backgroundColor: firstColor,
             // appBar: AppBar(
             //   elevation: 10,

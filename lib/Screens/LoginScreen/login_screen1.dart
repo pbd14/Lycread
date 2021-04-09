@@ -1,16 +1,19 @@
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/HomeScreen/home_screen.dart';
+import 'package:lycread/constants.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
-import '../../constants.dart';
 import '../loading_screen.dart';
 
 class LoginScreen1 extends StatefulWidget {
@@ -25,8 +28,26 @@ class _LoginScreen1State extends State<LoginScreen1> {
 
   String error = '';
   String name;
-
   bool loading = false;
+  File i1;
+  TaskSnapshot a1;
+  String path;
+
+  Future _getImage() async {
+    var picker = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 0,
+    );
+
+    setState(() {
+      if (picker != null) {
+        path = picker.path;
+        i1 = File(picker.path);
+      } else {
+        i1 = File('assets/images/User.png');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +79,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                               padding: const EdgeInsets.all(10.0),
                               child: Center(
                                 child: Text(
-                                  'Create yout account',
+                                  'Создайте аккаунт',
                                   style: GoogleFonts.montserrat(
                                     textStyle: TextStyle(
                                       color: primaryColor,
@@ -71,14 +92,59 @@ class _LoginScreen1State extends State<LoginScreen1> {
                             ),
                             SizedBox(height: 30),
                             RoundedTextInput(
-                              validator: (val) => val.length >= 2
-                                  ? null
-                                  : 'Minimum 2 characters',
-                              hintText: "Name",
+                              formatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r"[a-zA-z0-9]+|\s")),
+                              ],
+                              validator: (val) =>
+                                  val.length >= 2 ? null : 'Минимум 2 символа',
+                              hintText: "Имя",
                               type: TextInputType.text,
                               onChanged: (value) {
                                 this.name = value;
                               },
+                            ),
+                            SizedBox(height: 30),
+                            Text(
+                              'Фотография',
+                              textScaleFactor: 1,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Divider(),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _getImage();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: footyColor, shape: BoxShape.circle),
+                                width: size.width * 0.5,
+                                height: size.width * 0.5,
+                                child: i1 == null
+                                    ? Icon(Icons.add)
+                                    : Container(
+                                        decoration: ShapeDecoration(
+                                            color: footyColor,
+                                            shape: CircleBorder(
+                                              side: BorderSide(
+                                                  width: 1, color: footyColor),
+                                            ),
+                                            image: DecorationImage(
+                                              image: AssetImage(path),
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                            )),
+                                      ),
+                              ),
                             ),
                             SizedBox(height: 30),
                             RoundedButton(
@@ -90,8 +156,18 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                   setState(() {
                                     loading = true;
                                   });
+                                  String id =
+                                      FirebaseAuth.instance.currentUser.uid;
+                                  String date = DateTime.now().toString();
+                                  a1 = await FirebaseStorage.instance
+                                      .ref('uploads')
+                                      .child('$id/user/$date')
+                                      .putFile(i1);
                                   FirebaseAuth.instance.currentUser
-                                      .updateProfile(displayName: this.name);
+                                      .updateProfile(
+                                    displayName: this.name,
+                                    photoURL: await a1.ref.getDownloadURL(),
+                                  );
                                   FirebaseFirestore.instance
                                       .collection('users')
                                       .doc(
@@ -104,6 +180,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                     ]),
                                     'followers_num': 0,
                                     'following_num': 0,
+                                    'photo': await a1.ref.getDownloadURL(),
                                     'id': FirebaseAuth.instance.currentUser.uid,
                                   }).catchError((error) {
                                     PushNotificationMessage notification =

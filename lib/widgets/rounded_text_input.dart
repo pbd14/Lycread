@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lycread/widgets/text_field_container.dart';
 
 import '../constants.dart';
@@ -12,6 +13,7 @@ class RoundedTextInput extends StatelessWidget {
   final TextEditingController controller;
   final int length;
   final double height;
+  final List<TextInputFormatter> formatters;
   const RoundedTextInput({
     Key key,
     this.hintText,
@@ -22,6 +24,7 @@ class RoundedTextInput extends StatelessWidget {
     this.controller,
     this.length: null,
     this.height: 90,
+    this.formatters: null,
   }) : super(key: key);
 
   @override
@@ -38,6 +41,7 @@ class RoundedTextInput extends StatelessWidget {
           validator: validator,
           keyboardType: type,
           onChanged: onChanged,
+          inputFormatters: formatters != null ? formatters : [],
           decoration: InputDecoration(
             hintText: hintText,
             border: OutlineInputBorder(),
