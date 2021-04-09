@@ -101,7 +101,7 @@ class _LabelButtonState extends State<LabelButton> {
         isOne = !isOne;
       },
       child: Icon(
-        Icons.label,
+        Icons.bookmark,
         color: labelColor == null ? widget.color2 : labelColor,
         size: widget.size,
       ),

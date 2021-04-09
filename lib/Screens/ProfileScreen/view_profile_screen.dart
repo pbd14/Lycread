@@ -150,6 +150,20 @@ class _VPlaceScreenState extends State<VProfileScreen> {
     return loading
         ? LoadingScreen()
         : Scaffold(
+            appBar: AppBar(
+              backgroundColor: primaryColor,
+              title: Text(
+                'Пользователь',
+                textScaleFactor: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(
+                      color: whiteColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
+            ),
             body: SingleChildScrollView(
               child: Column(
                 children: [

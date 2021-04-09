@@ -101,7 +101,7 @@ class _UpButtonState extends State<UpButton> {
         isOne = !isOne;
       },
       child: Icon(
-        Icons.arrow_upward_sharp,
+        CupertinoIcons.heart_fill,
         color: labelColor == null ? widget.color2 : labelColor,
         size: widget.size,
       ),

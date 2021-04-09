@@ -2,9 +2,11 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/widgets/label_button.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
@@ -25,10 +27,11 @@ class ReadingScreen extends StatefulWidget {
 
 class _ReadingScreenState extends State<ReadingScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool loading = true;
+  bool loading = false;
   bool isComm = false;
+  bool isYellow = false;
   Color firstColor = whiteColor;
-  Color yellowColor = Color.fromRGBO(245, 245, 230, 1.0);
+  Color yellowColor = Color.fromRGBO(255, 255, 225, 1.0);
   Color secondColor = Color.fromRGBO(43, 43, 43, 1.0);
   int rates = 0;
   String ratStr = '';
@@ -100,7 +103,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
         ? LoadingScreen()
         : Scaffold(
             appBar: AppBar(
+              iconTheme: IconThemeData(color: firstColor),
               backgroundColor: secondColor,
+              title: Text(
+                'Публикация',
+                textScaleFactor: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(
+                      color: firstColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300),
+                ),
+              ),
             ),
             backgroundColor: firstColor,
             // appBar: AppBar(
@@ -125,156 +140,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Column(
-                        children: [
-                          UpButton(
-                            isC: false,
-                            reverse: FirebaseFirestore.instance
-                                .collection('writings')
-                                .doc(widget.data.id),
-                            containsValue:
-                                FirebaseAuth.instance.currentUser.uid,
-                            color1: footyColor,
-                            color2: secondColor,
-                            ph: 45,
-                            pw: 45,
-                            size: 40,
-                            onTap: () {
-                              setState(() {
-                                FirebaseFirestore.instance
-                                    .collection('writings')
-                                    .doc(widget.data.id)
-                                    .update({
-                                  'rating': rates + 1,
-                                  'users_rated': FieldValue.arrayUnion(
-                                      [FirebaseAuth.instance.currentUser.uid])
-                                }).catchError((error) {
-                                  PushNotificationMessage notification =
-                                      PushNotificationMessage(
-                                    title: 'Fail',
-                                    body: 'Failed to up',
-                                  );
-                                  showSimpleNotification(
-                                    Container(child: Text(notification.body)),
-                                    position: NotificationPosition.top,
-                                    background: Colors.red,
-                                  );
-                                  if (this.mounted) {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  } else {
-                                    loading = false;
-                                  }
-                                });
-                              });
-                              // Scaffold.of(context).showSnackBar(
-                              //   SnackBar(
-                              //     duration: Duration(seconds: 2),
-                              //     backgroundColor: darkPrimaryColor,
-                              //     content: Text(
-                              //       'Успешно',
-                              //       style: GoogleFonts.montserrat(
-                              //         textStyle: TextStyle(
-                              //           color: whiteColor,
-                              //           fontSize: 15,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // );
-                            },
-                            onTap2: () {
-                              setState(() {
-                                FirebaseFirestore.instance
-                                    .collection('writings')
-                                    .doc(widget.data.id)
-                                    .update({
-                                  'rating': rates - 1,
-                                  'users_rated': FieldValue.arrayRemove(
-                                      [FirebaseAuth.instance.currentUser.uid])
-                                }).catchError((error) {
-                                  PushNotificationMessage notification =
-                                      PushNotificationMessage(
-                                    title: 'Fail',
-                                    body: 'Failed tp up',
-                                  );
-                                  showSimpleNotification(
-                                    Container(child: Text(notification.body)),
-                                    position: NotificationPosition.top,
-                                    background: Colors.red,
-                                  );
-                                  if (this.mounted) {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  } else {
-                                    loading = false;
-                                  }
-                                });
-                              });
-                              // Scaffold.of(context).showSnackBar(
-                              //   SnackBar(
-                              //     duration: Duration(seconds: 2),
-                              //     backgroundColor: Colors.red,
-                              //     content: Text(
-                              //       'Removed from favourites',
-                              //       style: GoogleFonts.montserrat(
-                              //         textStyle: TextStyle(
-                              //           color: whiteColor,
-                              //           fontSize: 15,
-                              //         ),
-                              //       ),
-                              //     ),
-                              //   ),
-                              // );
-                            },
-                          ),
-                          Text(
-                            ratStr,
-                            textScaleFactor: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                  color: secondColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              widget.data.data()['name'],
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: secondColor,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'By ' + widget.author,
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: footyColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                       Column(
                         children: [
                           IconButton(
@@ -286,8 +154,208 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               setState(() {
                                 firstColor = _1;
                                 secondColor = _2;
+                                isComm = !isComm;
                               });
                             },
+                          ),
+                          IconButton(
+                            color: secondColor,
+                            icon: Icon(CupertinoIcons.book_solid),
+                            onPressed: () {
+                              setState(() {
+                                if (!isComm) {
+                                  isYellow
+                                      ? firstColor = whiteColor
+                                      : firstColor = yellowColor;
+                                } else {
+                                  isYellow
+                                      ? secondColor = whiteColor
+                                      : secondColor = yellowColor;
+                                }
+                                isYellow = !isYellow;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.data.data()['name'],
+                              textScaleFactor: 1,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.fade,
+                              maxLines: 1000,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                    color: secondColor,
+                                    fontSize: 27,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            FlatButton(
+                              color: primaryColor,
+                              onPressed: () async {
+                                setState(() {
+                                  loading = true;
+                                });
+                                var data = await FirebaseFirestore.instance
+                                    .collection('users')
+                                    // .where('id',
+                                    //     isEqualTo: widget.data.data()['author'])
+                                    .doc(widget.data.data()['author'])
+                                    .get();
+                                Navigator.push(
+                                    context,
+                                    SlideRightRoute(
+                                      page: VProfileScreen(
+                                        data: data,
+                                      ),
+                                    ));
+                                setState(() {
+                                  loading = false;
+                                });
+                              },
+                              child: Text(
+                                'By ' + widget.author,
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: footyColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Column(
+                            children: [
+                              UpButton(
+                                isC: false,
+                                reverse: FirebaseFirestore.instance
+                                    .collection('writings')
+                                    .doc(widget.data.id),
+                                containsValue:
+                                    FirebaseAuth.instance.currentUser.uid,
+                                color1: footyColor,
+                                color2: secondColor,
+                                ph: 45,
+                                pw: 45,
+                                size: 40,
+                                onTap: () {
+                                  setState(() {
+                                    FirebaseFirestore.instance
+                                        .collection('writings')
+                                        .doc(widget.data.id)
+                                        .update({
+                                      'rating': rates + 1,
+                                      'users_rated': FieldValue.arrayUnion([
+                                        FirebaseAuth.instance.currentUser.uid
+                                      ])
+                                    }).catchError((error) {
+                                      PushNotificationMessage notification =
+                                          PushNotificationMessage(
+                                        title: 'Fail',
+                                        body: 'Failed to up',
+                                      );
+                                      showSimpleNotification(
+                                        Container(
+                                            child: Text(notification.body)),
+                                        position: NotificationPosition.top,
+                                        background: Colors.red,
+                                      );
+                                      if (this.mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      } else {
+                                        loading = false;
+                                      }
+                                    });
+                                  });
+                                  // Scaffold.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //     duration: Duration(seconds: 2),
+                                  //     backgroundColor: darkPrimaryColor,
+                                  //     content: Text(
+                                  //       'Успешно',
+                                  //       style: GoogleFonts.montserrat(
+                                  //         textStyle: TextStyle(
+                                  //           color: whiteColor,
+                                  //           fontSize: 15,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // );
+                                },
+                                onTap2: () {
+                                  setState(() {
+                                    FirebaseFirestore.instance
+                                        .collection('writings')
+                                        .doc(widget.data.id)
+                                        .update({
+                                      'rating': rates - 1,
+                                      'users_rated': FieldValue.arrayRemove([
+                                        FirebaseAuth.instance.currentUser.uid
+                                      ])
+                                    }).catchError((error) {
+                                      PushNotificationMessage notification =
+                                          PushNotificationMessage(
+                                        title: 'Fail',
+                                        body: 'Failed tp up',
+                                      );
+                                      showSimpleNotification(
+                                        Container(
+                                            child: Text(notification.body)),
+                                        position: NotificationPosition.top,
+                                        background: Colors.red,
+                                      );
+                                      if (this.mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      } else {
+                                        loading = false;
+                                      }
+                                    });
+                                  });
+                                  // Scaffold.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //     duration: Duration(seconds: 2),
+                                  //     backgroundColor: Colors.red,
+                                  //     content: Text(
+                                  //       'Removed from favourites',
+                                  //       style: GoogleFonts.montserrat(
+                                  //         textStyle: TextStyle(
+                                  //           color: whiteColor,
+                                  //           fontSize: 15,
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // );
+                                },
+                              ),
+                              Text(
+                                ratStr,
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: secondColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
                           ),
                           LabelButton(
                             isC: false,
@@ -367,15 +435,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
                       color: secondColor,
                       thickness: 2,
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      child: FadeInImage.assetNetwork(
-                        placeholder: 'assets/images/1.png',
-                        image: widget.data.data()['images'][0],
-                      ),
-                    ),
+                    widget.data.data()['images'] != 'No Image'
+                        ? SizedBox(
+                            height: 20,
+                          )
+                        : Container(),
+                    widget.data.data()['images'] != 'No Image'
+                        ? Container(
+                            child: FadeInImage.assetNetwork(
+                              placeholder: 'assets/images/1.png',
+                              image: widget.data.data()['images'][0],
+                            ),
+                          )
+                        : Container(),
                     SizedBox(height: 20),
                     Center(
                       child: Container(
