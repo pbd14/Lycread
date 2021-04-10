@@ -208,12 +208,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     .doc(widget.data.data()['author'])
                                     .get();
                                 Navigator.push(
-                                    context,
-                                    SlideRightRoute(
-                                      page: VProfileScreen(
-                                        data: data,
-                                      ),
-                                    ));
+                                  context,
+                                  SlideRightRoute(
+                                    page: VProfileScreen(
+                                      data: data,
+                                    ),
+                                  ),
+                                );
                                 setState(() {
                                   loading = false;
                                 });

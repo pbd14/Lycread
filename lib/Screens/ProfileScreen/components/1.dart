@@ -1,147 +1,73 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/ProfileScreen/components/settings.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
+import 'package:lycread/Screens/loading_screen.dart';
+import 'package:lycread/constants.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/follow_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-import '../../constants.dart';
-import '../loading_screen.dart';
-
-class VProfileScreen extends StatefulWidget {
-  dynamic data;
-  String id;
-  VProfileScreen({Key key, this.data, this.id}) : super(key: key);
+class VProfileScreen1 extends StatefulWidget {
   @override
-  _VPlaceScreenState createState() => _VPlaceScreenState();
+  _VPlaceScreen1State createState() => _VPlaceScreen1State();
 }
 
-class _VPlaceScreenState extends State<VProfileScreen> {
+class _VPlaceScreen1State extends State<VProfileScreen1> {
   String name;
-  bool loading = false;
-  bool isSame = false;
-  int fnum = 0;
+  bool loading = true;
+  DocumentSnapshot data;
+  List<QueryDocumentSnapshot> writings;
 
-  int following = 0;
-  int followingUser = 0;
-  String fnum1 = '';
-  String fnum2 = '';
-  List writings = [];
-
-  StreamSubscription<DocumentSnapshot> subscription;
-  StreamSubscription<DocumentSnapshot> follwSub;
+  String getFnum(int fnum) {
+    String fnum1 = '';
+    if (fnum > 999999) {
+      double numb = fnum / 1000000;
+      fnum1 = numb.toStringAsFixed(1) + 'M';
+    } else if (fnum > 999) {
+      double numb = fnum / 1000;
+      fnum1 = numb.toStringAsFixed(1) + 'K';
+    } else {
+      fnum1 = fnum.toString();
+    }
+    return fnum1;
+  }
 
   Future<void> prepare() async {
-    if (widget.id != null) {
-      widget.data = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(widget.id)
-          .get();
-    }
-    var data = await FirebaseFirestore.instance
+    var data1 = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    var writData = await FirebaseFirestore.instance
         .collection('writings')
-        .where('author', isEqualTo: widget.data.data()['id'])
+        .where('author', isEqualTo: FirebaseAuth.instance.currentUser.uid)
         .orderBy('date', descending: true)
         .get();
+
     if (this.mounted) {
       setState(() {
-        writings = data.docs;
+        data = data1;
+        writings = writData.docs;
+        loading = false;
       });
     } else {
-      writings = data.docs;
+      data = data1;
+      writings = writData.docs;
+      loading = false;
     }
   }
 
   @override
   void initState() {
     prepare();
-    if (FirebaseAuth.instance.currentUser.uid == widget.data.data()['id']) {
-      if (this.mounted) {
-        setState(() {
-          isSame = true;
-        });
-      } else {
-        isSame = true;
-      }
-    }
 
     super.initState();
-    subscription = FirebaseFirestore.instance
-        .collection('users')
-        .doc(widget.data.data()['id'])
-        .snapshots()
-        .listen((docsnap) {
-      if (docsnap.data()['followers_num'] != null) {
-        if (this.mounted) {
-          setState(() {
-            fnum = docsnap.data()['followers_num'];
-            followingUser = docsnap.data()['following_num'];
-            if (fnum > 999999) {
-              double numb = fnum / 1000000;
-              fnum1 = numb.toStringAsFixed(1) + 'M';
-            } else if (fnum > 999) {
-              double numb = fnum / 1000;
-              fnum1 = numb.toStringAsFixed(1) + 'K';
-            } else {
-              fnum1 = fnum.toString();
-            }
-
-            if (followingUser > 999999) {
-              double numb = followingUser / 1000000;
-              fnum2 = numb.toStringAsFixed(1) + 'M';
-            } else if (followingUser > 999) {
-              double numb = followingUser / 1000;
-              fnum2 = numb.toStringAsFixed(1) + 'K';
-            } else {
-              fnum2 = followingUser.toString();
-            }
-          });
-        } else {
-          fnum = docsnap.data()['followers_num'];
-          followingUser = docsnap.data()['following_num'];
-          if (fnum > 999999) {
-            double numb = fnum / 1000000;
-            fnum1 = numb.toStringAsFixed(1) + 'M';
-          } else if (fnum > 999) {
-            double numb = fnum / 1000;
-            fnum1 = numb.toStringAsFixed(1) + 'K';
-          } else {
-            fnum1 = fnum.toString();
-          }
-
-          if (followingUser > 999999) {
-            double numb = followingUser / 1000000;
-            fnum2 = numb.toStringAsFixed(1) + 'M';
-          } else if (followingUser > 999) {
-            double numb = followingUser / 1000;
-            fnum2 = numb.toStringAsFixed(1) + 'K';
-          } else {
-            fnum2 = followingUser.toString();
-          }
-        }
-      }
-    });
-
-    follwSub = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .snapshots()
-        .listen((docsnap) {
-      if (docsnap.data()['following_num'] != null) {
-        if (this.mounted) {
-          setState(() {
-            following = docsnap.data()['following_num'];
-          });
-        } else {
-          following = docsnap.data()['following_num'];
-        }
-      }
-    });
   }
 
   @override
@@ -151,18 +77,55 @@ class _VPlaceScreenState extends State<VProfileScreen> {
         ? LoadingScreen()
         : Scaffold(
             appBar: AppBar(
-              backgroundColor: primaryColor,
-              title: Text(
-                'Пользователь',
-                textScaleFactor: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.montserrat(
-                  textStyle: TextStyle(
-                      color: whiteColor,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300),
+              elevation: 0,
+              primary: false,
+              excludeHeaderSemantics: true,
+              backgroundColor: whiteColor,
+              actions: [
+                IconButton(
+                  color: primaryColor,
+                  icon: Icon(
+                    CupertinoIcons.bookmark,
+                  ),
+                  onPressed: () {},
                 ),
-              ),
+                IconButton(
+                  color: primaryColor,
+                  icon: Icon(
+                    CupertinoIcons.chat_bubble_2_fill,
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  color: primaryColor,
+                  icon: Icon(CupertinoIcons.settings),
+                  onPressed: () {
+                    setState(() {
+                      loading = true;
+                    });
+                    Navigator.push(
+                        context,
+                        SlideRightRoute(
+                          page: SettingsScreen(),
+                        ));
+                    setState(() {
+                      loading = false;
+                    });
+                  },
+                ),
+                SizedBox(width: 10),
+              ],
+              // title: Text(
+              //   'Пользователь',
+              //   textScaleFactor: 1,
+              //   overflow: TextOverflow.ellipsis,
+              //   style: GoogleFonts.montserrat(
+              //     textStyle: TextStyle(
+              //         color: whiteColor,
+              //         fontSize: 20,
+              //         fontWeight: FontWeight.w300),
+              //   ),
+              // ),
             ),
             body: SingleChildScrollView(
               child: Column(
@@ -173,11 +136,11 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                     height: size.width * 0.4,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(25.0),
-                      child: widget.data.data()['photo'] != null
+                      child: FirebaseAuth.instance.currentUser.photoURL != null
                           ? FadeInImage.assetNetwork(
                               fit: BoxFit.cover,
                               placeholder: 'assets/images/User.png',
-                              image: widget.data.data()['photo'],
+                              image: FirebaseAuth.instance.currentUser.photoURL,
                             )
                           : Image.asset(
                               'assets/images/User.png',
@@ -188,7 +151,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                   SizedBox(height: 50),
                   Center(
                     child: Text(
-                      widget.data.data()['name'],
+                      data.data()['name'],
                       textScaleFactor: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.montserrat(
@@ -199,118 +162,6 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                       ),
                     ),
                   ),
-                  !isSame ? SizedBox(height: 20) : Container(),
-                  !isSame
-                      ? FollowButton(
-                          isC: false,
-                          reverse: FirebaseFirestore.instance
-                              .collection('users')
-                              .doc(FirebaseAuth.instance.currentUser.uid),
-                          containsValue: widget.data.data()['id'],
-                          color1: footyColor,
-                          color2: primaryColor,
-                          ph: 45,
-                          pw: 145,
-                          onTap: () {
-                            setState(() {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(widget.data.data()['id'])
-                                  .update({
-                                'followers': FieldValue.arrayUnion(
-                                    [FirebaseAuth.instance.currentUser.uid]),
-                                'followers_num': fnum + 1,
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to update followings',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                              });
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser.uid)
-                                  .update({
-                                'following': FieldValue.arrayUnion(
-                                    [widget.data.data()['id']]),
-                                'following_num': following + 1,
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to update followers',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                                if (this.mounted) {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                } else {
-                                  loading = false;
-                                }
-                              });
-                            });
-                          },
-                          onTap2: () {
-                            setState(() {
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(widget.data.data()['id'])
-                                  .update({
-                                'followers': FieldValue.arrayRemove(
-                                    [FirebaseAuth.instance.currentUser.uid]),
-                                'followers_num': fnum - 1,
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to update followings',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                              });
-                              FirebaseFirestore.instance
-                                  .collection('users')
-                                  .doc(FirebaseAuth.instance.currentUser.uid)
-                                  .update({
-                                'following': FieldValue.arrayRemove(
-                                    [widget.data.data()['id']]),
-                                'following_num': following - 1,
-                              }).catchError((error) {
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Fail',
-                                  body: 'Failed to update followings',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: Colors.red,
-                                );
-                                if (this.mounted) {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                } else {
-                                  loading = false;
-                                }
-                              });
-                            });
-                          },
-                        )
-                      : Container(),
                   SizedBox(height: 10),
                   Container(
                       height: 130,
@@ -322,7 +173,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                           Column(
                             children: [
                               Text(
-                                fnum1,
+                                getFnum(data.data()['followers_num']),
                                 textScaleFactor: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
@@ -351,7 +202,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                           Column(
                             children: [
                               Text(
-                                fnum2,
+                                getFnum(data.data()['following_num']),
                                 textScaleFactor: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
@@ -388,7 +239,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                         textStyle: TextStyle(
                             color: primaryColor,
                             fontSize: 25,
-                            fontWeight: FontWeight.w400),
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -413,7 +264,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                   SlideRightRoute(
                                     page: ReadingScreen(
                                       data: writings[index],
-                                      author: widget.data.data()['name'],
+                                      author: data.data()['name'],
                                     ),
                                   ));
                               setState(() {
