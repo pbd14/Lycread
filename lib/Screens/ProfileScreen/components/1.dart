@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/ProfileScreen/components/favourites_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/components/settings.dart';
+import 'package:lycread/Screens/ProfileScreen/components/view_users_screen.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/constants.dart';
@@ -82,13 +84,29 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
               excludeHeaderSemantics: true,
               backgroundColor: whiteColor,
               actions: [
-                IconButton(
-                  color: primaryColor,
-                  icon: Icon(
-                    CupertinoIcons.bookmark,
-                  ),
-                  onPressed: () {},
-                ),
+                data.data()['favourites'].length != 0
+                    ? IconButton(
+                        color: primaryColor,
+                        icon: Icon(
+                          CupertinoIcons.bookmark,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            loading = true;
+                          });
+                          Navigator.push(
+                              context,
+                              SlideRightRoute(
+                                page: FavouritesScreen(
+                                  data: data.data()['favourites'],
+                                ),
+                              ));
+                          setState(() {
+                            loading = false;
+                          });
+                        },
+                      )
+                    : Container(),
                 IconButton(
                   color: primaryColor,
                   icon: Icon(
@@ -170,63 +188,105 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                         shrinkWrap: true,
                         crossAxisCount: 2,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                getFnum(data.data()['followers_num']),
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
+                          FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              if (data.data()['followers_num'] != 0) {
+                                Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: ViewUsersScreen(
+                                      data: data.data()['followers'],
+                                      text: 'Подписчики',
+                                    ),
+                                  ),
+                                );
+                              }
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  getFnum(data.data()['followers_num']),
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Подписчиков',
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w200),
+                                SizedBox(
+                                  height: 5,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  'Подписчиков',
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                getFnum(data.data()['following_num']),
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
+                          FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              if (data.data()['following_num'] != 0) {
+                                Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: ViewUsersScreen(
+                                      data: data.data()['following'],
+                                      text: 'Подписки',
+                                    ),
+                                  ),
+                                );
+                              }
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  getFnum(data.data()['following_num']),
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Подписок',
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w200),
+                                SizedBox(
+                                  height: 5,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  'Подписок',
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )),

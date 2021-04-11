@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/ProfileScreen/components/view_users_screen.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/follow_button.dart';
@@ -151,6 +152,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
         ? LoadingScreen()
         : Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               backgroundColor: primaryColor,
               title: Text(
                 'Пользователь',
@@ -319,63 +321,105 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                         shrinkWrap: true,
                         crossAxisCount: 2,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                fnum1,
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
+                          FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              if (widget.data.data()['followers_num'] != 0) {
+                                Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: ViewUsersScreen(
+                                      data: widget.data.data()['followers'],
+                                      text: 'Подписчики',
+                                    ),
+                                  ),
+                                );
+                              }
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  fnum1,
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Подписчиков',
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w200),
+                                SizedBox(
+                                  height: 5,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  'Подписчиков',
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          Column(
-                            children: [
-                              Text(
-                                fnum2,
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
+                          FlatButton(
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              if (widget.data.data()['following_num'] != 0) {
+                                Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: ViewUsersScreen(
+                                      data: widget.data.data()['following'],
+                                      text: 'Подписки',
+                                    ),
+                                  ),
+                                );
+                              }
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  fnum2,
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Подписок',
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w200),
+                                SizedBox(
+                                  height: 5,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  'Подписок',
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w200),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )),

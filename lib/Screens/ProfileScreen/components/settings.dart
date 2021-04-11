@@ -48,6 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         i1 = File(picker.path);
         noPhoto = false;
       } else {
+        path = 'assets/images/User.png';
         i1 = File('assets/images/User.png');
       }
     });

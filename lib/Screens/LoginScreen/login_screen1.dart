@@ -44,6 +44,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
         path = picker.path;
         i1 = File(picker.path);
       } else {
+        path = 'assets/images/User.png';
         i1 = File('assets/images/User.png');
       }
     });

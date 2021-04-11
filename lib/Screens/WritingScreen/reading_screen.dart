@@ -103,6 +103,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         ? LoadingScreen()
         : Scaffold(
             appBar: AppBar(
+              centerTitle: true,
               iconTheme: IconThemeData(color: firstColor),
               backgroundColor: secondColor,
               title: Text(
