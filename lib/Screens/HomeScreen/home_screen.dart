@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int notifCounter = 0;
 
   // ignore: cancel_subscriptions
-  StreamSubscription<QuerySnapshot> subscription;
+  StreamSubscription<DocumentSnapshot> subscription;
   List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
     SearchScreen(),
@@ -65,49 +65,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // subscription = FirebaseFirestore.instance
-    //     .collection('bookings')
-    //     .where(
-    //       'status',
-    //       isEqualTo: 'in process',
-    //     )
-    //     .where(
-    //       'userId',
-    //       isEqualTo: FirebaseAuth.instance.currentUser.uid.toString(),
-    //     )
-    //     .where('seen_status', whereIn: ['unseen'])
-    //     .snapshots()
-    //     .listen((docsnap) {
-    //       if (docsnap != null) {
-    //         if (docsnap.docs.length != 0) {
-    //           setState(() {
-    //             isNotif = true;
-    //             notifCounter = docsnap.docs.length;
-    //           });
-    //         } else {
-    //           setState(() {
-    //             isNotif = false;
-    //             notifCounter = 0;
-    //           });
-    //         }
-    //       } else {
-    //         setState(() {
-    //           isNotif = false;
-    //           notifCounter = 0;
-    //         });
-    //       }
-    //       // if (docsnap.data()['favourites'].contains(widget.containsValue)) {
-    //       //   setState(() {
-    //       //     isColored = true;
-    //       //     isOne = false;
-    //       //   });
-    //       // } else if (!docsnap.data()['favourites'].contains(widget.containsValue)) {
-    //       //   setState(() {
-    //       //     isColored = false;
-    //       //     isOne = true;
-    //       //   });
-    //       // }
-    //     });
+    subscription = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .snapshots()
+        .listen((docsnap) {
+      if (docsnap.data()['actions'] != null) {
+        if (docsnap.data()['actions'].length != 0) {
+          List acts = [];
+          for (var act in docsnap.data()['actions']) {
+            if (!act['seen']) {
+              acts.add(act);
+            }
+          }
+          if (acts.length != 0) {
+            setState(() {
+              isNotif = true;
+              notifCounter = acts.length;
+            });
+          } else {
+            setState(() {
+              isNotif = false;
+              notifCounter = 0;
+            });
+          }
+        } else {
+          setState(() {
+            isNotif = false;
+            notifCounter = 0;
+          });
+        }
+      } else {
+        setState(() {
+          isNotif = false;
+          notifCounter = 0;
+        });
+      }
+    });
     prepare();
     super.initState();
   }
@@ -149,14 +143,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: isNotif
                           ? new Stack(
                               children: <Widget>[
-                                new Icon(Icons.access_alarm),
+                                new Icon(CupertinoIcons.person_fill),
                                 new Positioned(
                                   right: 0,
                                   child: new Container(
                                     padding: EdgeInsets.all(1),
                                     decoration: new BoxDecoration(
                                       color: Colors.red,
-                                      borderRadius: BorderRadius.circular(6),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     constraints: BoxConstraints(
                                       minWidth: 15,
@@ -166,7 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       notifCounter.toString(),
                                       style: new TextStyle(
                                         color: Colors.white,
-                                        fontSize: 8,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
@@ -174,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                               ],
                             )
-                          : Icon(Icons.person),
+                          : Icon(CupertinoIcons.person_fill),
                       label: 'Профиль',
                     ),
                   ],

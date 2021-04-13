@@ -140,9 +140,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 style: TextStyle(
                                   color: primaryColor,
                                 ),
-                                validator: (val) => val.length > 1
-                                    ? null
-                                    : 'Минимум 2 символов',
                                 keyboardType: TextInputType.multiline,
                                 onChanged: (value) {
                                   bio = value;

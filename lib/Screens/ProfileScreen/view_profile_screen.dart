@@ -214,6 +214,8 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                           ph: 45,
                           pw: 145,
                           onTap: () {
+                            String nText =
+                                FirebaseAuth.instance.currentUser.displayName;
                             setState(() {
                               FirebaseFirestore.instance
                                   .collection('users')
@@ -222,6 +224,16 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                 'followers': FieldValue.arrayUnion(
                                     [FirebaseAuth.instance.currentUser.uid]),
                                 'followers_num': fnum + 1,
+                                'actions': FieldValue.arrayUnion([
+                                  {
+                                    'author':
+                                        FirebaseAuth.instance.currentUser.uid,
+                                    'seen': false,
+                                    'text':
+                                        'Пользователь $nText стал вашим читателем',
+                                    'type': 'New follower',
+                                  }
+                                ]),
                               }).catchError((error) {
                                 PushNotificationMessage notification =
                                     PushNotificationMessage(

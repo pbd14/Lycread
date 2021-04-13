@@ -535,6 +535,24 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                         background: Colors.red,
                                       );
                                     });
+                                    String nText = FirebaseAuth
+                                        .instance.currentUser.displayName;
+                                    String nText1 = widget.data.data()['name'];
+                                    await FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(widget.data.data()['author'])
+                                        .update({
+                                      'actions': FieldValue.arrayUnion([
+                                        {
+                                          'author': FirebaseAuth
+                                              .instance.currentUser.uid,
+                                          'seen': false,
+                                          'text':
+                                              'Пользователь $nText прокомментировал ваше искусство $nText1',
+                                          'type': 'New comment'
+                                        }
+                                      ]),
+                                    });
                                     PushNotificationMessage notification =
                                         PushNotificationMessage(
                                       title: 'Успех',

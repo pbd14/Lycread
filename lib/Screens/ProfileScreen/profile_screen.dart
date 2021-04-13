@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lycread/Screens/ProfileScreen/components/activity_screen.dart';
 import 'package:lycread/Screens/SearchScreen/components/2.dart';
 import 'package:lycread/Services/auth_service.dart';
 import 'package:lycread/widgets/rounded_button.dart';
@@ -19,10 +20,11 @@ class ProfileScreen extends StatefulWidget {
 class _PlaceScreenState extends State<ProfileScreen> {
   String name;
   Size size;
-  bool loading = false;
+  bool loading = true;
+  DocumentSnapshot user;
   List<Widget> tbvList = [
     VProfileScreen1(),
-    SecondScreen(),
+    ActivityScreen(),
   ];
   List<Widget> tabs = [
     Tab(
@@ -47,7 +49,136 @@ class _PlaceScreenState extends State<ProfileScreen> {
     ),
   ];
 
-  Future<void> prepare() async {}
+  Future<void> prepare() async {
+    user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    List acts = [];
+    for (var act in user.data()['actions']) {
+      if (!act['seen']) {
+        acts.add(act);
+      }
+    }
+
+    if (this.mounted) {
+      setState(() {
+        if (acts.length != 0) {
+          tabs = [
+            Tab(
+              child: Text(
+                'Профиль',
+                textScaleFactor: 1,
+                style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+              ),
+            ),
+            Tab(
+              child: Stack(
+                children: <Widget>[
+                  Text(
+                    'Активность',
+                    textScaleFactor: 1,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      constraints: BoxConstraints(
+                        minWidth: 15,
+                        minHeight: 15,
+                      ),
+                      child: Text(
+                        acts.length.toString(),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ];
+        }
+        loading = false;
+      });
+    } else {
+      if (acts.length != 0) {
+        tabs = [
+          Tab(
+            child: Text(
+              'Профиль',
+              textScaleFactor: 1,
+              style: GoogleFonts.montserrat(
+                textStyle: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
+            ),
+          ),
+          Tab(
+            child: Stack(
+              children: <Widget>[
+                Text(
+                  'Активность',
+                  textScaleFactor: 1,
+                  style: GoogleFonts.montserrat(
+                    textStyle: TextStyle(
+                        color: whiteColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                  ),
+                ),
+                Positioned(
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 15,
+                      minHeight: 15,
+                    ),
+                    child: Text(
+                      acts.length.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ];
+      }
+      loading = false;
+    }
+  }
 
   @override
   void initState() {
@@ -90,36 +221,5 @@ class _PlaceScreenState extends State<ProfileScreen> {
               ),
             ),
           );
-    // Scaffold(
-    // body: Column(
-    //   children: [
-    //     SizedBox(height: 200),
-    //     Center(
-    //       child: Text(
-    //         'Profile Screen',
-    //         overflow: TextOverflow.ellipsis,
-    //         maxLines: 2,
-    //         style: GoogleFonts.montserrat(
-    //           textStyle: TextStyle(
-    //             color: darkPrimaryColor,
-    //             fontSize: 35,
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //     SizedBox(height: 20),
-    //     RoundedButton(
-    //       width: 0.5,
-    //       height: 0.07,
-    //       text: 'Sign out',
-    //       press: () {
-    //         AuthService().signOut(context);
-    //       },
-    //       color: darkPrimaryColor,
-    //       textColor: whiteColor,
-    //     ),
-    //   ],
-    // ),
-    // );
   }
 }
