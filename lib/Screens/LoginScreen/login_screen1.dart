@@ -28,6 +28,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
 
   String error = '';
   String name;
+  String bio;
   bool loading = false;
   File i1;
   TaskSnapshot a1;
@@ -69,7 +70,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                     SizedBox(height: size.height * 0.5 - 225),
                     CardW(
                       shadow: whiteColor,
-                      ph: 650,
+                      ph: 850,
                       width: 0.7,
                       child: Form(
                         key: _formKey,
@@ -104,6 +105,29 @@ class _LoginScreen1State extends State<LoginScreen1> {
                               onChanged: (value) {
                                 this.name = value;
                               },
+                            ),
+                            SizedBox(height: 20),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                                  size.width * 0.05, 0, size.width * 0.05, 0),
+                              child: TextFormField(
+                                maxLength: 200,
+                                maxLines: null,
+                                style: TextStyle(
+                                  color: primaryColor,
+                                ),
+                                validator: (val) => val.length > 1
+                                    ? null
+                                    : 'Минимум 2 символов',
+                                keyboardType: TextInputType.multiline,
+                                onChanged: (value) {
+                                  bio = value;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Bio',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                             ),
                             SizedBox(height: 30),
                             Text(
@@ -182,6 +206,8 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                     'followers_num': 0,
                                     'following_num': 0,
                                     'photo': await a1.ref.getDownloadURL(),
+                                    'bio': bio,
+                                    'actions': [],
                                     'id': FirebaseAuth.instance.currentUser.uid,
                                   }).catchError((error) {
                                     PushNotificationMessage notification =

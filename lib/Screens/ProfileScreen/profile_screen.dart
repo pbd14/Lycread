@@ -37,7 +37,7 @@ class _PlaceScreenState extends State<ProfileScreen> {
     ),
     Tab(
       child: Text(
-        'Избранное',
+        'Активность',
         textScaleFactor: 1,
         style: GoogleFonts.montserrat(
           textStyle: TextStyle(

@@ -180,7 +180,23 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 25),
+                  Center(
+                    child: Text(
+                      data.data()['bio'] != null
+                          ? data.data()['bio']
+                          : 'No Bio',
+                      maxLines: 1000,
+                      textScaleFactor: 1,
+                      style: GoogleFonts.montserrat(
+                        textStyle: TextStyle(
+                            color: darkPrimaryColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
                   Container(
                       height: 130,
                       child: GridView.count(

@@ -30,10 +30,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   String error = '';
   String name;
-  bool loading = false;
+  String bio;
+  bool loading = true;
   bool noPhoto = true;
   File i1;
   TaskSnapshot a1;
+  DocumentSnapshot data;
   String path;
 
   Future _getImage() async {
@@ -52,6 +54,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
         i1 = File('assets/images/User.png');
       }
     });
+  }
+
+  Future<void> prepare() async {
+    data = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    if (this.mounted) {
+      setState(() {
+        loading = false;
+      });
+    } else {
+      loading = false;
+    }
+  }
+
+  void initState() {
+    prepare();
+    super.initState();
   }
 
   @override
@@ -73,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     SizedBox(height: size.height * 0.5 - 225),
                     CardW(
                       shadow: whiteColor,
-                      ph: 650,
+                      ph: 850,
                       width: 0.7,
                       child: Form(
                         key: _formKey,
@@ -107,6 +128,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               onChanged: (value) {
                                 this.name = value;
                               },
+                            ),
+                            SizedBox(height: 15),
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                                  size.width * 0.05, 0, size.width * 0.05, 0),
+                              child: TextFormField(
+                                initialValue: data.data()['bio'],
+                                maxLength: 200,
+                                maxLines: null,
+                                style: TextStyle(
+                                  color: primaryColor,
+                                ),
+                                validator: (val) => val.length > 1
+                                    ? null
+                                    : 'Минимум 2 символов',
+                                keyboardType: TextInputType.multiline,
+                                onChanged: (value) {
+                                  bio = value;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: data.data()['bio'],
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
                             ),
                             SizedBox(height: 30),
                             Text(
@@ -206,6 +251,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           ? this.name
                                           : FirebaseAuth
                                               .instance.currentUser.displayName,
+                                      'bio': this.bio != null
+                                          ? this.bio
+                                          : data.data()['bio'],
                                       'photo': await a1.ref.getDownloadURL(),
                                     }).catchError((error) {
                                       PushNotificationMessage notification =
@@ -237,6 +285,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           ? this.name
                                           : FirebaseAuth
                                               .instance.currentUser.displayName,
+                                      'bio': this.bio != null
+                                          ? this.bio
+                                          : data.data()['bio'],
                                     }).catchError((error) {
                                       PushNotificationMessage notification =
                                           PushNotificationMessage(
