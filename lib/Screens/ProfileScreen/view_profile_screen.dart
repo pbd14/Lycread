@@ -232,6 +232,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                     'text':
                                         'Пользователь $nText стал вашим читателем',
                                     'type': 'New follower',
+                                    'date': DateTime.now(),
                                   }
                                 ]),
                               }).catchError((error) {

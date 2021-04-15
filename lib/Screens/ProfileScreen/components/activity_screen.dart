@@ -2,12 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
-import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/card.dart';
-import 'package:lycread/widgets/rounded_text_input.dart';
-import 'package:lycread/widgets/slide_right_route_animation.dart';
 
 import '../../../constants.dart';
 
@@ -19,6 +15,7 @@ class ActivityScreen extends StatefulWidget {
 class _ActivityScreenState extends State<ActivityScreen> {
   List results = [];
   List results1 = [];
+  List update = [];
   bool loading = true;
   String author = '';
   Map names = {};
@@ -76,6 +73,21 @@ class _ActivityScreenState extends State<ActivityScreen> {
         names1.addAll({res['author']: data.data()['photo']});
       }
     }
+
+    for (var i in qs.data()['actions']) {
+      if (i['seen']) {
+        update.add(i);
+      } else {
+        i['seen'] = true;
+        update.add(i);
+      }
+    }
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .update({
+      'actions': update,
+    });
   }
 
   @override
@@ -120,8 +132,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 textScaleFactor: 1,
                                 style: GoogleFonts.montserrat(
                                   textStyle: TextStyle(
-                                    color: lightPrimaryColor,
-                                    fontSize: 25,
+                                    color: primaryColor,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
@@ -166,7 +178,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    results[index]['type'],
+                                                    results[results.length -
+                                                        1 -
+                                                        index]['type'],
                                                     textScaleFactor: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -184,7 +198,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                     height: 5,
                                                   ),
                                                   Text(
-                                                    results[index]['text'],
+                                                    results[results.length -
+                                                        1 -
+                                                        index]['text'],
                                                     textScaleFactor: 1,
                                                     maxLines: 2,
                                                     overflow:
@@ -211,7 +227,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           25.0),
-                                                  child: names[results[index]
+                                                  child: names[results[results
+                                                                      .length -
+                                                                  1 -
+                                                                  index]
                                                               ['author']] !=
                                                           null
                                                       ? FadeInImage
@@ -219,9 +238,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                           fit: BoxFit.cover,
                                                           placeholder:
                                                               'assets/images/User.png',
-                                                          image: names[
-                                                              results[index]
-                                                                  ['author']],
+                                                          image: names[results[
+                                                                  results.length -
+                                                                      1 -
+                                                                      index]
+                                                              ['author']],
                                                         )
                                                       : Image.asset(
                                                           'assets/images/User.png',
@@ -243,136 +264,152 @@ class _ActivityScreenState extends State<ActivityScreen> {
                           ],
                         ),
                       )
-                    : Center(
-                        child: Text(
-                          'История',
-                          overflow: TextOverflow.ellipsis,
-                          textScaleFactor: 1,
-                          style: GoogleFonts.montserrat(
-                            textStyle: TextStyle(
-                              color: lightPrimaryColor,
-                              fontSize: 25,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                        ),
-                      ),
+                    : Container(),
                 Divider(),
-                // results1.length != 0
-                //     ? Expanded(
-                //         child: Column(
-                //           children: [
-                //             Center(
-                //               child: Text(
-                //                 'Старые события',
-                //                 overflow: TextOverflow.ellipsis,
-                //                 textScaleFactor: 1,
-                //                 style: GoogleFonts.montserrat(
-                //                   textStyle: TextStyle(
-                //                     color: primaryColor,
-                //                     fontSize: 25,
-                //                     fontWeight: FontWeight.w400,
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //             SizedBox(height: 20),
-                //             Expanded(
-                //               child: ListView.builder(
-                //                 padding: EdgeInsets.only(bottom: 10),
-                //                 itemCount: results1.length,
-                //                 itemBuilder:
-                //                     (BuildContext context, int index) =>
-                //                         FlatButton(
-                //                   onPressed: () {
-                //                     setState(() {
-                //                       loading = true;
-                //                     });
-                //                     // Navigator.push(
-                //                     //   context,
-                //                     //   SlideRightRoute(
-                //                     //     page: ServiceScreen(
-                //                     //       data: service,
-                //                     //       serviceId: widget.data['services']
-                //                     //           .indexOf(service),
-                //                     //       placeId: widget.data['id'],
-                //                     //     ),
-                //                     //   ),
-                //                     // );
-                //                     setState(() {
-                //                       loading = false;
-                //                     });
-                //                   },
-                //                   child: Card(
-                //                     color: darkPrimaryColor,
-                //                     child: ListTile(
-                //                       title: Text(
-                //                         results1[index]['type'],
-                //                         style: GoogleFonts.montserrat(
-                //                           textStyle: TextStyle(
-                //                             color: whiteColor,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       subtitle: Text(
-                //                         results1[index]['text'],
-                //                         style: GoogleFonts.montserrat(
-                //                           textStyle: TextStyle(
-                //                             color: whiteColor,
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       leading: Align(
-                //                         alignment: Alignment.centerRight,
-                //                         child: Container(
-                //                           width: 30,
-                //                           height: 30,
-                //                           child: ClipRRect(
-                //                             borderRadius:
-                //                                 BorderRadius.circular(25.0),
-                //                             child:
-                //                                 names[results1[index]['author']]
-                //                                             .data()['photo'] !=
-                //                                         null
-                //                                     ? FadeInImage.assetNetwork(
-                //                                         fit: BoxFit.cover,
-                //                                         placeholder:
-                //                                             'assets/images/User.png',
-                //                                         image: names[
-                //                                                 results1[index]
-                //                                                     ['author']]
-                //                                             .data()['photo'],
-                //                                       )
-                //                                     : Image.asset(
-                //                                         'assets/images/User.png',
-                //                                         fit: BoxFit.cover,
-                //                                       ),
-                //                           ),
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //             SizedBox(height: 5),
-                //           ],
-                //         ),
-                //       )
-                //     : Center(
-                //         child: Text(
-                //           'Нет действий',
-                //           overflow: TextOverflow.ellipsis,
-                //           textScaleFactor: 1,
-                //           style: GoogleFonts.montserrat(
-                //             textStyle: TextStyle(
-                //               color: lightPrimaryColor,
-                //               fontSize: 25,
-                //               fontWeight: FontWeight.w300,
-                //             ),
-                //           ),
-                //         ),
-                //       ),
+                results1.length != 0
+                    ? Expanded(
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Text(
+                                'Старые события',
+                                overflow: TextOverflow.ellipsis,
+                                textScaleFactor: 1,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                    color: primaryColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+                            Expanded(
+                              child: ListView.builder(
+                                padding: EdgeInsets.only(bottom: 10),
+                                itemCount: results1.length,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        FlatButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    // Navigator.push(
+                                    //   context,
+                                    //   SlideRightRoute(
+                                    //     page: ServiceScreen(
+                                    //       data: service,
+                                    //       serviceId: widget.data['services']
+                                    //           .indexOf(service),
+                                    //       placeId: widget.data['id'],
+                                    //     ),
+                                    //   ),
+                                    // );
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    child: CardW(
+                                      ph: 125,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 8,
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    results1[results1.length -
+                                                        1 -
+                                                        index]['type'],
+                                                    textScaleFactor: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle: TextStyle(
+                                                        color: primaryColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  Text(
+                                                    results1[results1.length -
+                                                        1 -
+                                                        index]['text'],
+                                                    textScaleFactor: 1,
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle: TextStyle(
+                                                        color: primaryColor,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Container(
+                                                width: 40,
+                                                height: 40,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          25.0),
+                                                  child: names[results1[results1
+                                                                      .length -
+                                                                  1 -
+                                                                  index]
+                                                              ['author']] !=
+                                                          null
+                                                      ? FadeInImage
+                                                          .assetNetwork(
+                                                          fit: BoxFit.cover,
+                                                          placeholder:
+                                                              'assets/images/User.png',
+                                                          image: names[results1[
+                                                                  results1.length -
+                                                                      1 -
+                                                                      index]
+                                                              ['author']],
+                                                        )
+                                                      : Image.asset(
+                                                          'assets/images/User.png',
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 15),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                          ],
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           );
