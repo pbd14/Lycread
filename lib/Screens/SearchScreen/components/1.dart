@@ -125,7 +125,7 @@ class _SearchScreen1State extends State<SearchScreen1> {
                               });
                             },
                             child: CardW(
-                              ph: 125,
+                              ph: 80,
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
@@ -141,13 +141,13 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                             style: GoogleFonts.montserrat(
                                               textStyle: TextStyle(
                                                 color: primaryColor,
-                                                fontSize: 25,
+                                                fontSize: 17,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                           ),
                                           SizedBox(
-                                            height: 10,
+                                            height: 5,
                                           ),
                                           Text(
                                             getFnum(results[index]
@@ -156,7 +156,7 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                             style: GoogleFonts.montserrat(
                                               textStyle: TextStyle(
                                                 color: primaryColor,
-                                                fontSize: 15,
+                                                fontSize: 12,
                                                 fontWeight: FontWeight.w300,
                                               ),
                                             ),
@@ -165,48 +165,48 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                       ),
                                     ),
                                     Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                            child: results[index]
-                                                        .data()['photo'] !=
-                                                    null
-                                                ? FadeInImage.assetNetwork(
-                                                    fit: BoxFit.cover,
-                                                    placeholder:
-                                                        'assets/images/User.png',
-                                                    image: results[index]
-                                                        .data()['photo'],
-                                                  )
-                                                : Image.asset(
-                                                    'assets/images/User.png',
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                          ),
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          child:
+                                              results[index].data()['photo'] !=
+                                                      null
+                                                  ? FadeInImage.assetNetwork(
+                                                      fit: BoxFit.cover,
+                                                      placeholder:
+                                                          'assets/images/User.png',
+                                                      image: results[index]
+                                                          .data()['photo'],
+                                                    )
+                                                  : Image.asset(
+                                                      'assets/images/User.png',
+                                                      fit: BoxFit.cover,
+                                                    ),
                                         ),
-                                        // Container(
-                                        //   height: 50,
-                                        //   width: 50,
-                                        //   decoration: ShapeDecoration(
-                                        //     shape: CircleBorder(
-                                        //       side: BorderSide(
-                                        //           width: 1, color: footyColor),
-                                        //     ),
-                                        //     image: DecorationImage(
-                                        //       image: AssetImage(results[index]
-                                        //                   .data()['photo'] !=
-                                        //               null
-                                        //           ? results[index].data()['photo']
-                                        //           : 'assets/images/User.png'),
-                                        //       fit: BoxFit.cover,
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        ),
+                                      ),
+                                      // Container(
+                                      //   height: 50,
+                                      //   width: 50,
+                                      //   decoration: ShapeDecoration(
+                                      //     shape: CircleBorder(
+                                      //       side: BorderSide(
+                                      //           width: 1, color: footyColor),
+                                      //     ),
+                                      //     image: DecorationImage(
+                                      //       image: AssetImage(results[index]
+                                      //                   .data()['photo'] !=
+                                      //               null
+                                      //           ? results[index].data()['photo']
+                                      //           : 'assets/images/User.png'),
+                                      //       fit: BoxFit.cover,
+                                      //     ),
+                                      //   ),
+                                      // ),
+                                    ),
                                     SizedBox(width: 15),
                                   ],
                                 ),

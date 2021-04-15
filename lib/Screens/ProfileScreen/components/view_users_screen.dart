@@ -117,7 +117,7 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                   });
                                 },
                                 child: CardW(
-                                  ph: 125,
+                                  ph: 80,
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Row(
@@ -133,13 +133,13 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: primaryColor,
-                                                    fontSize: 25,
+                                                    fontSize: 17,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: 10,
+                                                height: 5,
                                               ),
                                               Text(
                                                 getFnum(results[index]
@@ -148,7 +148,7 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                                 style: GoogleFonts.montserrat(
                                                   textStyle: TextStyle(
                                                     color: primaryColor,
-                                                    fontSize: 15,
+                                                    fontSize: 12,
                                                     fontWeight: FontWeight.w300,
                                                   ),
                                                 ),
@@ -159,8 +159,8 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                         Align(
                                           alignment: Alignment.centerRight,
                                           child: Container(
-                                            width: 50,
-                                            height: 50,
+                                            width: 30,
+                                            height: 30,
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(25.0),

@@ -201,6 +201,23 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 25),
+                  Center(
+                    child: Text(
+                      widget.data.data()['bio'] != null
+                          ? widget.data.data()['bio']
+                          : 'No Bio',
+                      maxLines: 1000,
+                      textScaleFactor: 1,
+                      style: GoogleFonts.montserrat(
+                        textStyle: TextStyle(
+                            color: darkPrimaryColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 25),
                   !isSame ? SizedBox(height: 20) : Container(),
                   !isSame
                       ? FollowButton(

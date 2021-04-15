@@ -127,12 +127,12 @@ class _SearchScreenGState extends State<SearchScreenG> {
                   child: loading1
                       ? LoadingScreen()
                       : ListView.builder(
-                          padding: EdgeInsets.only(bottom: 10),
                           itemCount: results.length,
                           itemBuilder: (BuildContext context, int index) =>
                               Container(
-                            padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
                             child: Card(
+                              margin: EdgeInsets.fromLTRB(10, 3, 10, 3),
                               elevation: 10,
                               child: FlatButton(
                                 onPressed: () {
@@ -154,16 +154,13 @@ class _SearchScreenGState extends State<SearchScreenG> {
                                 },
                                 child: Row(
                                   children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
                                     results[index].data()['images'] !=
                                             'No Image'
                                         ? Container(
-                                            width: size.width * 0.35,
+                                            width: size.width * 0.2,
                                             child: FadeInImage.assetNetwork(
-                                              height: 150,
-                                              width: 150,
+                                              height: 100,
+                                              width: 100,
                                               placeholder:
                                                   'assets/images/1.png',
                                               image: results[index]
@@ -171,11 +168,11 @@ class _SearchScreenGState extends State<SearchScreenG> {
                                             ),
                                           )
                                         : Container(
-                                            width: size.width * 0.35,
+                                            width: size.width * 0.2,
                                             child: Image.asset(
                                               'assets/images/1.png',
-                                              height: 150,
-                                              width: 150,
+                                              height: 100,
+                                              width: 100,
                                             ),
                                           ),
                                     Expanded(
@@ -197,14 +194,14 @@ class _SearchScreenGState extends State<SearchScreenG> {
                                                           .montserrat(
                                                         textStyle: TextStyle(
                                                           color: primaryColor,
-                                                          fontSize: 25,
+                                                          fontSize: 18,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      height: 10,
+                                                      height: 7,
                                                     ),
                                                     Text(
                                                       names[results[index]
@@ -221,14 +218,14 @@ class _SearchScreenGState extends State<SearchScreenG> {
                                                           .montserrat(
                                                         textStyle: TextStyle(
                                                           color: primaryColor,
-                                                          fontSize: 15,
+                                                          fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.w300,
                                                         ),
                                                       ),
                                                     ),
                                                     SizedBox(
-                                                      height: 10,
+                                                      height: 7,
                                                     ),
                                                     Text(
                                                       results[index]
@@ -240,7 +237,7 @@ class _SearchScreenGState extends State<SearchScreenG> {
                                                           .montserrat(
                                                         textStyle: TextStyle(
                                                           color: primaryColor,
-                                                          fontSize: 15,
+                                                          fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.w300,
                                                         ),

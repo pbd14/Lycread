@@ -16,7 +16,7 @@ class CardW extends StatelessWidget {
       this.ph,
       this.bgColor: whiteColor,
       this.shadow: darkPrimaryColor, 
-      this.hormargin : 20.0,})
+      this.hormargin : 15.0,})
       : super(key: key);
   @override
   Widget build(BuildContext context) {

@@ -139,7 +139,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             Expanded(
                               child: ListView.builder(
                                 padding: EdgeInsets.only(bottom: 10),
@@ -168,7 +168,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                   },
                                   child: Container(
                                     child: CardW(
-                                      ph: 125,
+                                      ph: 105,
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Row(
@@ -188,7 +188,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                         GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                         color: primaryColor,
-                                                        fontSize: 20,
+                                                        fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -209,7 +209,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                         GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                         color: primaryColor,
-                                                        fontSize: 15,
+                                                        fontSize: 13,
                                                         fontWeight:
                                                             FontWeight.w300,
                                                       ),
@@ -260,11 +260,11 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 5),
                           ],
                         ),
                       )
                     : Container(),
+                
                 Divider(),
                 results1.length != 0
                     ? Expanded(
@@ -284,7 +284,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 10),
                             Expanded(
                               child: ListView.builder(
                                 padding: EdgeInsets.only(bottom: 10),
@@ -313,7 +313,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                   },
                                   child: Container(
                                     child: CardW(
-                                      ph: 125,
+                                      ph: 105,
                                       child: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Row(
@@ -333,7 +333,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                         GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                         color: primaryColor,
-                                                        fontSize: 20,
+                                                        fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -354,7 +354,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                         GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                         color: primaryColor,
-                                                        fontSize: 15,
+                                                        fontSize: 13,
                                                         fontWeight:
                                                             FontWeight.w300,
                                                       ),
