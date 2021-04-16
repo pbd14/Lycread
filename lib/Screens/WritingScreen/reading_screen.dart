@@ -38,6 +38,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   String commentText = '';
   StreamSubscription<DocumentSnapshot> subscription;
   List comments = [];
+  Map photos = {};
 
   String getFnum(int fnum) {
     String fnum1 = '';
@@ -120,6 +121,34 @@ class _ReadingScreenState extends State<ReadingScreen> {
     return date;
   }
 
+  Future<void> getPhotos() async {
+    for (var comment in comments) {
+      if (comment['author_id'] != null) {
+        DocumentSnapshot data = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(comment['author_id'])
+            .get();
+        if (this.mounted) {
+          setState(() {
+            photos.addAll({comment['author_id']: data.data()['photo']});
+          });
+        } else {
+          photos.addAll({comment['author_id']: data.data()['photo']});
+        }
+      } else {
+        if (this.mounted) {
+          setState(() {
+            photos.addAll({comment['author_id']: 'No Image'});
+          });
+        } else {
+          photos.addAll({comment['author_id']: 'No Image'});
+        }
+      }
+    }
+    print('HERE');
+    print(photos);
+  }
+
   @override
   void initState() {
     if (widget.data.data()['users_read'] != null) {
@@ -136,7 +165,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
         });
       }
     }
-    super.initState();
     subscription = FirebaseFirestore.instance
         .collection('writings')
         .doc(widget.data.id)
@@ -160,6 +188,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
               rates = docsnap.data()['rating'];
               ratStr = docsnap.data()['rating'].toString();
             }
+            getPhotos();
           });
         } else {
           docsnap.data()['comments'].length != 0
@@ -177,9 +206,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
             rates = docsnap.data()['rating'];
             ratStr = docsnap.data()['rating'].toString();
           }
+          getPhotos();
         }
       }
     });
+    super.initState();
   }
 
   @override
@@ -627,6 +658,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                           'text': commentText,
                                           'author': FirebaseAuth
                                               .instance.currentUser.displayName,
+                                          'author_id': FirebaseAuth
+                                              .instance.currentUser.uid,
                                         }
                                       ])
                                     }).catchError((error) {
@@ -698,88 +731,199 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     itemCount: comments.length,
                                     itemBuilder:
                                         (BuildContext context, int index) =>
-                                            Card(
-                                      shadowColor: secondColor,
-                                      color: firstColor,
-                                      elevation: 10,
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(12.0),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            comments[index]
-                                                                ['text'],
-                                                            textScaleFactor: 1,
-                                                            style: GoogleFonts
-                                                                .montserrat(
-                                                              textStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    secondColor,
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                            Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            comments[index]['author_id'] != null
+                                                ? photos[comments[index]
+                                                            ['author_id']] !=
+                                                        null
+                                                    ? photos[comments[index][
+                                                                'author_id']] !=
+                                                            'No Image'
+                                                        ? Container(
+                                                            width: 60,
+                                                            height: 60,
+                                                            child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            25.0),
+                                                                child: FadeInImage
+                                                                    .assetNetwork(
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  placeholder:
+                                                                      'assets/images/User.png',
+                                                                  image: photos[
+                                                                      comments[
+                                                                              index]
+                                                                          [
+                                                                          'author_id']],
+                                                                )),
+                                                          )
+                                                        : Container()
+                                                    : Container()
+                                                : Container(),
+                                            Expanded(
+                                              child: Container(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      12.0),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Column(
+                                                          children: [
+                                                            Text(
+                                                              comments[index]
+                                                                  ['text'],
+                                                              textScaleFactor:
+                                                                  1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: GoogleFonts
+                                                                  .montserrat(
+                                                                textStyle:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      primaryColor,
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            comments[index][
-                                                                        'author'] !=
-                                                                    null
-                                                                ? comments[
-                                                                        index]
-                                                                    ['author']
-                                                                : 'No author',
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textScaleFactor: 1,
-                                                            style: GoogleFonts
-                                                                .montserrat(
-                                                              textStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    secondColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w300,
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Text(
+                                                              comments[index][
+                                                                          'author'] !=
+                                                                      null
+                                                                  ? comments[
+                                                                          index]
+                                                                      ['author']
+                                                                  : 'No author',
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textScaleFactor:
+                                                                  1,
+                                                              style: GoogleFonts
+                                                                  .montserrat(
+                                                                textStyle:
+                                                                    TextStyle(
+                                                                  color:
+                                                                      primaryColor,
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          Divider(
-                                            thickness: 0.1,
-                                            color: secondColor,
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
+                                        Divider(
+                                          color: primaryColor,
+                                        ),
+                                      ],
                                     ),
+
+                                    //         Card(
+                                    //   shadowColor: secondColor,
+                                    //   color: firstColor,
+                                    //   elevation: 10,
+                                    //   child: Row(
+                                    //     children: [
+                                    //       SizedBox(
+                                    //         width: 10,
+                                    //       ),
+                                    //       Expanded(
+                                    //         child: Container(
+                                    //           child: Padding(
+                                    //             padding:
+                                    //                 const EdgeInsets.all(12.0),
+                                    //             child: Row(
+                                    //               children: [
+                                    //                 Expanded(
+                                    //                   child: Column(
+                                    //                     crossAxisAlignment:
+                                    //                         CrossAxisAlignment
+                                    //                             .start,
+                                    //                     children: [
+                                    //                       Text(
+                                    //                         comments[index]
+                                    //                             ['text'],
+                                    //                         textScaleFactor: 1,
+                                    //                         style: GoogleFonts
+                                    //                             .montserrat(
+                                    //                           textStyle:
+                                    //                               TextStyle(
+                                    //                             color:
+                                    //                                 secondColor,
+                                    //                             fontSize: 20,
+                                    //                             fontWeight:
+                                    //                                 FontWeight
+                                    //                                     .bold,
+                                    //                           ),
+                                    //                         ),
+                                    //                       ),
+                                    //                       SizedBox(
+                                    //                         height: 10,
+                                    //                       ),
+                                    //                       Text(
+                                    //                         comments[index][
+                                    //                                     'author'] !=
+                                    //                                 null
+                                    //                             ? comments[
+                                    //                                     index]
+                                    //                                 ['author']
+                                    //                             : 'No author',
+                                    //                         overflow:
+                                    //                             TextOverflow
+                                    //                                 .ellipsis,
+                                    //                         textScaleFactor: 1,
+                                    //                         style: GoogleFonts
+                                    //                             .montserrat(
+                                    //                           textStyle:
+                                    //                               TextStyle(
+                                    //                             color:
+                                    //                                 secondColor,
+                                    //                             fontSize: 15,
+                                    //                             fontWeight:
+                                    //                                 FontWeight
+                                    //                                     .w300,
+                                    //                           ),
+                                    //                         ),
+                                    //                       ),
+                                    //                     ],
+                                    //                   ),
+                                    //                 ),
+                                    //               ],
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //       Divider(
+                                    //         thickness: 0.1,
+                                    //         color: secondColor,
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                   ),
                                 )
                               : Center(
