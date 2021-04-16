@@ -24,6 +24,87 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
   String author = '';
   Map names = {};
 
+  String getFnum1(int fnum) {
+    String fnum1 = '';
+    if (fnum > 999999) {
+      double numb = fnum / 1000000;
+      fnum1 = numb.toStringAsFixed(1) + 'M';
+    } else if (fnum > 999) {
+      double numb = fnum / 1000;
+      fnum1 = numb.toStringAsFixed(1) + 'K';
+    } else {
+      fnum1 = fnum.toString();
+    }
+    return fnum1 + ' просмотров';
+  }
+
+  String getDate(int seconds) {
+    String date = '';
+    DateTime d = DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+    if (d.year == DateTime.now().year) {
+      if (d.month == DateTime.now().month) {
+        if (d.day == DateTime.now().day) {
+          date = 'сегодня';
+        } else {
+          int n = DateTime.now().day - d.day;
+          switch (n) {
+            case 1:
+              date = 'вчера';
+              break;
+            case 2:
+              date = 'позавчера';
+              break;
+            case 3:
+              date = n.toString() + ' дня назад';
+              break;
+            case 4:
+              date = n.toString() + ' дня назад';
+              break;
+            default:
+              date = n.toString() + ' дней назад';
+          }
+        }
+      } else {
+        int n = DateTime.now().month - d.month;
+        switch (n) {
+          case 1:
+            date = 'месяц назад';
+            break;
+          case 2:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 3:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 4:
+            date = n.toString() + ' месяца назад';
+            break;
+          default:
+            date = n.toString() + ' месяцев назад';
+        }
+      }
+    } else {
+      int n = DateTime.now().year - d.year;
+      switch (n) {
+        case 1:
+          date = 'год назад';
+          break;
+        case 2:
+          date = n.toString() + ' года назад';
+          break;
+        case 3:
+          date = n.toString() + ' года назад';
+          break;
+        case 4:
+          date = n.toString() + ' года назад';
+          break;
+        default:
+          date = n.toString() + ' лет назад';
+      }
+    }
+    return date;
+  }
+
   Future<void> prepare() async {
     QuerySnapshot qs = await FirebaseFirestore.instance
         .collection('writings')
@@ -126,30 +207,20 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                     },
                                     child: Row(
                                       children: [
-                                        SizedBox(
-                                          width: 10,
-                                        ),
                                         results[index].data()['images'] !=
                                                 'No Image'
                                             ? Container(
-                                                width: size.width * 0.35,
+                                                width: size.width * 0.2,
                                                 child: FadeInImage.assetNetwork(
-                                                  height: 150,
-                                                  width: 150,
+                                                  height: 100,
+                                                  width: 100,
                                                   placeholder:
                                                       'assets/images/1.png',
                                                   image: results[index]
                                                       .data()['images'][0],
                                                 ),
                                               )
-                                            : Container(
-                                                width: size.width * 0.35,
-                                                child: Image.asset(
-                                                  'assets/images/1.png',
-                                                  height: 150,
-                                                  width: 150,
-                                                ),
-                                              ),
+                                            : Container(),
                                         Expanded(
                                           child: Container(
                                             child: Padding(
@@ -212,8 +283,20 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                                           height: 10,
                                                         ),
                                                         Text(
-                                                          results[index]
-                                                              .data()['genre'],
+                                                          results[index].data()[
+                                                                      'reads'] !=
+                                                                  null
+                                                              ? results[index]
+                                                                          .data()[
+                                                                      'genre'] +
+                                                                  ' | ' +
+                                                                  getFnum1(results[
+                                                                              index]
+                                                                          .data()[
+                                                                      'reads'])
+                                                              : results[index]
+                                                                      .data()[
+                                                                  'genre'],
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                           textScaleFactor: 1,
@@ -238,8 +321,23 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                             ),
                                           ),
                                         ),
-                                        Divider(
-                                          color: darkPrimaryColor,
+                                        Align(
+                                          alignment: Alignment.bottomRight,
+                                          child: Text(
+                                            getDate(results[index]
+                                                .data()['date']
+                                                .seconds),
+                                            textScaleFactor: 1,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                color: primaryColor,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),

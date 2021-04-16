@@ -39,17 +39,103 @@ class _ReadingScreenState extends State<ReadingScreen> {
   StreamSubscription<DocumentSnapshot> subscription;
   List comments = [];
 
-  String getName(String id) {
-    String name;
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(id)
-        .get()
-        .then((value) => name = value.data()['name']);
+  String getFnum(int fnum) {
+    String fnum1 = '';
+    if (fnum > 999999) {
+      double numb = fnum / 1000000;
+      fnum1 = numb.toStringAsFixed(1) + 'M';
+    } else if (fnum > 999) {
+      double numb = fnum / 1000;
+      fnum1 = numb.toStringAsFixed(1) + 'K';
+    } else {
+      fnum1 = fnum.toString();
+    }
+    return fnum1 + ' просмотров';
+  }
+
+  String getDate(int seconds) {
+    String date = '';
+    DateTime d = DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+    if (d.year == DateTime.now().year) {
+      if (d.month == DateTime.now().month) {
+        if (d.day == DateTime.now().day) {
+          date = 'сегодня';
+        } else {
+          int n = DateTime.now().day - d.day;
+          switch (n) {
+            case 1:
+              date = 'вчера';
+              break;
+            case 2:
+              date = 'позавчера';
+              break;
+            case 3:
+              date = n.toString() + ' дня назад';
+              break;
+            case 4:
+              date = n.toString() + ' дня назад';
+              break;
+            default:
+              date = n.toString() + ' дней назад';
+          }
+        }
+      } else {
+        int n = DateTime.now().month - d.month;
+        switch (n) {
+          case 1:
+            date = 'месяц назад';
+            break;
+          case 2:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 3:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 4:
+            date = n.toString() + ' месяца назад';
+            break;
+          default:
+            date = n.toString() + ' месяцев назад';
+        }
+      }
+    } else {
+      int n = DateTime.now().year - d.year;
+      switch (n) {
+        case 1:
+          date = 'год назад';
+          break;
+        case 2:
+          date = n.toString() + ' года назад';
+          break;
+        case 3:
+          date = n.toString() + ' года назад';
+          break;
+        case 4:
+          date = n.toString() + ' года назад';
+          break;
+        default:
+          date = n.toString() + ' лет назад';
+      }
+    }
+    return date;
   }
 
   @override
   void initState() {
+    if (widget.data.data()['users_read'] != null) {
+      if (!widget.data
+          .data()['users_read']
+          .contains(FirebaseAuth.instance.currentUser.uid)) {
+        FirebaseFirestore.instance
+            .collection('writings')
+            .doc(widget.data.id)
+            .update({
+          'reads': widget.data.data()['reads'] + 1,
+          'users_read':
+              FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid]),
+        });
+      }
+    }
     super.initState();
     subscription = FirebaseFirestore.instance
         .collection('writings')
@@ -260,7 +346,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       'rating': rates + 1,
                                       'users_rated': FieldValue.arrayUnion([
                                         FirebaseAuth.instance.currentUser.uid
-                                      ])
+                                      ]),
                                     }).catchError((error) {
                                       PushNotificationMessage notification =
                                           PushNotificationMessage(
@@ -432,6 +518,27 @@ class _ReadingScreenState extends State<ReadingScreen> {
                         ],
                       ),
                     ]),
+                    SizedBox(height: 10),
+                    Center(
+                      child: Text(
+                        widget.data.data()['reads'] != null
+                            ? widget.data.data()['genre'] +
+                                ' | ' +
+                                getFnum(widget.data.data()['reads']) +
+                                ' | ' +
+                                getDate(widget.data.data()['date'].seconds)
+                            : widget.data.data()['genre'],
+                        overflow: TextOverflow.ellipsis,
+                        textScaleFactor: 1,
+                        style: GoogleFonts.montserrat(
+                          textStyle: TextStyle(
+                            color: primaryColor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 10),
                     Divider(
                       color: secondColor,
