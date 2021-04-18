@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/components/view_users_screen.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
-import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/follow_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -15,6 +14,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
+// ignore: must_be_immutable
 class VProfileScreen extends StatefulWidget {
   dynamic data;
   String id;
@@ -37,6 +37,13 @@ class _VPlaceScreenState extends State<VProfileScreen> {
 
   StreamSubscription<DocumentSnapshot> subscription;
   StreamSubscription<DocumentSnapshot> follwSub;
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    follwSub.cancel();
+    super.dispose();
+  }
 
   String getFnum(int fnum) {
     String fnum1 = '';

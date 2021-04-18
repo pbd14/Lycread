@@ -100,7 +100,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : Scaffold(
@@ -390,13 +389,16 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           25.0),
-                                                  child: names[results1[results1
+                                                  child: names1[results1[results1
                                                                       .length -
                                                                   1 -
                                                                   index]
                                                               ['author']] !=
                                                           null
                                                       ? CachedNetworkImage(
+                                                          filterQuality:
+                                                              FilterQuality
+                                                                  .none,
                                                           fit: BoxFit.cover,
                                                           placeholder: (context,
                                                                   url) =>
@@ -412,7 +414,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                           errorWidget: (context,
                                                                   url, error) =>
                                                               Icon(Icons.error),
-                                                          imageUrl: names[
+                                                          imageUrl: names1[
                                                               results1[results1
                                                                           .length -
                                                                       1 -

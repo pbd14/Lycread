@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
-import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/card.dart';
-import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import '../../../constants.dart';
 
@@ -71,7 +69,6 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : Scaffold(

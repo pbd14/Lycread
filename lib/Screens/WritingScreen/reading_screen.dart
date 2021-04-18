@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +9,6 @@ import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/widgets/label_button.dart';
 import 'package:lycread/widgets/rounded_button.dart';
-import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/up_button.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -40,6 +38,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
   StreamSubscription<DocumentSnapshot> subscription;
   List comments = [];
   Map photos = {};
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   String getFnum(int fnum) {
     String fnum1 = '';
@@ -216,7 +220,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : Scaffold(
@@ -268,7 +271,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             color: secondColor,
                             icon: Icon(Icons.bedtime),
                             onPressed: () {
+                              // ignore: non_constant_identifier_names
                               Color _1 = secondColor;
+                              // ignore: non_constant_identifier_names
                               Color _2 = firstColor;
                               setState(() {
                                 firstColor = _1;

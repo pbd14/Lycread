@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/ProfileScreen/components/activity_screen.dart';
-import 'package:lycread/Screens/SearchScreen/components/2.dart';
 import 'package:lycread/Services/auth_service.dart';
-import 'package:lycread/widgets/rounded_button.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 import 'components/1.dart';

@@ -5,17 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/components/favourites_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/components/settings.dart';
 import 'package:lycread/Screens/ProfileScreen/components/view_users_screen.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/constants.dart';
-import 'package:lycread/widgets/card.dart';
-import 'package:lycread/widgets/follow_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
-import 'package:overlay_support/overlay_support.dart';
 
 class VProfileScreen1 extends StatefulWidget {
   @override
