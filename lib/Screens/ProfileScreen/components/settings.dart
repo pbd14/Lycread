@@ -309,11 +309,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     position: NotificationPosition.top,
                                     background: footyColor,
                                   );
-                                  Navigator.push(
-                                      context,
-                                      SlideRightRoute(
-                                        page: ProfileScreen(),
-                                      ));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     SlideRightRoute(
+                                  //       page: HomeScreen(),
+                                  //     ));
+                                  Navigator.pop(context);
                                   setState(() {
                                     loading = false;
                                     this.name = '';
