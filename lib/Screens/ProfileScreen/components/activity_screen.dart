@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -234,16 +235,29 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                                   index]
                                                               ['author']] !=
                                                           null
-                                                      ? FadeInImage
-                                                          .assetNetwork(
+                                                      ? CachedNetworkImage(
                                                           fit: BoxFit.cover,
-                                                          placeholder:
-                                                              'assets/images/User.png',
-                                                          image: names[results[
-                                                                  results.length -
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Transform.scale(
+                                                            scale: 0.8,
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              strokeWidth: 2.0,
+                                                              backgroundColor:
+                                                                  footyColor,
+                                                              valueColor:
+                                                                  AlwaysStoppedAnimation<
+                                                                          Color>(
+                                                                      primaryColor),
+                                                            ),
+                                                          ),
+                                                          imageUrl: names[
+                                                              results[results
+                                                                          .length -
                                                                       1 -
                                                                       index]
-                                                              ['author']],
+                                                                  ['author']],
                                                         )
                                                       : Image.asset(
                                                           'assets/images/User.png',
@@ -379,16 +393,28 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                                   index]
                                                               ['author']] !=
                                                           null
-                                                      ? FadeInImage
-                                                          .assetNetwork(
+                                                      ? CachedNetworkImage(
                                                           fit: BoxFit.cover,
-                                                          placeholder:
-                                                              'assets/images/User.png',
-                                                          image: names[results1[
-                                                                  results1.length -
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2.0,
+                                                            backgroundColor:
+                                                                footyColor,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor),
+                                                          ),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Icon(Icons.error),
+                                                          imageUrl: names[
+                                                              results1[results1
+                                                                          .length -
                                                                       1 -
                                                                       index]
-                                                              ['author']],
+                                                                  ['author']],
                                                         )
                                                       : Image.asset(
                                                           'assets/images/User.png',

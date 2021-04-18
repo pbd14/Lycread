@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -169,11 +170,30 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                               child: results[index]
                                                           .data()['photo'] !=
                                                       null
-                                                  ? FadeInImage.assetNetwork(
+                                                  ? CachedNetworkImage(
                                                       fit: BoxFit.cover,
                                                       placeholder:
-                                                          'assets/images/User.png',
-                                                      image: results[index]
+                                                          (context, url) =>
+                                                              Transform.scale(
+                                                        scale: 0.8,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          strokeWidth: 2.0,
+                                                          backgroundColor:
+                                                              footyColor,
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation<
+                                                                      Color>(
+                                                                  primaryColor),
+                                                        ),
+                                                      ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Icon(
+                                                        Icons.error,
+                                                        color: footyColor,
+                                                      ),
+                                                      imageUrl: results[index]
                                                           .data()['photo'],
                                                     )
                                                   : Image.asset(

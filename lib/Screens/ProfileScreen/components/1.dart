@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +22,10 @@ class VProfileScreen1 extends StatefulWidget {
   _VPlaceScreen1State createState() => _VPlaceScreen1State();
 }
 
-class _VPlaceScreen1State extends State<VProfileScreen1> {
+class _VPlaceScreen1State extends State<VProfileScreen1>
+    with AutomaticKeepAliveClientMixin<VProfileScreen1> {
+  @override
+  bool get wantKeepAlive => true;
   String name;
   bool loading = true;
   DocumentSnapshot data;
@@ -236,10 +240,23 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(25.0),
                       child: FirebaseAuth.instance.currentUser.photoURL != null
-                          ? FadeInImage.assetNetwork(
+                          ? CachedNetworkImage(
                               fit: BoxFit.cover,
-                              placeholder: 'assets/images/User.png',
-                              image: FirebaseAuth.instance.currentUser.photoURL,
+                              placeholder: (context, url) => Transform.scale(
+                                scale: 0.8,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  backgroundColor: footyColor,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      primaryColor),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.error,
+                                color: footyColor,
+                              ),
+                              imageUrl:
+                                  FirebaseAuth.instance.currentUser.photoURL,
                             )
                           : Image.asset(
                               'assets/images/User.png',
@@ -433,11 +450,22 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                                 writings[index].data()['images'] != 'No Image'
                                     ? Container(
                                         width: size.width * 0.2,
-                                        child: FadeInImage.assetNetwork(
+                                        height: size.width * 0.2,
+                                        child: CachedNetworkImage(
                                           height: 100,
                                           width: 100,
-                                          placeholder: 'assets/images/1.png',
-                                          image: writings[index]
+                                          placeholder: (context, url) =>
+                                              Transform.scale(
+                                            scale: 0.8,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.0,
+                                              backgroundColor: footyColor,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      primaryColor),
+                                            ),
+                                          ),
+                                          imageUrl: writings[index]
                                               .data()['images'][0],
                                         ),
                                       )
