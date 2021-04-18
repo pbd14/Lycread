@@ -250,7 +250,7 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                   SizedBox(height: 50),
                   Center(
                     child: Text(
-                      data.data()['name'],
+                      FirebaseAuth.instance.currentUser.displayName,
                       textScaleFactor: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.montserrat(

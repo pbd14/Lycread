@@ -15,7 +15,10 @@ class SecondScreen extends StatefulWidget {
   _SecondScreenState createState() => _SecondScreenState();
 }
 
-class _SecondScreenState extends State<SecondScreen> {
+class _SecondScreenState extends State<SecondScreen>
+    with AutomaticKeepAliveClientMixin<SecondScreen> {
+  @override
+  bool get wantKeepAlive => true;
   List results = [];
   bool loading = true;
   bool loading1 = false;

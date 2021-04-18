@@ -13,7 +13,10 @@ class SearchScreen1 extends StatefulWidget {
   _SearchScreen1State createState() => _SearchScreen1State();
 }
 
-class _SearchScreen1State extends State<SearchScreen1> {
+class _SearchScreen1State extends State<SearchScreen1>
+    with AutomaticKeepAliveClientMixin<SearchScreen1> {
+  @override
+  bool get wantKeepAlive => true;
   List results = [];
   bool loading = true;
   bool loading1 = false;
