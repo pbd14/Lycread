@@ -84,10 +84,10 @@ class _UpButtonState extends State<UpButton> {
     } else {
       labelColor = widget.color2;
     }
-    return FlatButton(
-      highlightColor: darkPrimaryColor,
-      height: widget.ph,
-      minWidth: widget.pw,
+    return TextButton(
+      // highlightColor: darkPrimaryColor,
+      // height: widget.ph,
+      // minWidth: widget.pw,
       onPressed: () {
         setState(() {
           isColored = !isColored;
@@ -100,10 +100,14 @@ class _UpButtonState extends State<UpButton> {
         isOne ? widget.onTap() : widget.onTap2();
         isOne = !isOne;
       },
-      child: Icon(
-        CupertinoIcons.heart_fill,
-        color: labelColor == null ? widget.color2 : labelColor,
-        size: widget.size,
+      child: Container(
+        height: widget.ph,
+        width: widget.pw,
+        child: Icon(
+          CupertinoIcons.heart_fill,
+          color: labelColor == null ? widget.color2 : labelColor,
+          size: widget.size,
+        ),
       ),
     );
   }

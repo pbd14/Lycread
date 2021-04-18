@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
@@ -100,7 +101,8 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                               padding: EdgeInsets.only(bottom: 10),
                               itemCount: results.length,
                               itemBuilder: (BuildContext context, int index) =>
-                                  FlatButton(
+                                  CupertinoButton(
+                                padding: EdgeInsets.zero,
                                 onPressed: () {
                                   setState(() {
                                     loading = true;

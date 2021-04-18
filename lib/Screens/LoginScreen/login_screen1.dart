@@ -35,7 +35,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
   String path;
 
   Future _getImage() async {
-    var picker = await ImagePicker.pickImage(
+    var picker = await ImagePicker.platform.pickImage(
       source: ImageSource.gallery,
       imageQuality: 0,
     );
@@ -174,7 +174,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                             SizedBox(height: 30),
                             RoundedButton(
                               width: 0.7,
-                              ph: 55,
+                              ph: 45,
                               text: 'CONTINUE',
                               press: () async {
                                 if (_formKey.currentState.validate()) {

@@ -16,7 +16,7 @@ class PushNotificationService {
 
   Future init() async {
     if (Platform.isIOS) {
-      _fcm.requestNotificationPermissions(IosNotificationSettings());
+      _fcm.requestPermission();
     }
 
     String token = await _fcm.getToken();
@@ -28,70 +28,70 @@ class PushNotificationService {
     }
 
     print("FirebaseMessaging token: $token");
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        // Navigator.of(context).push(SlideRightRoute(page: HistoryScreen()));
-        // if (Platform.isAndroid) {
-        PushNotificationMessage notification = PushNotificationMessage(
-          title: message['notification']['title'],
-          body: message['notification']['body'],
-        );
-        showSimpleNotification(
-          Container(child: Text(notification.body)),
-          position: NotificationPosition.top,
-          background: darkPrimaryColor,
-        );
-        // }
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        if (Platform.isAndroid || Platform.isIOS) {
-          PushNotificationMessage notification = PushNotificationMessage(
-            title: message['notification']['title'],
-            body: message['notification']['body'],
-          );
-          showSimpleNotification(
-            Container(child: Text(notification.body)),
-            position: NotificationPosition.top,
-            background: darkPrimaryColor,
-          );
-        }
-        if (Platform.isAndroid || Platform.isIOS) {
-          PushNotificationMessage notification = PushNotificationMessage(
-            title: message['notification']['title'],
-            body: message['notification']['body'],
-          );
-          showSimpleNotification(
-            Container(child: Text(notification.body)),
-            position: NotificationPosition.top,
-            background: darkPrimaryColor,
-          );
-        }
-      },
-      onResume: (Map<String, dynamic> message) async {
-        if (Platform.isAndroid || Platform.isIOS) {
-          PushNotificationMessage notification = PushNotificationMessage(
-            title: message['notification']['title'],
-            body: message['notification']['body'],
-          );
-          showSimpleNotification(
-            Container(child: Text(notification.body)),
-            position: NotificationPosition.top,
-            background: darkPrimaryColor,
-          );
-        }
-        if (Platform.isAndroid || Platform.isIOS) {
-          PushNotificationMessage notification = PushNotificationMessage(
-            title: message['notification']['title'],
-            body: message['notification']['body'],
-          );
-          showSimpleNotification(
-            Container(child: Text(notification.body)),
-            position: NotificationPosition.top,
-            background: darkPrimaryColor,
-          );
-        }
-      },
-    );
+    // _fcm.configure(
+    //   onMessage: (Map<String, dynamic> message) async {
+    //     // Navigator.of(context).push(SlideRightRoute(page: HistoryScreen()));
+    //     // if (Platform.isAndroid) {
+    //     PushNotificationMessage notification = PushNotificationMessage(
+    //       title: message['notification']['title'],
+    //       body: message['notification']['body'],
+    //     );
+    //     showSimpleNotification(
+    //       Container(child: Text(notification.body)),
+    //       position: NotificationPosition.top,
+    //       background: darkPrimaryColor,
+    //     );
+    //     // }
+    //   },
+    //   onLaunch: (Map<String, dynamic> message) async {
+    //     if (Platform.isAndroid || Platform.isIOS) {
+    //       PushNotificationMessage notification = PushNotificationMessage(
+    //         title: message['notification']['title'],
+    //         body: message['notification']['body'],
+    //       );
+    //       showSimpleNotification(
+    //         Container(child: Text(notification.body)),
+    //         position: NotificationPosition.top,
+    //         background: darkPrimaryColor,
+    //       );
+    //     }
+    //     if (Platform.isAndroid || Platform.isIOS) {
+    //       PushNotificationMessage notification = PushNotificationMessage(
+    //         title: message['notification']['title'],
+    //         body: message['notification']['body'],
+    //       );
+    //       showSimpleNotification(
+    //         Container(child: Text(notification.body)),
+    //         position: NotificationPosition.top,
+    //         background: darkPrimaryColor,
+    //       );
+    //     }
+    //   },
+    //   onResume: (Map<String, dynamic> message) async {
+    //     if (Platform.isAndroid || Platform.isIOS) {
+    //       PushNotificationMessage notification = PushNotificationMessage(
+    //         title: message['notification']['title'],
+    //         body: message['notification']['body'],
+    //       );
+    //       showSimpleNotification(
+    //         Container(child: Text(notification.body)),
+    //         position: NotificationPosition.top,
+    //         background: darkPrimaryColor,
+    //       );
+    //     }
+    //     if (Platform.isAndroid || Platform.isIOS) {
+    //       PushNotificationMessage notification = PushNotificationMessage(
+    //         title: message['notification']['title'],
+    //         body: message['notification']['body'],
+    //       );
+    //       showSimpleNotification(
+    //         Container(child: Text(notification.body)),
+    //         position: NotificationPosition.top,
+    //         background: darkPrimaryColor,
+    //       );
+    //     }
+    //   },
+    // );
   }
 }
 

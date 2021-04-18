@@ -313,8 +313,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               ),
                             ),
                             SizedBox(height: 10),
-                            FlatButton(
-                              color: primaryColor,
+                            TextButton(
                               onPressed: () async {
                                 setState(() {
                                   loading = true;
@@ -337,15 +336,22 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   loading = false;
                                 });
                               },
-                              child: Text(
-                                'By ' + widget.author,
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: footyColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w300),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  color: secondColor,
+                                  child: Text(
+                                    'By ' + widget.author,
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: footyColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -563,7 +569,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                         textScaleFactor: 1,
                         style: GoogleFonts.montserrat(
                           textStyle: TextStyle(
-                            color: primaryColor,
+                            color: secondColor,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -632,7 +638,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   decoration: InputDecoration(
                                     counterStyle: TextStyle(color: secondColor),
                                     hintText: "Коммент",
-                                    border: OutlineInputBorder(),
+                                    border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: secondColor),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -641,8 +650,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               ),
                               RoundedButton(
                                 width: 0.2,
-                                ph: 45,
-                                text: 'Ок',
+                                ph: 40,
+                                text: 'Ok',
                                 press: () async {
                                   if (_formKey.currentState.validate()) {
                                     setState(() {
@@ -713,8 +722,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     });
                                   }
                                 },
-                                color: darkPrimaryColor,
-                                textColor: whiteColor,
+                                color: secondColor,
+                                textColor: firstColor,
                               ),
                             ],
                           ),
@@ -743,8 +752,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                 'author_id']] !=
                                                             'No Image'
                                                         ? Container(
-                                                            width: 60,
-                                                            height: 60,
+                                                            width: 40,
+                                                            height: 40,
                                                             child: ClipRRect(
                                                                 borderRadius:
                                                                     BorderRadius
@@ -769,8 +778,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                             Expanded(
                                               child: Container(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      12.0),
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
                                                   child: Row(
                                                     children: [
                                                       Expanded(
@@ -779,6 +788,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                             Text(
                                                               comments[index]
                                                                   ['text'],
+                                                              maxLines: 100,
                                                               textScaleFactor:
                                                                   1,
                                                               overflow:
@@ -789,8 +799,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                 textStyle:
                                                                     TextStyle(
                                                                   color:
-                                                                      primaryColor,
-                                                                  fontSize: 20,
+                                                                      secondColor,
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -798,7 +808,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                               ),
                                                             ),
                                                             SizedBox(
-                                                              height: 10,
+                                                              height: 5,
                                                             ),
                                                             Text(
                                                               comments[index][
@@ -818,8 +828,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                 textStyle:
                                                                     TextStyle(
                                                                   color:
-                                                                      primaryColor,
-                                                                  fontSize: 15,
+                                                                      secondColor,
+                                                                  fontSize: 10,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .w300,
@@ -837,7 +847,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                           ],
                                         ),
                                         Divider(
-                                          color: primaryColor,
+                                          color: secondColor,
                                         ),
                                       ],
                                     ),

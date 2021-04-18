@@ -432,7 +432,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                         shrinkWrap: true,
                         crossAxisCount: 2,
                         children: [
-                          FlatButton(
+                          TextButton(
                             onPressed: () {
                               setState(() {
                                 loading = true;
@@ -482,7 +482,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                               ],
                             ),
                           ),
-                          FlatButton(
+                          TextButton(
                             onPressed: () {
                               setState(() {
                                 loading = true;
@@ -558,7 +558,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                           padding: EdgeInsets.only(bottom: 10),
                           itemCount: writings.length,
                           itemBuilder: (BuildContext context, int index) =>
-                              FlatButton(
+                              TextButton(
                             onPressed: () {
                               setState(() {
                                 loading = true;

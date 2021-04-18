@@ -187,7 +187,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                                 child: Card(
                                   elevation: 10,
-                                  child: FlatButton(
+                                  child: TextButton(
                                     onPressed: () {
                                       setState(() {
                                         loading = true;

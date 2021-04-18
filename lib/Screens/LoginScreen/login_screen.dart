@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: size.height * 0.5 - 280),
                     CardW(
                       shadow: whiteColor,
-                      ph: codeSent ? 670 : 495,
+                      ph: codeSent ? 720 : 495,
                       width: 0.6,
                       child: Form(
                         key: _formKey,
@@ -115,8 +115,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             // ),
                             SizedBox(height: 20),
                             RoundedButton(
-                              width: 0.7,
-                              ph: 55,
+                              width: 0.5,
+                              ph: 45,
                               text: codeSent ? 'GO' : 'ОТПРАВИТЬ КОД',
                               press: () async {
                                 if (_formKey.currentState.validate()) {
@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             codeSent
                                 ? RoundedButton(
                                     width: 0.7,
-                                    ph: 55,
+                                    ph: 45,
                                     text: 'Поменять номер телефона',
                                     press: () {
                                       Navigator.push(context,

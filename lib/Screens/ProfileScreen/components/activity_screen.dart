@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/loading_screen.dart';
@@ -146,7 +147,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 itemCount: results.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
-                                        FlatButton(
+                                        TextButton(
                                   onPressed: () {
                                     setState(() {
                                       loading = true;
@@ -264,7 +265,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
                         ),
                       )
                     : Container(),
-                
                 Divider(),
                 results1.length != 0
                     ? Expanded(
@@ -291,7 +291,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 itemCount: results1.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
-                                        FlatButton(
+                                        CupertinoButton(
+                                  padding: EdgeInsets.zero,
                                   onPressed: () {
                                     setState(() {
                                       loading = true;

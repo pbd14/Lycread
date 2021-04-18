@@ -211,7 +211,7 @@ class _SecondScreenState extends State<SecondScreen> {
                             child: Card(
                               margin: EdgeInsets.fromLTRB(10, 3, 10, 3),
                               elevation: 10,
-                              child: FlatButton(
+                              child: TextButton(
                                 onPressed: () {
                                   setState(() {
                                     loading = true;

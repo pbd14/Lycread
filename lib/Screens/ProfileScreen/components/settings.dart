@@ -39,7 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String path;
 
   Future _getImage() async {
-    var picker = await ImagePicker.pickImage(
+    var picker = await ImagePicker.platform.pickImage(
       source: ImageSource.gallery,
       imageQuality: 0,
     );

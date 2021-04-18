@@ -84,10 +84,10 @@ class _LabelButtonState extends State<LabelButton> {
     } else {
       labelColor = widget.color2;
     }
-    return FlatButton(
-      highlightColor: darkPrimaryColor,
-      height: widget.ph,
-      minWidth: widget.pw,
+    return TextButton(
+      // highlightColor: darkPrimaryColor,
+      // height: widget.ph,
+      // minWidth: widget.pw,
       onPressed: () {
         setState(() {
           isColored = !isColored;
@@ -100,10 +100,14 @@ class _LabelButtonState extends State<LabelButton> {
         isOne ? widget.onTap() : widget.onTap2();
         isOne = !isOne;
       },
-      child: Icon(
-        Icons.bookmark,
-        color: labelColor == null ? widget.color2 : labelColor,
-        size: widget.size,
+      child: Container(
+        height: widget.ph,
+        width: widget.pw,
+        child: Icon(
+          Icons.bookmark,
+          color: labelColor == null ? widget.color2 : labelColor,
+          size: widget.size,
+        ),
       ),
     );
   }

@@ -93,36 +93,38 @@ class _FollowButtonState extends State<FollowButton> {
       labelColor = widget.color2;
       textColor = widget.color1;
     }
-    return Container(
-      height: widget.ph,
-      width: widget.pw,
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          isColored = !isColored;
+          if (isColored) {
+            labelColor = widget.color1;
+            textColor = widget.color2;
+          } else {
+            labelColor = widget.color2;
+            textColor = widget.color1;
+          }
+        });
+        isOne ? widget.onTap() : widget.onTap2();
+        isOne = !isOne;
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: FlatButton(
+        child: Container(
+          height: widget.ph,
+          width: widget.pw,
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           color: labelColor == null ? widget.color2 : labelColor,
-          onPressed: () {
-            setState(() {
-              isColored = !isColored;
-              if (isColored) {
-                labelColor = widget.color1;
-                textColor = widget.color2;
-              } else {
-                labelColor = widget.color2;
-                textColor = widget.color1;
-              }
-            });
-            isOne ? widget.onTap() : widget.onTap2();
-            isOne = !isOne;
-          },
-          child: Text(
-            isColored ? 'Unfollow' : 'Follow',
-            textScaleFactor: 1,
-            style: GoogleFonts.montserrat(
-                textStyle: TextStyle(
-              fontSize: 15,
-              color: textColor,
-            )),
+          child: Center(
+            child: Text(
+              isColored ? 'Unfollow' : 'Follow',
+              textScaleFactor: 1,
+              style: GoogleFonts.montserrat(
+                  textStyle: TextStyle(
+                fontSize: 15,
+                color: textColor,
+              )),
+            ),
           ),
         ),
       ),

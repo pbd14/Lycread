@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
-import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import '../../../constants.dart';
@@ -90,7 +90,7 @@ class _SearchScreen1State extends State<SearchScreen1> {
                         val.length > 1 ? null : 'Минимум 2 символов',
                     hintText: "Имя",
                     type: TextInputType.text,
-                    height: 100,
+                    height: 80,
                     onChanged: (value) {
                       value != null
                           ? value.length != 0
@@ -100,73 +100,74 @@ class _SearchScreen1State extends State<SearchScreen1> {
                     },
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Expanded(
                   child: loading1
                       ? LoadingScreen()
                       : ListView.builder(
-                          padding: EdgeInsets.only(bottom: 10),
                           itemCount: results.length,
                           itemBuilder: (BuildContext context, int index) =>
-                              FlatButton(
-                            onPressed: () {
-                              setState(() {
-                                loading = true;
-                              });
-                              Navigator.push(
-                                  context,
-                                  SlideRightRoute(
-                                    page: VProfileScreen(
-                                      data: results[index],
-                                    ),
-                                  ));
-                              setState(() {
-                                loading = false;
-                              });
-                            },
-                            child: CardW(
-                              ph: 80,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 8,
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            results[index].data()['name'],
-                                            textScaleFactor: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.montserrat(
-                                              textStyle: TextStyle(
-                                                color: primaryColor,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            getFnum(results[index]
-                                                .data()['followers_num']),
-                                            textScaleFactor: 1,
-                                            style: GoogleFonts.montserrat(
-                                              textStyle: TextStyle(
-                                                color: primaryColor,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                              Container(
+                            height: 80,
+                            margin: EdgeInsets.symmetric(horizontal: 20.0),
+                            child: cupertino.CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                setState(() {
+                                  loading = true;
+                                });
+                                Navigator.push(
+                                    context,
+                                    SlideRightRoute(
+                                      page: VProfileScreen(
+                                        data: results[index],
                                       ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Container(
+                                    ));
+                                setState(() {
+                                  loading = false;
+                                });
+                              },
+                              child: Card(
+                                elevation: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 8,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              results[index].data()['name'],
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              getFnum(results[index]
+                                                  .data()['followers_num']),
+                                              textScaleFactor: 1,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
                                         width: 40,
                                         height: 40,
                                         child: ClipRRect(
@@ -188,27 +189,9 @@ class _SearchScreen1State extends State<SearchScreen1> {
                                                     ),
                                         ),
                                       ),
-                                      // Container(
-                                      //   height: 50,
-                                      //   width: 50,
-                                      //   decoration: ShapeDecoration(
-                                      //     shape: CircleBorder(
-                                      //       side: BorderSide(
-                                      //           width: 1, color: footyColor),
-                                      //     ),
-                                      //     image: DecorationImage(
-                                      //       image: AssetImage(results[index]
-                                      //                   .data()['photo'] !=
-                                      //               null
-                                      //           ? results[index].data()['photo']
-                                      //           : 'assets/images/User.png'),
-                                      //       fit: BoxFit.cover,
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                    ),
-                                    SizedBox(width: 15),
-                                  ],
+                                      SizedBox(width: 15),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
