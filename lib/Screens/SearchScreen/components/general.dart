@@ -245,6 +245,7 @@ class _SearchScreenGState extends State<SearchScreenG>
                                             width: size.width * 0.2,
                                             height: size.width * 0.2,
                                             child: CachedNetworkImage(
+                                              filterQuality: FilterQuality.none,
                                               height: 100,
                                               width: 100,
                                               placeholder: (context, url) =>

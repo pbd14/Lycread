@@ -181,6 +181,8 @@ class _SearchScreen1State extends State<SearchScreen1>
                                                       .data()['photo'] !=
                                                   null
                                               ? CachedNetworkImage(
+                                                  filterQuality:
+                                                      FilterQuality.none,
                                                   fit: BoxFit.cover,
                                                   placeholder: (context, url) =>
                                                       Transform.scale(

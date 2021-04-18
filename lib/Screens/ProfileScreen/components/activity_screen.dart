@@ -236,6 +236,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                               ['author']] !=
                                                           null
                                                       ? CachedNetworkImage(
+                                                          filterQuality:
+                                                              FilterQuality
+                                                                  .none,
                                                           fit: BoxFit.cover,
                                                           placeholder: (context,
                                                                   url) =>

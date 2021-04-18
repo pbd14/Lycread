@@ -214,6 +214,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                                 width: size.width * 0.2,
                                                 height: size.width * 0.2,
                                                 child: CachedNetworkImage(
+                                                  filterQuality:
+                                                      FilterQuality.none,
                                                   height: 100,
                                                   width: 100,
                                                   placeholder: (context, url) =>
@@ -221,7 +223,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                                     scale: 0.8,
                                                     child:
                                                         CircularProgressIndicator(
-                                                          strokeWidth: 2.0,
+                                                      strokeWidth: 2.0,
                                                       backgroundColor:
                                                           footyColor,
                                                       valueColor:

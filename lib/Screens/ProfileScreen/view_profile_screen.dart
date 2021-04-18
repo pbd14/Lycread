@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -257,10 +258,23 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(25.0),
                       child: widget.data.data()['photo'] != null
-                          ? FadeInImage.assetNetwork(
+                          ? CachedNetworkImage(
+                              filterQuality: FilterQuality.none,
                               fit: BoxFit.cover,
-                              placeholder: 'assets/images/User.png',
-                              image: widget.data.data()['photo'],
+                              placeholder: (context, url) => Transform.scale(
+                                scale: 0.8,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  backgroundColor: footyColor,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      primaryColor),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.error,
+                                color: footyColor,
+                              ),
+                              imageUrl: widget.data.data()['photo'],
                             )
                           : Image.asset(
                               'assets/images/User.png',
@@ -583,11 +597,28 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                 writings[index].data()['images'] != 'No Image'
                                     ? Container(
                                         width: size.width * 0.2,
-                                        child: FadeInImage.assetNetwork(
+                                        height: size.width * 0.2,
+                                        child: CachedNetworkImage(
+                                          filterQuality: FilterQuality.none,
                                           height: 100,
                                           width: 100,
-                                          placeholder: 'assets/images/1.png',
-                                          image: writings[index]
+                                          placeholder: (context, url) =>
+                                              Transform.scale(
+                                            scale: 0.8,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.0,
+                                              backgroundColor: footyColor,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      primaryColor),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(
+                                            Icons.error,
+                                            color: footyColor,
+                                          ),
+                                          imageUrl: writings[index]
                                               .data()['images'][0],
                                         ),
                                       )

@@ -171,6 +171,8 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                                           .data()['photo'] !=
                                                       null
                                                   ? CachedNetworkImage(
+                                                      filterQuality:
+                                                          FilterQuality.none,
                                                       fit: BoxFit.cover,
                                                       placeholder:
                                                           (context, url) =>

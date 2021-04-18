@@ -590,6 +590,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                     widget.data.data()['images'] != 'No Image'
                         ? Container(
                             child: CachedNetworkImage(
+                              filterQuality: FilterQuality.none,
                               placeholder: (context, url) => Transform.scale(
                                 scale: 0.8,
                                 child: CircularProgressIndicator(
@@ -774,6 +775,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                             25.0),
                                                                 child:
                                                                     CachedNetworkImage(
+                                                                  filterQuality:
+                                                                      FilterQuality
+                                                                          .none,
                                                                   fit: BoxFit
                                                                       .cover,
                                                                   placeholder: (context,
