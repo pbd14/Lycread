@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/material.dart';
@@ -176,20 +177,38 @@ class _SearchScreen1State extends State<SearchScreen1>
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(25.0),
-                                          child:
-                                              results[index].data()['photo'] !=
-                                                      null
-                                                  ? FadeInImage.assetNetwork(
-                                                      fit: BoxFit.cover,
-                                                      placeholder:
-                                                          'assets/images/User.png',
-                                                      image: results[index]
-                                                          .data()['photo'],
-                                                    )
-                                                  : Image.asset(
-                                                      'assets/images/User.png',
-                                                      fit: BoxFit.cover,
+                                          child: results[index]
+                                                      .data()['photo'] !=
+                                                  null
+                                              ? CachedNetworkImage(
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      Transform.scale(
+                                                    scale: 0.8,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      strokeWidth: 2.0,
+                                                      backgroundColor:
+                                                          footyColor,
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              primaryColor),
                                                     ),
+                                                  ),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Icon(
+                                                    Icons.error,
+                                                    color: footyColor,
+                                                  ),
+                                                  imageUrl: results[index]
+                                                      .data()['photo'],
+                                                )
+                                              : Image.asset(
+                                                  'assets/images/User.png',
+                                                  fit: BoxFit.cover,
+                                                ),
                                         ),
                                       ),
                                       SizedBox(width: 15),

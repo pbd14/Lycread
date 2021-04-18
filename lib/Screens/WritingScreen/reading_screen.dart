@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -588,9 +589,21 @@ class _ReadingScreenState extends State<ReadingScreen> {
                         : Container(),
                     widget.data.data()['images'] != 'No Image'
                         ? Container(
-                            child: FadeInImage.assetNetwork(
-                              placeholder: 'assets/images/1.png',
-                              image: widget.data.data()['images'][0],
+                            child: CachedNetworkImage(
+                              placeholder: (context, url) => Transform.scale(
+                                scale: 0.8,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  backgroundColor: footyColor,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      primaryColor),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Icon(
+                                Icons.error,
+                                color: footyColor,
+                              ),
+                              imageUrl: widget.data.data()['images'][0],
                             ),
                           )
                         : Container(),
@@ -759,13 +772,36 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             25.0),
-                                                                child: FadeInImage
-                                                                    .assetNetwork(
+                                                                child:
+                                                                    CachedNetworkImage(
                                                                   fit: BoxFit
                                                                       .cover,
-                                                                  placeholder:
-                                                                      'assets/images/User.png',
-                                                                  image: photos[
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      Transform
+                                                                          .scale(
+                                                                    scale: 0.8,
+                                                                    child:
+                                                                        CircularProgressIndicator(
+                                                                      strokeWidth:
+                                                                          2.0,
+                                                                      backgroundColor:
+                                                                          footyColor,
+                                                                      valueColor:
+                                                                          AlwaysStoppedAnimation<Color>(
+                                                                              primaryColor),
+                                                                    ),
+                                                                  ),
+                                                                  errorWidget:
+                                                                      (context,
+                                                                              url,
+                                                                              error) =>
+                                                                          Icon(
+                                                                    Icons.error,
+                                                                    color:
+                                                                        footyColor,
+                                                                  ),
+                                                                  imageUrl: photos[
                                                                       comments[
                                                                               index]
                                                                           [

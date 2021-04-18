@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -242,12 +243,28 @@ class _SearchScreenGState extends State<SearchScreenG>
                                             'No Image'
                                         ? Container(
                                             width: size.width * 0.2,
-                                            child: FadeInImage.assetNetwork(
+                                            height: size.width * 0.2,
+                                            child: CachedNetworkImage(
                                               height: 100,
                                               width: 100,
-                                              placeholder:
-                                                  'assets/images/1.png',
-                                              image: results[index]
+                                              placeholder: (context, url) =>
+                                                  Transform.scale(
+                                                scale: 0.8,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2.0,
+                                                  backgroundColor: footyColor,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(primaryColor),
+                                                ),
+                                              ),
+                                              errorWidget:
+                                                  (context, url, error) => Icon(
+                                                Icons.error,
+                                                color: footyColor,
+                                              ),
+                                              imageUrl: results[index]
                                                   .data()['images'][0],
                                             ),
                                           )
