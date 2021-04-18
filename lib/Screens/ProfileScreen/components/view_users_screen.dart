@@ -126,18 +126,85 @@ class _ViewUsersScreenState extends State<ViewUsersScreen> {
                                           flex: 8,
                                           child: Column(
                                             children: [
-                                              Text(
-                                                results[index].data()['name'],
-                                                textScaleFactor: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: TextStyle(
-                                                    color: primaryColor,
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
+                                              results[index].data()[
+                                                          'isVerified'] !=
+                                                      null
+                                                  ? results[index]
+                                                          .data()['isVerified']
+                                                      ? Center(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                results[index]
+                                                                        .data()[
+                                                                    'name'],
+                                                                textScaleFactor:
+                                                                    1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: GoogleFonts
+                                                                    .montserrat(
+                                                                  textStyle: TextStyle(
+                                                                      color:
+                                                                          darkPrimaryColor,
+                                                                      fontSize:
+                                                                          17,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 5),
+                                                              Icon(
+                                                                CupertinoIcons
+                                                                    .checkmark_seal_fill,
+                                                                color:
+                                                                    footyColor,
+                                                                size: 17,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : Text(
+                                                          results[index]
+                                                              .data()['name'],
+                                                          textScaleFactor: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        )
+                                                  : Text(
+                                                      results[index]
+                                                          .data()['name'],
+                                                      textScaleFactor: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 17,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
                                               SizedBox(
                                                 height: 5,
                                               ),

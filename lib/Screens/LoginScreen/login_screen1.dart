@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,6 +34,14 @@ class _LoginScreen1State extends State<LoginScreen1> {
   File i1;
   TaskSnapshot a1;
   String path;
+  List names = [];
+  StreamSubscription<QuerySnapshot> subscription;
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   Future _getImage() async {
     var picker = await ImagePicker.platform.pickImage(
@@ -47,6 +56,25 @@ class _LoginScreen1State extends State<LoginScreen1> {
       } else {
         path = 'assets/images/User.png';
         i1 = File('assets/images/User.png');
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    subscription = FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .listen((event) {
+      for (QueryDocumentSnapshot user in event.docs) {
+        if (this.mounted) {
+          setState(() {
+            names.add(user.data()['name']);
+          });
+        } else {
+          names.add(user.data()['name']);
+        }
       }
     });
   }
@@ -98,8 +126,14 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r"[a-zA-z0-9]+|\s")),
                               ],
-                              validator: (val) =>
-                                  val.length >= 2 ? null : 'Минимум 2 символа',
+                              validator: (val) {
+                                if (names.contains(val)) {
+                                  return "Имя уже занято";
+                                }
+                                return val.length >= 1
+                                    ? null
+                                    : 'Минимум 2 символа';
+                              },
                               hintText: "Имя",
                               type: TextInputType.text,
                               onChanged: (value) {
@@ -208,6 +242,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                     'photo': await a1.ref.getDownloadURL(),
                                     'bio': bio,
                                     'actions': [],
+                                    'isVerified': false,
                                     'id': FirebaseAuth.instance.currentUser.uid,
                                   }).catchError((error) {
                                     PushNotificationMessage notification =

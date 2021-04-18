@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
@@ -290,19 +291,57 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                     ),
                   ),
                   SizedBox(height: 50),
-                  Center(
-                    child: Text(
-                      widget.data.data()['name'],
-                      textScaleFactor: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                            color: darkPrimaryColor,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+                  widget.data.data()['isVerified'] != null
+                      ? widget.data.data()['isVerified']
+                          ? Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    widget.data.data()['name'],
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Icon(
+                                    CupertinoIcons.checkmark_seal_fill,
+                                    color: footyColor,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                widget.data.data()['name'],
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                      : Center(
+                          child: Text(
+                            widget.data.data()['name'],
+                            textScaleFactor: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: darkPrimaryColor,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                   SizedBox(height: 25),
                   Center(
                     child: Text(

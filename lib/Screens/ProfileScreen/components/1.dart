@@ -262,19 +262,57 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                     ),
                   ),
                   SizedBox(height: 50),
-                  Center(
-                    child: Text(
-                      FirebaseAuth.instance.currentUser.displayName,
-                      textScaleFactor: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                            color: darkPrimaryColor,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+                  data.data()['isVerified'] != null
+                      ? data.data()['isVerified']
+                          ? Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    data.data()['name'],
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Icon(
+                                    CupertinoIcons.checkmark_seal_fill,
+                                    color: footyColor,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                FirebaseAuth.instance.currentUser.displayName,
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                      : Center(
+                          child: Text(
+                            FirebaseAuth.instance.currentUser.displayName,
+                            textScaleFactor: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: darkPrimaryColor,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                   SizedBox(height: 25),
                   Center(
                     child: Text(

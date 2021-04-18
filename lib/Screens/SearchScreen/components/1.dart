@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart' as cupertino;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
@@ -141,18 +142,75 @@ class _SearchScreen1State extends State<SearchScreen1>
                                         flex: 8,
                                         child: Column(
                                           children: [
-                                            Text(
-                                              results[index].data()['name'],
-                                              textScaleFactor: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.montserrat(
-                                                textStyle: TextStyle(
-                                                  color: primaryColor,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
+                                            results[index]
+                                                        .data()['isVerified'] !=
+                                                    null
+                                                ? results[index]
+                                                        .data()['isVerified']
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            results[index]
+                                                                .data()['name'],
+                                                            textScaleFactor: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle: TextStyle(
+                                                                  color:
+                                                                      darkPrimaryColor,
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Icon(
+                                                            CupertinoIcons
+                                                                .checkmark_seal_fill,
+                                                            color: footyColor,
+                                                            size: 17,
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Text(
+                                                        results[index]
+                                                            .data()['name'],
+                                                        textScaleFactor: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      )
+                                                : Text(
+                                                    results[index]
+                                                        .data()['name'],
+                                                    textScaleFactor: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle: TextStyle(
+                                                        color: primaryColor,
+                                                        fontSize: 17,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
                                             SizedBox(
                                               height: 5,
                                             ),

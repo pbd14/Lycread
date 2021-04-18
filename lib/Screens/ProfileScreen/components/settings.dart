@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,6 +35,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   TaskSnapshot a1;
   DocumentSnapshot data;
   String path;
+  List names = [];
+  StreamSubscription<QuerySnapshot> subscription;
+
+  @override
+  void dispose() {
+    subscription.cancel();
+    super.dispose();
+  }
 
   Future _getImage() async {
     var picker = await ImagePicker.platform.pickImage(
@@ -70,6 +79,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     prepare();
     super.initState();
+    subscription = FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .listen((event) {
+      for (QueryDocumentSnapshot user in event.docs) {
+        if (this.mounted) {
+          setState(() {
+            names.add(user.data()['name']);
+          });
+        } else {
+          names.add(user.data()['name']);
+        }
+      }
+    });
   }
 
   @override
@@ -115,6 +138,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             SizedBox(height: 30),
                             RoundedTextInput(
+                              validator: (val) {
+                                if (names.contains(val)) {
+                                  return "Имя уже занято";
+                                }
+                                return val.length >= 1
+                                    ? null
+                                    : 'Минимум 2 символа';
+                              },
                               formatters: [
                                 FilteringTextInputFormatter.allow(
                                     RegExp(r"[a-zA-z0-9]+|\s")),
@@ -131,6 +162,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               padding: EdgeInsets.fromLTRB(
                                   size.width * 0.05, 0, size.width * 0.05, 0),
                               child: TextFormField(
+                                validator: (val) => val.length > 1
+                                    ? null
+                                    : 'Минимум 2 символов',
                                 initialValue: data.data()['bio'],
                                 maxLength: 200,
                                 maxLines: null,
