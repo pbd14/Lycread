@@ -53,9 +53,6 @@ class _LoginScreen1State extends State<LoginScreen1> {
       if (picker != null) {
         path = picker.path;
         i1 = File(picker.path);
-      } else {
-        path = 'assets/images/User.png';
-        i1 = File('assets/images/User.png');
       }
     });
   }
@@ -218,14 +215,18 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                   String id =
                                       FirebaseAuth.instance.currentUser.uid;
                                   String date = DateTime.now().toString();
-                                  a1 = await FirebaseStorage.instance
-                                      .ref('uploads')
-                                      .child('$id/user/$date')
-                                      .putFile(i1);
+                                  if (i1 != null) {
+                                    a1 = await FirebaseStorage.instance
+                                        .ref('uploads')
+                                        .child('$id/user/$date')
+                                        .putFile(i1);
+                                  }
                                   FirebaseAuth.instance.currentUser
                                       .updateProfile(
                                     displayName: this.name,
-                                    photoURL: await a1.ref.getDownloadURL(),
+                                    photoURL: i1 != null
+                                        ? await a1.ref.getDownloadURL()
+                                        : null,
                                   );
                                   FirebaseFirestore.instance
                                       .collection('users')
@@ -239,7 +240,9 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                     ]),
                                     'followers_num': 0,
                                     'following_num': 0,
-                                    'photo': await a1.ref.getDownloadURL(),
+                                    'photo': i1 != null
+                                        ? await a1.ref.getDownloadURL()
+                                        : null,
                                     'bio': bio,
                                     'actions': [],
                                     'isVerified': false,

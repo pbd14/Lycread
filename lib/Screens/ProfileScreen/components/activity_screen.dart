@@ -231,8 +231,8 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                   child: names[results[results
                                                                       .length -
                                                                   1 -
-                                                                  index]
-                                                              ['author']] !=
+                                                                  index]['author']]
+                                                              ['photo'] !=
                                                           null
                                                       ? CachedNetworkImage(
                                                           filterQuality:

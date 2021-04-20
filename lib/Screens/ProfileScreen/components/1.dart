@@ -168,28 +168,30 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
               excludeHeaderSemantics: true,
               backgroundColor: whiteColor,
               actions: [
-                data.data()['favourites'].length != 0
-                    ? IconButton(
-                        color: primaryColor,
-                        icon: Icon(
-                          CupertinoIcons.bookmark,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            loading = true;
-                          });
-                          Navigator.push(
-                              context,
-                              SlideRightRoute(
-                                page: FavouritesScreen(
-                                  data: data.data()['favourites'],
-                                ),
-                              ));
-                          setState(() {
-                            loading = false;
-                          });
-                        },
-                      )
+                data.data()['favourites'] != null
+                    ? data.data()['favourites'].length != 0
+                        ? IconButton(
+                            color: primaryColor,
+                            icon: Icon(
+                              CupertinoIcons.bookmark,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: FavouritesScreen(
+                                      data: data.data()['favourites'],
+                                    ),
+                                  ));
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                          )
+                        : Container()
                     : Container(),
                 // IconButton(
                 //   color: primaryColor,
