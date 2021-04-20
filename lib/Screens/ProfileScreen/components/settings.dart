@@ -142,9 +142,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 if (names.contains(val)) {
                                   return "Имя уже занято";
                                 }
-                                return val.length >= 1
-                                    ? null
-                                    : 'Минимум 2 символа';
                               },
                               formatters: [
                                 FilteringTextInputFormatter.allow(
@@ -154,7 +151,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   FirebaseAuth.instance.currentUser.displayName,
                               type: TextInputType.text,
                               onChanged: (value) {
-                                this.name = value;
+                                if (value.length == 0) {
+                                  this.name = null;
+                                } else {
+                                  this.name = value;
+                                }
                               },
                             ),
                             SizedBox(height: 15),
@@ -162,9 +163,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               padding: EdgeInsets.fromLTRB(
                                   size.width * 0.05, 0, size.width * 0.05, 0),
                               child: TextFormField(
-                                validator: (val) => val.length > 1
-                                    ? null
-                                    : 'Минимум 2 символов',
                                 initialValue: data.data()['bio'],
                                 maxLength: 200,
                                 maxLines: null,

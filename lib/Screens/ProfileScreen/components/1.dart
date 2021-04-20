@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lycread/Screens/ProfileScreen/components/drafts_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/components/favourites_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/components/settings.dart';
 import 'package:lycread/Screens/ProfileScreen/components/view_users_screen.dart';
@@ -188,12 +189,29 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                         },
                       )
                     : Container(),
+                // IconButton(
+                //   color: primaryColor,
+                //   icon: Icon(
+                //     CupertinoIcons.chat_bubble_2_fill,
+                //   ),
+                //   onPressed: () {},
+                // ),
                 IconButton(
                   color: primaryColor,
-                  icon: Icon(
-                    CupertinoIcons.chat_bubble_2_fill,
-                  ),
-                  onPressed: () {},
+                  icon: Icon(CupertinoIcons.doc_text),
+                  onPressed: () {
+                    setState(() {
+                      loading = true;
+                    });
+                    Navigator.push(
+                        context,
+                        SlideRightRoute(
+                          page: DraftsScreen(),
+                        ));
+                    setState(() {
+                      loading = false;
+                    });
+                  },
                 ),
                 IconButton(
                   color: primaryColor,

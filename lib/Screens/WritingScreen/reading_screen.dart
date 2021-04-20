@@ -750,236 +750,249 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             height: 20,
                           ),
                           comments.length != 0
-                              ? Center(
-                                  child: ListView.builder(
-                                    physics: new NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    padding: EdgeInsets.only(bottom: 10),
-                                    itemCount: comments.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) =>
-                                            Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            comments[index]['author_id'] != null
-                                                ? photos[comments[index]
-                                                            ['author_id']] !=
-                                                        null
-                                                    ? photos[comments[index][
-                                                                'author_id']] !=
-                                                            'No Image'
-                                                        ? Container(
-                                                            width: 40,
-                                                            height: 40,
-                                                            child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            25.0),
-                                                                child:
-                                                                    CachedNetworkImage(
-                                                                  filterQuality:
-                                                                      FilterQuality
-                                                                          .none,
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      Transform
-                                                                          .scale(
-                                                                    scale: 0.8,
-                                                                    child:
-                                                                        CircularProgressIndicator(
-                                                                      strokeWidth:
-                                                                          2.0,
-                                                                      backgroundColor:
-                                                                          footyColor,
-                                                                      valueColor:
-                                                                          AlwaysStoppedAnimation<Color>(
-                                                                              primaryColor),
-                                                                    ),
-                                                                  ),
-                                                                  errorWidget:
-                                                                      (context,
-                                                                              url,
-                                                                              error) =>
-                                                                          Icon(
-                                                                    Icons.error,
-                                                                    color:
+                              ? ListView.builder(
+                                  physics: new NeverScrollableScrollPhysics(),
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  itemCount: comments.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          comments[comments.length - 1 - index]
+                                                      ['author_id'] !=
+                                                  null
+                                              ? photos[comments[
+                                                              comments.length -
+                                                                  1 -
+                                                                  index]
+                                                          ['author_id']] !=
+                                                      null
+                                                  ? photos[comments[comments
+                                                                      .length -
+                                                                  1 -
+                                                                  index]
+                                                              ['author_id']] !=
+                                                          'No Image'
+                                                      ? Container(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25.0),
+                                                              child:
+                                                                  CachedNetworkImage(
+                                                                filterQuality:
+                                                                    FilterQuality
+                                                                        .none,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                placeholder: (context,
+                                                                        url) =>
+                                                                    Transform
+                                                                        .scale(
+                                                                  scale: 0.8,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        2.0,
+                                                                    backgroundColor:
                                                                         footyColor,
+                                                                    valueColor:
+                                                                        AlwaysStoppedAnimation<Color>(
+                                                                            primaryColor),
                                                                   ),
-                                                                  imageUrl: photos[
-                                                                      comments[
-                                                                              index]
-                                                                          [
-                                                                          'author_id']],
-                                                                )),
-                                                          )
-                                                        : Container()
-                                                    : Container()
-                                                : Container(),
-                                            Expanded(
-                                              child: Container(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
-                                                          children: [
-                                                            Text(
-                                                              comments[index]
-                                                                  ['text'],
-                                                              maxLines: 100,
-                                                              textScaleFactor:
-                                                                  1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      secondColor,
-                                                                  fontSize: 15,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
                                                                 ),
+                                                                errorWidget:
+                                                                    (context,
+                                                                            url,
+                                                                            error) =>
+                                                                        Icon(
+                                                                  Icons.error,
+                                                                  color:
+                                                                      footyColor,
+                                                                ),
+                                                                imageUrl: photos[comments[
+                                                                        comments.length -
+                                                                            1 -
+                                                                            index]
+                                                                    [
+                                                                    'author_id']],
+                                                              )),
+                                                        )
+                                                      : Container()
+                                                  : Container()
+                                              : Container(),
+                                          Expanded(
+                                            child: Container(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            comments[comments
+                                                                    .length -
+                                                                1 -
+                                                                index]['text'],
+                                                            maxLines: 100,
+                                                            textScaleFactor: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    secondColor,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                              height: 5,
-                                                            ),
-                                                            Text(
-                                                              comments[index][
-                                                                          'author'] !=
-                                                                      null
-                                                                  ? comments[
-                                                                          index]
-                                                                      ['author']
-                                                                  : 'No author',
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              textScaleFactor:
-                                                                  1,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle:
-                                                                    TextStyle(
-                                                                  color:
-                                                                      secondColor,
-                                                                  fontSize: 10,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                ),
+                                                          ),
+                                                          SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          Text(
+                                                            comments[comments.length -
+                                                                            1 -
+                                                                            index]
+                                                                        [
+                                                                        'author'] !=
+                                                                    null
+                                                                ? comments[
+                                                                        index]
+                                                                    ['author']
+                                                                : 'No author',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textScaleFactor: 1,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    secondColor,
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w300,
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        Divider(
-                                          color: secondColor,
-                                        ),
-                                      ],
-                                    ),
-
-                                    //         Card(
-                                    //   shadowColor: secondColor,
-                                    //   color: firstColor,
-                                    //   elevation: 10,
-                                    //   child: Row(
-                                    //     children: [
-                                    //       SizedBox(
-                                    //         width: 10,
-                                    //       ),
-                                    //       Expanded(
-                                    //         child: Container(
-                                    //           child: Padding(
-                                    //             padding:
-                                    //                 const EdgeInsets.all(12.0),
-                                    //             child: Row(
-                                    //               children: [
-                                    //                 Expanded(
-                                    //                   child: Column(
-                                    //                     crossAxisAlignment:
-                                    //                         CrossAxisAlignment
-                                    //                             .start,
-                                    //                     children: [
-                                    //                       Text(
-                                    //                         comments[index]
-                                    //                             ['text'],
-                                    //                         textScaleFactor: 1,
-                                    //                         style: GoogleFonts
-                                    //                             .montserrat(
-                                    //                           textStyle:
-                                    //                               TextStyle(
-                                    //                             color:
-                                    //                                 secondColor,
-                                    //                             fontSize: 20,
-                                    //                             fontWeight:
-                                    //                                 FontWeight
-                                    //                                     .bold,
-                                    //                           ),
-                                    //                         ),
-                                    //                       ),
-                                    //                       SizedBox(
-                                    //                         height: 10,
-                                    //                       ),
-                                    //                       Text(
-                                    //                         comments[index][
-                                    //                                     'author'] !=
-                                    //                                 null
-                                    //                             ? comments[
-                                    //                                     index]
-                                    //                                 ['author']
-                                    //                             : 'No author',
-                                    //                         overflow:
-                                    //                             TextOverflow
-                                    //                                 .ellipsis,
-                                    //                         textScaleFactor: 1,
-                                    //                         style: GoogleFonts
-                                    //                             .montserrat(
-                                    //                           textStyle:
-                                    //                               TextStyle(
-                                    //                             color:
-                                    //                                 secondColor,
-                                    //                             fontSize: 15,
-                                    //                             fontWeight:
-                                    //                                 FontWeight
-                                    //                                     .w300,
-                                    //                           ),
-                                    //                         ),
-                                    //                       ),
-                                    //                     ],
-                                    //                   ),
-                                    //                 ),
-                                    //               ],
-                                    //             ),
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //       Divider(
-                                    //         thickness: 0.1,
-                                    //         color: secondColor,
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
+                                          ),
+                                        ],
+                                      ),
+                                      Divider(
+                                        color: secondColor,
+                                      ),
+                                    ],
                                   ),
+
+                                  //         Card(
+                                  //   shadowColor: secondColor,
+                                  //   color: firstColor,
+                                  //   elevation: 10,
+                                  //   child: Row(
+                                  //     children: [
+                                  //       SizedBox(
+                                  //         width: 10,
+                                  //       ),
+                                  //       Expanded(
+                                  //         child: Container(
+                                  //           child: Padding(
+                                  //             padding:
+                                  //                 const EdgeInsets.all(12.0),
+                                  //             child: Row(
+                                  //               children: [
+                                  //                 Expanded(
+                                  //                   child: Column(
+                                  //                     crossAxisAlignment:
+                                  //                         CrossAxisAlignment
+                                  //                             .start,
+                                  //                     children: [
+                                  //                       Text(
+                                  //                         comments[index]
+                                  //                             ['text'],
+                                  //                         textScaleFactor: 1,
+                                  //                         style: GoogleFonts
+                                  //                             .montserrat(
+                                  //                           textStyle:
+                                  //                               TextStyle(
+                                  //                             color:
+                                  //                                 secondColor,
+                                  //                             fontSize: 20,
+                                  //                             fontWeight:
+                                  //                                 FontWeight
+                                  //                                     .bold,
+                                  //                           ),
+                                  //                         ),
+                                  //                       ),
+                                  //                       SizedBox(
+                                  //                         height: 10,
+                                  //                       ),
+                                  //                       Text(
+                                  //                         comments[index][
+                                  //                                     'author'] !=
+                                  //                                 null
+                                  //                             ? comments[
+                                  //                                     index]
+                                  //                                 ['author']
+                                  //                             : 'No author',
+                                  //                         overflow:
+                                  //                             TextOverflow
+                                  //                                 .ellipsis,
+                                  //                         textScaleFactor: 1,
+                                  //                         style: GoogleFonts
+                                  //                             .montserrat(
+                                  //                           textStyle:
+                                  //                               TextStyle(
+                                  //                             color:
+                                  //                                 secondColor,
+                                  //                             fontSize: 15,
+                                  //                             fontWeight:
+                                  //                                 FontWeight
+                                  //                                     .w300,
+                                  //                           ),
+                                  //                         ),
+                                  //                       ),
+                                  //                     ],
+                                  //                   ),
+                                  //                 ),
+                                  //               ],
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //       Divider(
+                                  //         thickness: 0.1,
+                                  //         color: secondColor,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
                                 )
                               : Center(
                                   child: Text(

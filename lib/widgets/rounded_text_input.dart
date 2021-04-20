@@ -5,7 +5,7 @@ import 'package:lycread/widgets/text_field_container.dart';
 import '../constants.dart';
 
 class RoundedTextInput extends StatelessWidget {
-  final String hintText;
+  final String hintText, initialValue;
   final TextInputType type;
   final Function validator;
   final IconData icon;
@@ -25,6 +25,7 @@ class RoundedTextInput extends StatelessWidget {
     this.length: null,
     this.height: 90,
     this.formatters: null,
+    this.initialValue: null,
   }) : super(key: key);
 
   @override
@@ -33,6 +34,7 @@ class RoundedTextInput extends StatelessWidget {
       height: height,
       child: TextFieldContainer(
         child: TextFormField(
+          initialValue: this.initialValue,
           // maxLength: length != null ? length : double.infinity.toInt(),
           maxLength: length,
           style: TextStyle(color: primaryColor),

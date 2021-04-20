@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,12 +13,14 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
-class WritingScreen extends StatefulWidget {
+class DraftsWritingScreen extends StatefulWidget {
+  Map data;
+  DraftsWritingScreen({Key key, @required this.data}) : super(key: key);
   @override
-  _WritingScreenState createState() => _WritingScreenState();
+  _DraftsWritingScreenState createState() => _DraftsWritingScreenState();
 }
 
-class _WritingScreenState extends State<WritingScreen> {
+class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
   final _formKey = GlobalKey<FormState>();
   List categs;
   String name;
@@ -36,9 +39,15 @@ class _WritingScreenState extends State<WritingScreen> {
         .get();
     if (this.mounted) {
       setState(() {
+        name = widget.data['name'];
+        text = widget.data['text'];
+        category = widget.data['genre'];
         categs = dc.data()['genres'];
       });
     } else {
+      name = widget.data['name'];
+      text = widget.data['text'];
+      category = widget.data['genre'];
       categs = dc.data()['genres'];
     }
   }
@@ -104,6 +113,7 @@ class _WritingScreenState extends State<WritingScreen> {
                               height: 20,
                             ),
                             RoundedTextInput(
+                              initialValue: widget.data['name'],
                               validator: (val) =>
                                   val.length > 2 ? null : 'Минимум 2 символов',
                               hintText: "Название",
@@ -121,6 +131,7 @@ class _WritingScreenState extends State<WritingScreen> {
                               padding: EdgeInsets.fromLTRB(
                                   size.width * 0.05, 0, size.width * 0.05, 0),
                               child: TextFormField(
+                                initialValue: widget.data['text'],
                                 maxLines: null,
                                 style: TextStyle(color: primaryColor),
                                 validator: (val) => val.length > 1
@@ -206,7 +217,22 @@ class _WritingScreenState extends State<WritingScreen> {
                                 width: size.width * 0.5,
                                 height: size.width * 0.5,
                                 child: i1 == null
-                                    ? Icon(Icons.add)
+                                    ? CachedNetworkImage(
+                                        filterQuality: FilterQuality.none,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            Transform.scale(
+                                          scale: 0.8,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.0,
+                                            backgroundColor: footyColor,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    primaryColor),
+                                          ),
+                                        ),
+                                        imageUrl: widget.data['images'][0],
+                                      )
                                     : Image.file(i1),
                                 color: footyColor,
                               ),
@@ -287,37 +313,72 @@ class _WritingScreenState extends State<WritingScreen> {
                                       );
                                     });
                                   } else {
-                                    FirebaseFirestore.instance
-                                        .collection('writings')
-                                        .doc()
-                                        .set({
-                                      'name': name,
-                                      'text': text,
-                                      'author':
-                                          FirebaseAuth.instance.currentUser.uid,
-                                      'images': 'No Image',
-                                      'genre': category.toLowerCase(),
-                                      'date': DateTime.now(),
-                                      'rating': 0,
-                                      'reads': 0,
-                                      'users_read': [],
-                                      'users_rated': [],
-                                      'comments': [],
-                                    }).catchError((error) {
-                                      print('MISTAKE HERE');
-                                      print(error);
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Ошибка',
-                                        body: 'Неудалось добавить историю',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
-                                    });
+                                    if (widget.data['images'][0] !=
+                                        'No Image') {
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc()
+                                          .set({
+                                        'name': name,
+                                        'text': text,
+                                        'author': FirebaseAuth
+                                            .instance.currentUser.uid,
+                                        'images': [widget.data['images'][0]],
+                                        'genre': category.toLowerCase(),
+                                        'date': DateTime.now(),
+                                        'rating': 0,
+                                        'reads': 0,
+                                        'users_read': [],
+                                        'users_rated': [],
+                                        'comments': [],
+                                      }).catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось добавить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                    } else {
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc()
+                                          .set({
+                                        'name': name,
+                                        'text': text,
+                                        'author': FirebaseAuth
+                                            .instance.currentUser.uid,
+                                        'images': 'No Image',
+                                        'genre': category.toLowerCase(),
+                                        'date': DateTime.now(),
+                                        'rating': 0,
+                                        'reads': 0,
+                                        'users_read': [],
+                                        'users_rated': [],
+                                        'comments': [],
+                                      }).catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось добавить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                    }
                                   }
                                   PushNotificationMessage notification =
                                       PushNotificationMessage(
@@ -410,47 +471,94 @@ class _WritingScreenState extends State<WritingScreen> {
                                       );
                                     });
                                   } else {
-                                    FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(FirebaseAuth
-                                            .instance.currentUser.uid)
-                                        .update({
-                                      'drafts': FieldValue.arrayUnion([
-                                        {
-                                          'name': name,
-                                          'text': text,
-                                          'date': DateTime.now(),
-                                          'images': 'No Image',
-                                          'genre': category.toLowerCase(),
-                                        }
-                                      ]),
-                                      // 'name': name,
-                                      // 'text': text,
-                                      // 'author':
-                                      //     FirebaseAuth.instance.currentUser.uid,
-                                      // 'images': 'No Image',
-                                      // 'genre': category.toLowerCase(),
-                                      // 'date': DateTime.now(),
-                                      // 'rating': 0,
-                                      // 'reads': 0,
-                                      // 'users_read': [],
-                                      // 'users_rated': [],
-                                      // 'comments': [],
-                                    }).catchError((error) {
-                                      print('MISTAKE HERE');
-                                      print(error);
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Ошибка',
-                                        body: 'Неудалось добавить историю',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
-                                    });
+                                    if (widget.data['images'][0] !=
+                                        'No Image') {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser.uid)
+                                          .update({
+                                        'drafts': FieldValue.arrayUnion([
+                                          {
+                                            'name': name,
+                                            'text': text,
+                                            'date': DateTime.now(),
+                                            'images': [
+                                              widget.data['images'][0]
+                                            ],
+                                            'genre': category.toLowerCase(),
+                                          }
+                                        ]),
+                                        // 'name': name,
+                                        // 'text': text,
+                                        // 'author':
+                                        //     FirebaseAuth.instance.currentUser.uid,
+                                        // 'images': 'No Image',
+                                        // 'genre': category.toLowerCase(),
+                                        // 'date': DateTime.now(),
+                                        // 'rating': 0,
+                                        // 'reads': 0,
+                                        // 'users_read': [],
+                                        // 'users_rated': [],
+                                        // 'comments': [],
+                                      }).catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось добавить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                    } else {
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser.uid)
+                                          .update({
+                                        'drafts': FieldValue.arrayUnion([
+                                          {
+                                            'name': name,
+                                            'text': text,
+                                            'date': DateTime.now(),
+                                            'images': 'No Image',
+                                            'genre': category.toLowerCase(),
+                                          }
+                                        ]),
+                                        // 'name': name,
+                                        // 'text': text,
+                                        // 'author':
+                                        //     FirebaseAuth.instance.currentUser.uid,
+                                        // 'images': 'No Image',
+                                        // 'genre': category.toLowerCase(),
+                                        // 'date': DateTime.now(),
+                                        // 'rating': 0,
+                                        // 'reads': 0,
+                                        // 'users_read': [],
+                                        // 'users_rated': [],
+                                        // 'comments': [],
+                                      }).catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось добавить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                    }
                                   }
                                   PushNotificationMessage notification =
                                       PushNotificationMessage(
