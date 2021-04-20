@@ -391,11 +391,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                     background: footyColor,
                                   );
                                   setState(() {
-                                    i1 = null;
-                                    name = null;
                                     error = '';
-                                    category = 'Общее';
-                                    text = null;
                                     loading = false;
                                   });
                                 }

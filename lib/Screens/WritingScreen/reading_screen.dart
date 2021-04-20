@@ -238,6 +238,71 @@ class _ReadingScreenState extends State<ReadingScreen> {
                       fontWeight: FontWeight.w300),
                 ),
               ),
+              actions: [
+                FirebaseAuth.instance.currentUser.uid ==
+                        widget.data.data()['author']
+                    ? RoundedButton(
+                        pw: 85,
+                        ph: 45,
+                        text: 'Удалить',
+                        press: () async {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CupertinoAlertDialog(
+                                title: const Text('Удалить?'),
+                                content:
+                                    const Text('Хотите ли вы удалить историю?'),
+                                actions: <Widget>[
+                                  CupertinoDialogAction(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text('No')),
+                                  CupertinoDialogAction(
+                                    isDestructiveAction: true,
+                                    onPressed: () async {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc(widget.data.id)
+                                          .delete()
+                                          .catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        Navigator.of(context).pop(false);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось удалить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      Navigator.of(context).pop(true);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Yes'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        color: Colors.red,
+                        textColor: whiteColor,
+                      )
+                    : Container(),
+              ],
             ),
             backgroundColor: firstColor,
             // appBar: AppBar(

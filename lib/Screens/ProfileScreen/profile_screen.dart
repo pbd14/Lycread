@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/components/activity_screen.dart';
 import 'package:lycread/Services/auth_service.dart';
+import 'package:overlay_support/overlay_support.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 import 'components/1.dart';
@@ -209,7 +211,31 @@ class _PlaceScreenState extends State<ProfileScreen> {
                         Icons.exit_to_app,
                       ),
                       onPressed: () {
-                        AuthService().signOut(context);
+                        showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return CupertinoAlertDialog(
+                              title: const Text('Выйти?'),
+                              content:
+                                  const Text('Хотите ли вы выйти из аккаунта?'),
+                              actions: <Widget>[
+                                CupertinoDialogAction(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text('No')),
+                                CupertinoDialogAction(
+                                  isDestructiveAction: true,
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true);
+                                    AuthService().signOut(context);
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
                   ]),
