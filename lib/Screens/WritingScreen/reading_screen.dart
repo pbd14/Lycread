@@ -946,9 +946,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                         [
                                                                         'author'] !=
                                                                     null
-                                                                ? comments[
-                                                                        index]
-                                                                    ['author']
+                                                                ? comments[comments
+                                                                        .length -
+                                                                    1 -
+                                                                    index]['author']
                                                                 : 'No author',
                                                             overflow:
                                                                 TextOverflow
