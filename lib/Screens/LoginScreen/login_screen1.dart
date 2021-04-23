@@ -245,6 +245,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                         : null,
                                     'bio': bio,
                                     'actions': [],
+                                    'reads': [],
                                     'isVerified': false,
                                     'id': FirebaseAuth.instance.currentUser.uid,
                                   }).catchError((error) {

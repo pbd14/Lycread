@@ -168,6 +168,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
           'users_read':
               FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid]),
         });
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .update({
+          'reads':
+              FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid]),
+        });
       }
     }
     subscription = FirebaseFirestore.instance
