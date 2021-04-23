@@ -12,7 +12,7 @@
 	  <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Lycread"
+        android:label="LycRead"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
         <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
