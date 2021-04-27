@@ -177,6 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     names.addAll({wr.data()['author']: 'No author'});
                   }
                   results.add(wr);
+                  loading = false;
                 });
               }
             } else {
@@ -190,6 +191,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 names.addAll({wr.data()['author']: 'No author'});
               }
               results.add(wr);
+              loading = false;
             }
           }
         } else {
@@ -205,6 +207,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                 names.addAll({wr.data()['author']: 'No author'});
               }
               results.add(wr);
+              loading = false;
             });
           } else {
             var name = await FirebaseFirestore.instance
@@ -217,6 +220,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               names.addAll({wr.data()['author']: 'No author'});
             }
             results.add(wr);
+            loading = false;
           }
         }
       }
@@ -311,45 +315,50 @@ class _DashboardScreenState extends State<DashboardScreen>
                           delegate: SliverChildListDelegate(
                             [
                               for (QueryDocumentSnapshot element in results)
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ReadingScreen(
-                                            data: element,
-                                            author:
-                                                names[element.data()['author']],
-                                          ),
-                                        ));
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    width: size.width * 0.9,
-                                    height: element.data()['images'] != null
-                                        ? element.data()['images'] != 'No Image'
-                                            ? 300
-                                            : 100
-                                        : 100,
-                                    margin: EdgeInsets.all(5),
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        element.data()['images'] != null
-                                            ? element.data()['images'] !=
-                                                    'No Image'
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                    child: Container(
+                                Container(
+                                  width: size.width * 0.95,
+                                  height: element.data()['images'] != null
+                                      ? element.data()['images'] != 'No Image'
+                                          ? 290
+                                          : 100
+                                      : 100,
+                                  padding: EdgeInsets.all(10),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            EdgeInsets.zero)),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ReadingScreen(
+                                              data: element,
+                                              author: names[
+                                                  element.data()['author']],
+                                            ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 11,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          element.data()['images'] != null
+                                              ? element.data()['images'] !=
+                                                      'No Image'
+                                                  ? Container(
                                                       height: 200,
                                                       width: size.width,
                                                       child: CachedNetworkImage(
@@ -388,106 +397,110 @@ class _DashboardScreenState extends State<DashboardScreen>
                                                             element.data()[
                                                                 'images'][0],
                                                       ),
-                                                    ),
-                                                  )
-                                                : Container()
-                                            : Container(),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
+                                                    )
+                                                  : Container()
+                                              : Container(),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                10, 0, 0, 0),
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Container(
-                                                  width: size.width * 0.6,
-                                                  child: Text(
-                                                    element.data()['name'],
-                                                    textScaleFactor: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: size.width * 0.6,
+                                                      child: Text(
+                                                        element.data()['name'],
+                                                        textScaleFactor: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text(
-                                                  names[element.data()[
-                                                              'author']] !=
-                                                          null
-                                                      ? names[element
-                                                          .data()['author']]
-                                                      : 'Loading',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w300,
+                                                    SizedBox(
+                                                      height: 5,
                                                     ),
-                                                  ),
+                                                    Text(
+                                                      names[element.data()[
+                                                                  'author']] !=
+                                                              null
+                                                          ? names[element
+                                                              .data()['author']]
+                                                          : 'Loading',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
+                                                SizedBox(width: 10),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      element.data()['genre'],
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      getDate(element
+                                                          .data()['date']
+                                                          .seconds),
+                                                      textScaleFactor: 1,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
                                               ],
                                             ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  element.data()['genre'],
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  getDate(element
-                                                      .data()['date']
-                                                      .seconds),
-                                                  textScaleFactor: 1,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -507,45 +520,50 @@ class _DashboardScreenState extends State<DashboardScreen>
                                 ),
                               ),
                               for (QueryDocumentSnapshot element in data1.docs)
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ReadingScreen(
-                                            data: element,
-                                            author:
-                                                names[element.data()['author']],
-                                          ),
-                                        ));
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    width: size.width * 0.9,
-                                    height: element.data()['images'] != null
-                                        ? element.data()['images'] != 'No Image'
-                                            ? 300
-                                            : 100
-                                        : 100,
-                                    margin: EdgeInsets.all(5),
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        element.data()['images'] != null
-                                            ? element.data()['images'] !=
-                                                    'No Image'
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                    child: Container(
+                                Container(
+                                  width: size.width * 0.95,
+                                  height: element.data()['images'] != null
+                                      ? element.data()['images'] != 'No Image'
+                                          ? 290
+                                          : 100
+                                      : 100,
+                                  padding: EdgeInsets.all(10),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            EdgeInsets.zero)),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ReadingScreen(
+                                              data: element,
+                                              author: names[
+                                                  element.data()['author']],
+                                            ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 11,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          element.data()['images'] != null
+                                              ? element.data()['images'] !=
+                                                      'No Image'
+                                                  ? Container(
                                                       height: 200,
                                                       width: size.width,
                                                       child: CachedNetworkImage(
@@ -584,106 +602,110 @@ class _DashboardScreenState extends State<DashboardScreen>
                                                             element.data()[
                                                                 'images'][0],
                                                       ),
-                                                    ),
-                                                  )
-                                                : Container()
-                                            : Container(),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
+                                                    )
+                                                  : Container()
+                                              : Container(),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                10, 0, 0, 0),
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Container(
-                                                  width: size.width * 0.6,
-                                                  child: Text(
-                                                    element.data()['name'],
-                                                    textScaleFactor: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: size.width * 0.6,
+                                                      child: Text(
+                                                        element.data()['name'],
+                                                        textScaleFactor: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text(
-                                                  names[element.data()[
-                                                              'author']] !=
-                                                          null
-                                                      ? names[element
-                                                          .data()['author']]
-                                                      : 'Loading',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w300,
+                                                    SizedBox(
+                                                      height: 5,
                                                     ),
-                                                  ),
+                                                    Text(
+                                                      names[element.data()[
+                                                                  'author']] !=
+                                                              null
+                                                          ? names[element
+                                                              .data()['author']]
+                                                          : 'Loading',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
+                                                SizedBox(width: 10),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      element.data()['genre'],
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      getDate(element
+                                                          .data()['date']
+                                                          .seconds),
+                                                      textScaleFactor: 1,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
                                               ],
                                             ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  element.data()['genre'],
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  getDate(element
-                                                      .data()['date']
-                                                      .seconds),
-                                                  textScaleFactor: 1,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -694,45 +716,50 @@ class _DashboardScreenState extends State<DashboardScreen>
                           delegate: SliverChildListDelegate(
                             [
                               for (QueryDocumentSnapshot element in results)
-                                TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ReadingScreen(
-                                            data: element,
-                                            author:
-                                                names[element.data()['author']],
-                                          ),
-                                        ));
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    width: size.width * 0.9,
-                                    height: element.data()['images'] != null
-                                        ? element.data()['images'] != 'No Image'
-                                            ? 300
-                                            : 100
-                                        : 100,
-                                    margin: EdgeInsets.all(5),
-                                    padding: EdgeInsets.all(10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        element.data()['images'] != null
-                                            ? element.data()['images'] !=
-                                                    'No Image'
-                                                ? ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30),
-                                                    child: Container(
+                                Container(
+                                  width: size.width * 0.95,
+                                  height: element.data()['images'] != null
+                                      ? element.data()['images'] != 'No Image'
+                                          ? 290
+                                          : 100
+                                      : 100,
+                                  padding: EdgeInsets.all(10),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            EdgeInsets.zero)),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ReadingScreen(
+                                              data: element,
+                                              author: names[
+                                                  element.data()['author']],
+                                            ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 11,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          element.data()['images'] != null
+                                              ? element.data()['images'] !=
+                                                      'No Image'
+                                                  ? Container(
                                                       height: 200,
                                                       width: size.width,
                                                       child: CachedNetworkImage(
@@ -771,106 +798,110 @@ class _DashboardScreenState extends State<DashboardScreen>
                                                             element.data()[
                                                                 'images'][0],
                                                       ),
-                                                    ),
-                                                  )
-                                                : Container()
-                                            : Container(),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
+                                                    )
+                                                  : Container()
+                                              : Container(),
+                                          SizedBox(height: 10),
+                                          Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                10, 0, 0, 0),
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Container(
-                                                  width: size.width * 0.6,
-                                                  child: Text(
-                                                    element.data()['name'],
-                                                    textScaleFactor: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      width: size.width * 0.6,
+                                                      child: Text(
+                                                        element.data()['name'],
+                                                        textScaleFactor: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text(
-                                                  names[element.data()[
-                                                              'author']] !=
-                                                          null
-                                                      ? names[element
-                                                          .data()['author']]
-                                                      : 'Loading',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w300,
+                                                    SizedBox(
+                                                      height: 5,
                                                     ),
-                                                  ),
+                                                    Text(
+                                                      names[element.data()[
+                                                                  'author']] !=
+                                                              null
+                                                          ? names[element
+                                                              .data()['author']]
+                                                          : 'Loading',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
+                                                SizedBox(width: 10),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      element.data()['genre'],
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      getDate(element
+                                                          .data()['date']
+                                                          .seconds),
+                                                      textScaleFactor: 1,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
                                               ],
                                             ),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  element.data()['genre'],
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  textScaleFactor: 1,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  getDate(element
-                                                      .data()['date']
-                                                      .seconds),
-                                                  textScaleFactor: 1,
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        Divider(
-                                          thickness: 1,
-                                        ),
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
