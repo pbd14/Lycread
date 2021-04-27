@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
+import 'package:lycread/Screens/WritingScreen/comment_reply_screen.dart';
 import 'package:lycread/widgets/label_button.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/up_button.dart';
 import 'package:overlay_support/overlay_support.dart';
-
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -760,6 +760,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                               .instance.currentUser.displayName,
                                           'author_id': FirebaseAuth
                                               .instance.currentUser.uid,
+                                          'replies': [],
                                         }
                                       ])
                                     }).catchError((error) {
@@ -969,6 +970,59 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                             ),
                                                           ),
                                                         ],
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          loading = true;
+                                                        });
+                                                        Navigator.push(
+                                                          context,
+                                                          SlideRightRoute(
+                                                            page:
+                                                                CommentReplyScreen(
+                                                              post_id: widget
+                                                                  .data.id,
+                                                              all: comments,
+                                                              data: comments[
+                                                                  comments.length -
+                                                                      1 -
+                                                                      index],
+                                                            ),
+                                                          ),
+                                                        );
+                                                        setState(() {
+                                                          loading = false;
+                                                        });
+                                                      },
+                                                      child: Text(
+                                                        comments[comments.length -
+                                                                        1 -
+                                                                        index][
+                                                                    'replies'] !=
+                                                                null
+                                                            ? comments[comments.length -
+                                                                            1 -
+                                                                            index]
+                                                                        [
+                                                                        'replies']
+                                                                    .length
+                                                                    .toString() +
+                                                                ' replies'
+                                                            : 'Reply',
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        textScaleFactor: 1,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: Colors.blue,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ],

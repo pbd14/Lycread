@@ -146,9 +146,11 @@ class _DashboardScreenState extends State<DashboardScreen>
       if (this.mounted) {
         setState(() {
           results = data.docs;
+          loading = false;
         });
       } else {
         results = data.docs;
+        loading = false;
       }
     } else {
       QuerySnapshot data = await FirebaseFirestore.instance
@@ -167,14 +169,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                   .collection('users')
                   .doc(wr.data()['author'])
                   .get();
-              setState(() {
-                if (name.data() != null) {
-                  names.addAll({wr.data()['author']: name.data()['name']});
-                } else {
-                  names.addAll({wr.data()['author']: 'No author'});
-                }
-                results.add(wr);
-              });
+              if (this.mounted) {
+                setState(() {
+                  if (name.data() != null) {
+                    names.addAll({wr.data()['author']: name.data()['name']});
+                  } else {
+                    names.addAll({wr.data()['author']: 'No author'});
+                  }
+                  results.add(wr);
+                });
+              }
             } else {
               var name = await FirebaseFirestore.instance
                   .collection('users')
@@ -247,24 +251,26 @@ class _DashboardScreenState extends State<DashboardScreen>
           }
           setState(() {
             data1 = data2;
+            loading = false;
           });
         } else {
           data1 = data2;
+          loading = false;
         }
       }
     }
 
-    if (this.mounted) {
-      setState(() {
-        loading = false;
-      });
-    } else {
-      if (this.mounted) {
-        setState(() {
-          loading = false;
-        });
-      }
-    }
+    // if (this.mounted) {
+    //   setState(() {
+    //     loading = false;
+    //   });
+    // } else {
+    //   if (this.mounted) {
+    //     setState(() {
+    //       loading = false;
+    //     });
+    //   }
+    // }
   }
 
   @override
@@ -882,12 +888,14 @@ class _DashboardScreenState extends State<DashboardScreen>
     setState(() {
       loading = true;
     });
-    Navigator.push(
-      context,
-      SlideRightRoute(
-        page: HomeScreen(),
-      ),
-    );
+    user = null;
+    data1 = null;
+    results = [];
+    names = {};
+    loading = true;
+    i = 0;
+    j = 0;
+    prepare();
     setState(() {
       loading = false;
     });

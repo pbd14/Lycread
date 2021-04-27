@@ -29,6 +29,7 @@ dependencies:
   firebase_auth: ^1.1.0
   firebase_auth_web:
   cloud_firestore: ^1.0.5
+  cloud_firestore_web: ^1.0.6
   firebase_storage: ^8.0.3
   firebase_messaging: ^9.1.1
   date_format: ^1.0.9

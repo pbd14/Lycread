@@ -57,12 +57,12 @@ class _ActivityScreenState extends State<ActivityScreen> {
       if (this.mounted) {
         setState(() {
           names.addAll({
-            res['author']: data.data() != null ? data.data()['photo'] : null
+            res['author']: data.data() != null ? data.data()['photo'] : 'N'
           });
         });
       } else {
         names.addAll(
-            {res['author']: data.data() != null ? data.data()['photo'] : null});
+            {res['author']: data.data() != null ? data.data()['photo'] : 'N'});
       }
     }
     for (var res in results1) {
@@ -240,47 +240,45 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                                   index]
                                                               ['author']] !=
                                                           null
-                                                      ? names[results[results.length -
-                                                                          1 -
-                                                                          index]
-                                                                      [
-                                                                      'author']]
-                                                                  ['photo'] !=
-                                                              null
-                                                          ? CachedNetworkImage(
-                                                              filterQuality:
-                                                                  FilterQuality
-                                                                      .none,
-                                                              fit: BoxFit.cover,
-                                                              placeholder:
-                                                                  (context,
-                                                                          url) =>
-                                                                      Transform
-                                                                          .scale(
-                                                                scale: 0.8,
-                                                                child:
-                                                                    CircularProgressIndicator(
-                                                                  strokeWidth:
-                                                                      2.0,
-                                                                  backgroundColor:
-                                                                      footyColor,
-                                                                  valueColor: AlwaysStoppedAnimation<
+                                                      ?
+                                                      // names[results[results.length -
+                                                      //                     1 -
+                                                      //                     index]
+                                                      //                 [
+                                                      //                 'author']]
+                                                      //             ['photo'] !=
+                                                      //         null
+                                                      CachedNetworkImage(
+                                                          filterQuality:
+                                                              FilterQuality
+                                                                  .none,
+                                                          fit: BoxFit.cover,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Transform.scale(
+                                                            scale: 0.8,
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              strokeWidth: 2.0,
+                                                              backgroundColor:
+                                                                  footyColor,
+                                                              valueColor:
+                                                                  AlwaysStoppedAnimation<
                                                                           Color>(
                                                                       primaryColor),
-                                                                ),
-                                                              ),
-                                                              imageUrl: names[
-                                                                  results[results
-                                                                              .length -
-                                                                          1 -
-                                                                          index]
-                                                                      [
-                                                                      'author']],
-                                                            )
-                                                          : Image.asset(
-                                                              'assets/images/User.png',
-                                                              fit: BoxFit.cover,
-                                                            )
+                                                            ),
+                                                          ),
+                                                          imageUrl: names[
+                                                              results[results
+                                                                          .length -
+                                                                      1 -
+                                                                      index]
+                                                                  ['author']],
+                                                        )
+                                                      // : Image.asset(
+                                                      //     'assets/images/User.png',
+                                                      //     fit: BoxFit.cover,
+                                                      //   )
                                                       : Image.asset(
                                                           'assets/images/User.png',
                                                           fit: BoxFit.cover,
