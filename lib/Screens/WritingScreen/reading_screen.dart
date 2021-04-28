@@ -791,9 +791,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 .instance.currentUser.uid,
                                             'seen': false,
                                             'text':
-                                                'Пользователь $nText прокомментировал ваше искусство $nText1',
+                                                '$nText прокомментировал $nText1',
                                             'type': 'New comment',
                                             'date': DateTime.now(),
+                                            'post_id': widget.data.id,
                                           }
                                         ]),
                                       });
