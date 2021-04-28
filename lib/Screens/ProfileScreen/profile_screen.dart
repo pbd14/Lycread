@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screen_lock/screen_lock.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/components/activity_screen.dart';
 import 'package:lycread/Services/auth_service.dart';
+import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 import 'components/1.dart';
@@ -49,6 +52,19 @@ class _PlaceScreenState extends State<ProfileScreen> {
   ];
 
   Future<void> prepare() async {
+    // final prefs = await SharedPreferences.getInstance();
+    // final value1 = prefs.getBool('local_auth') ?? false;
+    // if (value1) {
+    //   Navigator.push(
+    //     context,
+    //     SlideRightRoute(
+    //       page: ScreenLock(
+    //         correctString: prefs.getString('local_password'),
+    //         canCancel: false,
+    //       ),
+    //     ),
+    //   );
+    // }
     user = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser.uid)

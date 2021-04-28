@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screen_lock/screen_lock.dart';
 import 'package:lycread/Screens/DashboardScreen/dashboard_screen.dart';
 import 'package:lycread/Screens/LoginScreen/login_screen1.dart';
 import 'package:lycread/Screens/ProfileScreen/profile_screen.dart';
@@ -9,6 +10,7 @@ import 'package:lycread/Screens/SearchScreen/search_screen.dart';
 import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -20,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isNotif = false;
+
   bool can = true;
   bool loading = false;
   int _selectedIndex = 0;
@@ -41,6 +44,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> prepare() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value1 = prefs.getBool('local_auth') ?? false;
+    if (value1) {
+      Navigator.push(
+        context,
+        SlideRightRoute(
+          page: ScreenLock(
+            correctString: prefs.getString('local_password'),
+            canCancel: false,
+          ),
+        ),
+      );
+    }
     if (FirebaseAuth.instance.currentUser != null) {
       DocumentSnapshot dc = await FirebaseFirestore.instance
           .collection('users')
@@ -54,11 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           can = false;
         }
-        Navigator.push(
-            context,
-            SlideRightRoute(
-              page: LoginScreen1(),
-            ));
+        // Navigator.push(
+        //     context,
+        //     SlideRightRoute(
+        //       page: LoginScreen1(),
+        //     ));
       }
     }
   }
