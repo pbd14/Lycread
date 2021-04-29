@@ -99,7 +99,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                         margin: EdgeInsets.all(5),
                         shadowColor: whiteColor,
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(25.0),
                           child: Form(
                             key: _formKey,
                             child: Column(

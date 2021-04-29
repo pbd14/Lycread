@@ -24,6 +24,7 @@ class _PlaceScreenState extends State<ProfileScreen> {
   Size size;
   bool loading = true;
   DocumentSnapshot user;
+  SharedPreferences prefs;
   List<Widget> tbvList = [
     VProfileScreen1(),
     ActivityScreen(),
@@ -65,6 +66,7 @@ class _PlaceScreenState extends State<ProfileScreen> {
     //     ),
     //   );
     // }
+    prefs = await SharedPreferences.getInstance();
     user = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser.uid)
@@ -243,6 +245,8 @@ class _PlaceScreenState extends State<ProfileScreen> {
                                 CupertinoDialogAction(
                                   isDestructiveAction: true,
                                   onPressed: () {
+                                    prefs.setBool('local_auth', false);
+                                    prefs.setString('local_password', '');
                                     Navigator.of(context).pop(true);
                                     AuthService().signOut(context);
                                   },

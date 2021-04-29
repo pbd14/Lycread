@@ -36,6 +36,7 @@ dependencies:
   cached_network_image: ^3.0.0
   flutter_screen_lock: ^4.0.3
   shared_preferences: ^2.0.5
+  flutter_quill: ^1.2.2
 
 
   # The following adds the Cupertino Icons font to your application.

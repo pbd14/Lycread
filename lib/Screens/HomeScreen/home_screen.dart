@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screen_lock/functions.dart';
 import 'package:flutter_screen_lock/screen_lock.dart';
 import 'package:lycread/Screens/DashboardScreen/dashboard_screen.dart';
 import 'package:lycread/Screens/LoginScreen/login_screen1.dart';
@@ -47,15 +48,19 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final value1 = prefs.getBool('local_auth') ?? false;
     if (value1) {
-      Navigator.push(
-        context,
-        SlideRightRoute(
-          page: ScreenLock(
-            correctString: prefs.getString('local_password'),
-            canCancel: false,
-          ),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   SlideRightRoute(
+      //     page: ScreenLock(
+      //       correctString: prefs.getString('local_password'),
+      //       canCancel: false,
+      //     ),
+      //   ),
+      // );
+      screenLock(
+          context: context,
+          correctString: prefs.getString('local_password'),
+          canCancel: false);
     }
     if (FirebaseAuth.instance.currentUser != null) {
       DocumentSnapshot dc = await FirebaseFirestore.instance

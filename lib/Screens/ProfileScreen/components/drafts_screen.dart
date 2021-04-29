@@ -361,7 +361,7 @@ class _DraftsScreenState extends State<DraftsScreen> {
                             )
                           : Center(
                               child: Text(
-                                'Нет избранных',
+                                'Нет черновиков',
                                 overflow: TextOverflow.ellipsis,
                                 textScaleFactor: 1,
                                 style: GoogleFonts.montserrat(

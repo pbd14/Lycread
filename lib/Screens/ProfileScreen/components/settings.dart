@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screen_lock/functions.dart';
 import 'package:flutter_screen_lock/screen_lock.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -76,15 +77,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     prefs = await SharedPreferences.getInstance();
     value1 = prefs.getBool('local_auth') ?? false;
     if (value1) {
-      Navigator.push(
-        context,
-        SlideRightRoute(
-          page: ScreenLock(
-            correctString: prefs.getString('local_password'),
-            canCancel: false,
-          ),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   SlideRightRoute(
+      //     page: ScreenLock(
+      //       correctString: prefs.getString('local_password'),
+      //       canCancel: false,
+      //     ),
+      //   ),
+      // );
+      screenLock(
+          context: context,
+          correctString: prefs.getString('local_password'),
+          canCancel: false);
     }
     if (this.mounted) {
       setState(() {
@@ -202,8 +207,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                   );
                                                   showSimpleNotification(
                                                     Container(
-                                                        child: Text(
-                                                            notification.body)),
+                                                      child: Text(
+                                                          notification.body),
+                                                    ),
                                                     position:
                                                         NotificationPosition
                                                             .top,
@@ -234,6 +240,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           child: RoundedTextInput(
                                             height: 110,
                                             length: 4,
+                                            initialValue: prefs.getString(
+                                                    'local_password')!=null ? '****' :
+                                                '',
                                             validator: (val) {
                                               if (val.length != 4) {
                                                 return "Нужен 4-значный код";
