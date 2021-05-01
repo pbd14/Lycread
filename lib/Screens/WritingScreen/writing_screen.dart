@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/models/documents/document.dart';
 import 'package:flutter_quill/widgets/controller.dart';
 import 'package:flutter_quill/widgets/editor.dart';
 import 'package:flutter_quill/widgets/toolbar.dart';
@@ -14,6 +15,7 @@ import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/text_field_container.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -29,6 +31,7 @@ class _WritingScreenState extends State<WritingScreen> {
   String text;
   String category = 'Общее';
   String error = '';
+  SharedPreferences prefs;
   bool isError = false;
   bool loading = false;
   File i1;
@@ -36,6 +39,26 @@ class _WritingScreenState extends State<WritingScreen> {
   QuillController _controller = QuillController.basic();
 
   Future<void> prepare() async {
+    prefs = await SharedPreferences.getInstance();
+    text = prefs.getString('draft') ?? 'Text';
+    _controller = QuillController(
+      document: Document.fromJson([
+        // {
+        //   "insert": 'Text',
+        //   "attributes": {"color": "#e53935", "bold": true},
+        //   "insert": '\n',
+        // }
+        {
+          "insert": text,
+          "attributes": {"bold": true}
+        },
+        {
+          "insert": "\n",
+          "attributes": {"header": 3}
+        }
+      ]),
+      selection: TextSelection.collapsed(offset: 0),
+    );
     DocumentSnapshot dc = await FirebaseFirestore.instance
         .collection('appData')
         .doc('LycRead')
@@ -70,6 +93,12 @@ class _WritingScreenState extends State<WritingScreen> {
   void initState() {
     prepare();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    prefs.setString('draft', _controller.document.toPlainText());
+    super.dispose();
   }
 
   @override
@@ -177,30 +206,30 @@ class _WritingScreenState extends State<WritingScreen> {
                           padding: EdgeInsets.all(10),
                           width: size.width * 0.9,
                           child: Container(
-                              // decoration: BoxDecoration(
-                              //   border: Border.all(
-                              //     color: lightPrimaryColor,
-                              //   ),
-                              //   borderRadius: BorderRadius.circular(10.0),
-                              // ),
-                              margin: EdgeInsets.all(10),
-                              padding: EdgeInsets.all(10),
-                              child: 
-                              // QuillEditor(
-                              //   focusNode: FocusNode(),
-                              //   autoFocus: false,
-                              //   expands: false,
-                              //   scrollable: false,
-                              //   scrollController: ScrollController(),
-                              //   readOnly: false,
-                              //   padding: EdgeInsets.all(5),
-                              //   controller: _controller,
-                              // )
-                              QuillEditor.basic(
-                                controller: _controller,
-                                readOnly: false, // true for view only mode
-                              ),
-                              ),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            //     color: lightPrimaryColor,
+                            //   ),
+                            //   borderRadius: BorderRadius.circular(10.0),
+                            // ),
+                            margin: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10),
+                            child:
+                                // QuillEditor(
+                                //   focusNode: FocusNode(),
+                                //   autoFocus: false,
+                                //   expands: false,
+                                //   scrollable: false,
+                                //   scrollController: ScrollController(),
+                                //   readOnly: false,
+                                //   padding: EdgeInsets.all(5),
+                                //   controller: _controller,
+                                // )
+                                QuillEditor.basic(
+                              controller: _controller,
+                              readOnly: false, // true for view only mode
+                            ),
+                          ),
                         ),
                         SizedBox(
                           height: 20,
@@ -397,6 +426,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                 position: NotificationPosition.top,
                                 background: footyColor,
                               );
+                              prefs.setString('draft', null);
                               setState(() {
                                 i1 = null;
                                 name = null;

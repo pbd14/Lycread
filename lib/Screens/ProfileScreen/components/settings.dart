@@ -198,6 +198,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                 if (!val) {
                                                   prefs.setBool(
                                                       'local_auth', expV1);
+                                                  prefs.setString('local_password', null);
                                                   PushNotificationMessage
                                                       notification =
                                                       PushNotificationMessage(
