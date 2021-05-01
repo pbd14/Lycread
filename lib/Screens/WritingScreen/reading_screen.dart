@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/models/documents/document.dart';
+import 'package:flutter_quill/widgets/controller.dart';
+import 'package:flutter_quill/widgets/editor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
@@ -36,6 +40,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   String ratStr = '';
   String commentText = '';
   StreamSubscription<DocumentSnapshot> subscription;
+  QuillController _controller = QuillController.basic();
   List comments = [];
   Map photos = {};
 
@@ -156,6 +161,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   void initState() {
+    if (widget.data.data()['rich_text'] != null) {
+      var myJSON = jsonDecode(widget.data.data()['rich_text']);
+      _controller = QuillController(
+        document: Document.fromJson(myJSON),
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
     if (widget.data.data()['users_read'] != null) {
       if (!widget.data
           .data()['users_read']
@@ -227,6 +239,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : Scaffold(
@@ -686,27 +699,56 @@ class _ReadingScreenState extends State<ReadingScreen> {
                           )
                         : Container(),
                     SizedBox(height: 20),
-                    Center(
-                      child: Container(
-                        width: double.infinity,
-                        child: Text(
-                          widget.data.data()['text'],
-                          textScaleFactor: 1,
-                          style: GoogleFonts.montserrat(
-                            textStyle: TextStyle(
-                                color: secondColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                      ),
-                    ),
+                    widget.data.data()['text'] != null
+                        ? Center(
+                            child: Container(
+                              width: double.infinity,
+                              child: Text(
+                                widget.data.data()['text'],
+                                textScaleFactor: 1,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: secondColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(),
+                    SizedBox(height: 10),
+                    widget.data.data()['rich_text'] != null
+                        ? Container(
+                            margin: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10),
+                            width: double.infinity,
+                            child: Container(
+                                margin: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(10),
+                                child: 
+                                QuillEditor(
+                                  focusNode: FocusNode(),
+                                  autoFocus: false,
+                                  expands: false,
+                                  scrollable: false,
+                                  scrollController: ScrollController(),
+                                  readOnly: true,
+                                  showCursor: false,
+                                  padding: EdgeInsets.all(5),
+                                  controller: _controller,
+                                )
+                                // QuillEditor.basic(
+                                //   controller: _controller,
+                                //   readOnly: false, // true for view only mode
+                                // ),
+                                ),
+                          )
+                        : Container(),
                     SizedBox(height: 10),
                     Divider(
                       color: secondColor,
                       thickness: 2,
                     ),
-                    SizedBox(height: 10),
                     Form(
                       key: _formKey,
                       child: Column(
