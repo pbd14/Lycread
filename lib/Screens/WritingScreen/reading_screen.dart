@@ -479,7 +479,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       PushNotificationMessage notification =
                                           PushNotificationMessage(
                                         title: 'Fail',
-                                        body: 'Failed to up',
+                                        body: 'Failed to update',
                                       );
                                       showSimpleNotification(
                                         Container(

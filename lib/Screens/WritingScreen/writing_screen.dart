@@ -54,7 +54,7 @@ class _WritingScreenState extends State<WritingScreen> {
         },
         {
           "insert": "\n",
-          "attributes": {"header": 3}
+          "attributes": {"header": 1}
         }
       ]),
       selection: TextSelection.collapsed(offset: 0),
@@ -97,7 +97,13 @@ class _WritingScreenState extends State<WritingScreen> {
 
   @override
   void dispose() {
-    prefs.setString('draft', _controller.document.toPlainText());
+    if(_controller.document.toPlainText().trim().isNotEmpty){
+      if(_controller.document.toPlainText().characters.length != 0)
+      prefs.setString('draft', _controller.document.toPlainText());
+    }
+    else{
+      prefs.setString('draft', 'Text');
+    }
     super.dispose();
   }
 
@@ -426,7 +432,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                 position: NotificationPosition.top,
                                 background: footyColor,
                               );
-                              prefs.setString('draft', null);
+                              prefs.setString('draft', 'Text');
                               setState(() {
                                 i1 = null;
                                 name = null;
