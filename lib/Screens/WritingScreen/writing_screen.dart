@@ -359,7 +359,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                     .doc()
                                     .set({
                                   'name': name,
-                                  'text': text,
+                                  // 'text': text,
                                   'author':
                                       FirebaseAuth.instance.currentUser.uid,
                                   'images': [
@@ -394,7 +394,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                     .doc()
                                     .set({
                                   'name': name,
-                                  'text': text,
+                                  // 'text': text,
                                   'author':
                                       FirebaseAuth.instance.currentUser.uid,
                                   'images': 'No Image',
@@ -474,7 +474,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                   'drafts': FieldValue.arrayUnion([
                                     {
                                       'name': name,
-                                      'text': text,
+                                      // 'text': text,
                                       'date': DateTime.now(),
                                       'rich_text': jsonEncode(_controller
                                           .document
@@ -522,7 +522,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                   'drafts': FieldValue.arrayUnion([
                                     {
                                       'name': name,
-                                      'text': text,
+                                      // 'text': text,
                                       'date': DateTime.now(),
                                       'images': 'No Image',
                                       'rich_text': jsonEncode(_controller

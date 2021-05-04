@@ -722,26 +722,17 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             margin: EdgeInsets.all(10),
                             padding: EdgeInsets.all(10),
                             width: double.infinity,
-                            child: Container(
-                                margin: EdgeInsets.all(10),
-                                padding: EdgeInsets.all(10),
-                                child: 
-                                QuillEditor(
-                                  focusNode: FocusNode(),
-                                  autoFocus: false,
-                                  expands: false,
-                                  scrollable: false,
-                                  scrollController: ScrollController(),
-                                  readOnly: true,
-                                  showCursor: false,
-                                  padding: EdgeInsets.all(5),
-                                  controller: _controller,
-                                )
-                                // QuillEditor.basic(
-                                //   controller: _controller,
-                                //   readOnly: false, // true for view only mode
-                                // ),
-                                ),
+                            child: QuillEditor(
+                              focusNode: FocusNode(),
+                              autoFocus: false,
+                              expands: false,
+                              scrollable: false,
+                              scrollController: ScrollController(),
+                              readOnly: true,
+                              showCursor: false,
+                              padding: EdgeInsets.all(5),
+                              controller: _controller,
+                            ),
                           )
                         : Container(),
                     SizedBox(height: 10),

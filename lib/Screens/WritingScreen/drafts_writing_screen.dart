@@ -364,7 +364,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                     .doc()
                                     .set({
                                   'name': name,
-                                  'text': text,
+                                  // 'text': text,
                                   'author':
                                       FirebaseAuth.instance.currentUser.uid,
                                   'images': [
@@ -400,7 +400,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                       .doc()
                                       .set({
                                     'name': name,
-                                    'text': text,
+                                    // 'text': text,
                                     'author':
                                         FirebaseAuth.instance.currentUser.uid,
                                     'images': [widget.data['images'][0]],
@@ -434,7 +434,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                       .doc()
                                       .set({
                                     'name': name,
-                                    'text': text,
+                                    // 'text': text,
                                     'author':
                                         FirebaseAuth.instance.currentUser.uid,
                                     'images': 'No Image',
@@ -511,7 +511,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                   'drafts': FieldValue.arrayUnion([
                                     {
                                       'name': name,
-                                      'text': text,
+                                      // 'text': text,
                                       'rich_text': jsonEncode(_controller
                                           .document
                                           .toDelta()
@@ -561,7 +561,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                     'drafts': FieldValue.arrayUnion([
                                       {
                                         'name': name,
-                                        'text': text,
+                                        // 'text': text,
                                         'date': DateTime.now(),
                                         'rich_text': jsonEncode(_controller
                                             .document
@@ -606,7 +606,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                     'drafts': FieldValue.arrayUnion([
                                       {
                                         'name': name,
-                                        'text': text,
+                                        // 'text': text,
                                         'date': DateTime.now(),
                                         'rich_text': jsonEncode(_controller
                                             .document
