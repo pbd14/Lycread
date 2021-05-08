@@ -10,6 +10,7 @@ import 'package:flutter_quill/widgets/controller.dart';
 import 'package:flutter_quill/widgets/editor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Models/Tags.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/WritingScreen/comment_reply_screen.dart';
 import 'package:lycread/widgets/label_button.dart';
@@ -155,8 +156,40 @@ class _ReadingScreenState extends State<ReadingScreen> {
         }
       }
     }
-    print('HERE');
-    print(photos);
+  }
+
+  Future<void> manageTags() async {
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    Map userStats = user.data()['stats'];
+    List tags = [];
+    List tags_rec = [];
+    List recoms = widget.data.data()['tags'];
+    for (String tag in widget.data.data()['tags']) {
+      if (userStats[tag] != null) {
+        userStats[tag] = userStats[tag] + 1;
+      } else {
+        userStats[tag] = 1;
+      }
+    }
+    tags = userStats.values.toList();
+    tags.sort();
+    tags_rec.add(tags.reversed.first);
+    tags_rec.add(tags.reversed.elementAt(1));
+    tags_rec.add(tags.reversed.elementAt(2));
+    userStats.forEach((key, value) {
+      if (tags_rec.contains(value)) {
+        recoms.add(key);
+      }
+    });
+    print("RECOMS");
+    print(recoms);
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .update({'stats': userStats, 'recommendations': recoms});
   }
 
   @override
@@ -172,6 +205,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
       if (!widget.data
           .data()['users_read']
           .contains(FirebaseAuth.instance.currentUser.uid)) {
+        if (widget.data.data()['tags'] != null) {
+          manageTags();
+        }
         FirebaseFirestore.instance
             .collection('writings')
             .doc(widget.data.id)
@@ -184,8 +220,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser.uid)
             .update({
-          'reads':
-              FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid]),
+          'reads': FieldValue.arrayUnion([widget.data.id]),
         });
       }
     }

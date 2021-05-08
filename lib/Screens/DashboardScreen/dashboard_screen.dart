@@ -21,7 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool get wantKeepAlive => true;
 
   DocumentSnapshot user;
-  QuerySnapshot data1;
+  List data1 = [];
   List results = [];
   Map names = {};
   bool loading = true;
@@ -118,6 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         user.data()['following'].length == 0) {
       QuerySnapshot data = await FirebaseFirestore.instance
           .collection('writings')
+          .where('tags', arrayContainsAny: user.data()['recommendations'])
           .orderBy('rating', descending: true)
           .limit(30)
           .get();
@@ -128,28 +129,38 @@ class _DashboardScreenState extends State<DashboardScreen>
             .get();
         if (this.mounted) {
           setState(() {
+            if (user.data()['reads'] != null) {
+              if (!user.data()['reads'].contains(d.id)) {
+                results.add(d);
+              }
+            }
             if (name.data() != null) {
               names.addAll({d.data()['author']: name.data()['name']});
             } else {
               names.addAll({d.data()['author']: 'No author'});
             }
+            loading = false;
           });
         } else {
+          if (user.data()['reads'] != null) {
+            if (!user.data()['reads'].contains(d.id)) {
+              results.add(d);
+            }
+          }
           if (name.data() != null) {
             names.addAll({d.data()['author']: name.data()['name']});
           } else {
             names.addAll({d.data()['author']: 'No author'});
           }
+          loading = false;
         }
       }
 
       if (this.mounted) {
         setState(() {
-          results = data.docs;
           loading = false;
         });
       } else {
-        results = data.docs;
         loading = false;
       }
     } else {
@@ -224,10 +235,10 @@ class _DashboardScreenState extends State<DashboardScreen>
           }
         }
       }
-
       if (results.length < 30) {
         QuerySnapshot data2 = await FirebaseFirestore.instance
             .collection('writings')
+            .where('tags', arrayContainsAny: user.data()['recommendations'])
             .orderBy('rating', descending: true)
             .limit(30 - results.length)
             .get();
@@ -239,26 +250,36 @@ class _DashboardScreenState extends State<DashboardScreen>
                 .get();
             if (this.mounted) {
               setState(() {
+                if (user.data()['reads'] != null) {
+                  if (!user.data()['reads'].contains(wr.id)) {
+                    data1.add(wr);
+                  }
+                }
                 if (name.data() != null) {
                   names.addAll({wr.data()['author']: name.data()['name']});
                 } else {
                   names.addAll({wr.data()['author']: 'No author'});
                 }
+                loading = false;
               });
             } else {
+              if (user.data()['reads'] != null) {
+                if (!user.data()['reads'].contains(wr.id)) {
+                  data1.add(wr);
+                }
+              }
               if (name.data() != null) {
                 names.addAll({wr.data()['author']: name.data()['name']});
               } else {
                 names.addAll({wr.data()['author']: 'No author'});
               }
+              loading = false;
             }
           }
           setState(() {
-            data1 = data2;
             loading = false;
           });
         } else {
-          data1 = data2;
           loading = false;
         }
       }
@@ -519,7 +540,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                   ),
                                 ),
                               ),
-                              for (QueryDocumentSnapshot element in data1.docs)
+                              for (QueryDocumentSnapshot element in data1)
                                 Container(
                                   width: size.width * 0.95,
                                   height: element.data()['images'] != null
@@ -920,7 +941,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       loading = true;
     });
     user = null;
-    data1 = null;
+    data1 = [];
     results = [];
     names = {};
     loading = true;

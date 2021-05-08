@@ -307,11 +307,25 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.2+1"
+  flutter_tagging:
+    dependency: "direct main"
+    description:
+      name: flutter_tagging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_typeahead:
+    dependency: transitive
+    description:
+      name: flutter_typeahead
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.2"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

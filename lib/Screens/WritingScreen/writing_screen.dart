@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,12 @@ import 'package:flutter_quill/models/documents/document.dart';
 import 'package:flutter_quill/widgets/controller.dart';
 import 'package:flutter_quill/widgets/editor.dart';
 import 'package:flutter_quill/widgets/toolbar.dart';
+import 'package:flutter_tagging/flutter_tagging.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Models/Tags.dart';
 import 'package:lycread/widgets/rounded_button.dart';
-import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/text_field_container.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,6 +33,10 @@ class _WritingScreenState extends State<WritingScreen> {
   String text;
   String category = 'Общее';
   String error = '';
+  List<Tag> tags = [];
+  List<String> writingTags = [];
+  List<Tag> newTags = [];
+  List<Tag> chosenTags = [];
   SharedPreferences prefs;
   bool isError = false;
   bool loading = false;
@@ -49,13 +55,8 @@ class _WritingScreenState extends State<WritingScreen> {
         //   "insert": '\n',
         // }
         {
-          "insert": text,
-          "attributes": {"bold": true}
+          "insert": text.trim() + "\n",
         },
-        {
-          "insert": "\n",
-          "attributes": {"header": 1}
-        }
       ]),
       selection: TextSelection.collapsed(offset: 0),
     );
@@ -63,13 +64,33 @@ class _WritingScreenState extends State<WritingScreen> {
         .collection('appData')
         .doc('LycRead')
         .get();
+    List<Tag> tempTags = [];
+    for (var tag in dc.data()['tags']) {
+      tempTags.add(Tag(name: tag, number: dc.data()['tags_num'][tag]));
+    }
     if (this.mounted) {
       setState(() {
         categs = dc.data()['genres'];
+        tags = tempTags;
       });
     } else {
       categs = dc.data()['genres'];
+      tags = tempTags;
     }
+  }
+
+  String getFnum(int fnum) {
+    String fnum1 = '';
+    if (fnum > 999999) {
+      double numb = fnum / 1000000;
+      fnum1 = numb.toStringAsFixed(1) + 'M';
+    } else if (fnum > 999) {
+      double numb = fnum / 1000;
+      fnum1 = numb.toStringAsFixed(1) + 'K';
+    } else {
+      fnum1 = fnum.toString();
+    }
+    return fnum1;
   }
 
   Future _getImage() async {
@@ -97,11 +118,13 @@ class _WritingScreenState extends State<WritingScreen> {
 
   @override
   void dispose() {
-    if(_controller.document.toPlainText().trim().isNotEmpty){
-      if(_controller.document.toPlainText().characters.length != 0)
-      prefs.setString('draft', _controller.document.toPlainText());
-    }
-    else{
+    if (_controller.document.toPlainText().trim().isNotEmpty) {
+      if (_controller.document.toPlainText().characters.length != 0) {
+        prefs.setString('draft', _controller.document.toPlainText());
+      } else {
+        prefs.setString('draft', 'Text');
+      }
+    } else {
       prefs.setString('draft', 'Text');
     }
     super.dispose();
@@ -160,7 +183,7 @@ class _WritingScreenState extends State<WritingScreen> {
                               maxLength: 30,
                               style: TextStyle(color: primaryColor),
                               validator: (val) =>
-                                  val.length > 2 ? null : 'Минимум 2 символов',
+                                  val.length > 1 ? null : 'Минимум 2 символов',
                               keyboardType: TextInputType.text,
                               onChanged: (value) {
                                 name = value;
@@ -238,7 +261,79 @@ class _WritingScreenState extends State<WritingScreen> {
                           ),
                         ),
                         SizedBox(
-                          height: 20,
+                          height: 30,
+                        ),
+                        Container(
+                          width: size.width * 0.9,
+                          child: FlutterTagging<Tag>(
+                            enableImmediateSuggestion: true,
+                            initialItems: chosenTags,
+                            findSuggestions: (pattern) async {
+                              return await TagsService.getTags(pattern, tags);
+                            },
+                            textFieldConfiguration: TextFieldConfiguration(
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                filled: true,
+                                fillColor: whiteColor,
+                                hintText: 'Теги',
+                              ),
+                            ),
+                            onAdded: (tag) {
+                              newTags.add(
+                                Tag(
+                                  name: tag.name,
+                                  number: tag.number,
+                                ),
+                              );
+                              tags.add(
+                                Tag(
+                                  name: tag.name,
+                                  number: tag.number,
+                                ),
+                              );
+                              // api calls here, triggered when add to tag button is pressed
+                              return Tag(
+                                  name: tag.get(), number: tag.getNumber());
+                            },
+                            configureSuggestion: (tag) {
+                              return SuggestionConfiguration(
+                                title: Text(tag.name),
+                                subtitle: Text(getFnum(tag.number)),
+                                additionWidget: Chip(
+                                  avatar: Icon(
+                                    Icons.add_circle,
+                                    color: Colors.white,
+                                  ),
+                                  label: Text('Добавить тег'),
+                                  labelStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                  backgroundColor: primaryColor,
+                                ),
+                              );
+                            },
+                            configureChip: (tag) {
+                              return ChipConfiguration(
+                                label: Text(tag.name),
+                                backgroundColor: primaryColor,
+                                labelStyle: TextStyle(color: footyColor),
+                                deleteIconColor: footyColor,
+                              );
+                            },
+                            onChanged: () {},
+                            additionCallback: (value) {
+                              return Tag(
+                                name: value,
+                                number: 0,
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
                         ),
                         Container(
                           padding: EdgeInsets.fromLTRB(
@@ -284,6 +379,7 @@ class _WritingScreenState extends State<WritingScreen> {
                         SizedBox(
                           height: 30,
                         ),
+
                         // Text(
                         //   'Фотография',
                         //   textScaleFactor: 1,
@@ -341,104 +437,148 @@ class _WritingScreenState extends State<WritingScreen> {
                           ph: 45,
                           text: 'Добавить',
                           press: () async {
-                            if (_formKey.currentState.validate()) {
-                              setState(() {
-                                loading = true;
-                              });
-                              String id = FirebaseAuth.instance.currentUser.uid;
-                              String date = DateTime.now().toString();
-                              if (i1 != null) {
-                                a1 = await FirebaseStorage.instance
-                                    .ref('uploads')
-                                    .child('$id/writings/$date')
-                                    .putFile(i1);
-                              }
-                              if (a1 != null) {
-                                FirebaseFirestore.instance
-                                    .collection('writings')
-                                    .doc()
-                                    .set({
-                                  'name': name,
-                                  // 'text': text,
-                                  'author':
-                                      FirebaseAuth.instance.currentUser.uid,
-                                  'images': [
-                                    await a1.ref.getDownloadURL(),
-                                  ],
-                                  'genre': category.toLowerCase(),
-                                  'date': DateTime.now(),
-                                  'rich_text': jsonEncode(
-                                      _controller.document.toDelta().toJson()),
-                                  'rating': 0,
-                                  'users_rated': [],
-                                  'reads': 0,
-                                  'users_read': [],
-                                  'comments': [],
-                                }).catchError((error) {
-                                  print('MISTAKE HERE');
-                                  print(error);
-                                  PushNotificationMessage notification =
-                                      PushNotificationMessage(
-                                    title: 'Ошибка',
-                                    body: 'Неудалось добавить историю',
-                                  );
-                                  showSimpleNotification(
-                                    Container(child: Text(notification.body)),
-                                    position: NotificationPosition.top,
-                                    background: Colors.red,
-                                  );
+                            for (Tag tt in chosenTags) {
+                              writingTags.add(tt.name);
+                            }
+                            if (writingTags.isNotEmpty) {
+                              if (_formKey.currentState.validate()) {
+                                setState(() {
+                                  loading = true;
                                 });
-                              } else {
+                                String id =
+                                    FirebaseAuth.instance.currentUser.uid;
+                                String date = DateTime.now().toString();
+                                if (i1 != null) {
+                                  a1 = await FirebaseStorage.instance
+                                      .ref('uploads')
+                                      .child('$id/writings/$date')
+                                      .putFile(i1);
+                                }
+                                if (a1 != null) {
+                                  FirebaseFirestore.instance
+                                      .collection('writings')
+                                      .doc()
+                                      .set({
+                                    'name': name,
+                                    // 'text': text,
+                                    'author':
+                                        FirebaseAuth.instance.currentUser.uid,
+                                    'images': [
+                                      await a1.ref.getDownloadURL(),
+                                    ],
+                                    'genre': category.toLowerCase(),
+                                    'date': DateTime.now(),
+                                    'rich_text': jsonEncode(_controller.document
+                                        .toDelta()
+                                        .toJson()),
+                                    'rating': 0,
+                                    'users_rated': [],
+                                    'tags': writingTags,
+                                    'reads': 0,
+                                    'users_read': [],
+                                    'comments': [],
+                                  }).catchError((error) {
+                                    print('MISTAKE HERE');
+                                    print(error);
+                                    PushNotificationMessage notification =
+                                        PushNotificationMessage(
+                                      title: 'Ошибка',
+                                      body: 'Неудалось добавить историю',
+                                    );
+                                    showSimpleNotification(
+                                      Container(child: Text(notification.body)),
+                                      position: NotificationPosition.top,
+                                      background: Colors.red,
+                                    );
+                                  });
+                                } else {
+                                  FirebaseFirestore.instance
+                                      .collection('writings')
+                                      .doc()
+                                      .set({
+                                    'name': name,
+                                    // 'text': text,
+                                    'author':
+                                        FirebaseAuth.instance.currentUser.uid,
+                                    'images': 'No Image',
+                                    'genre': category.toLowerCase(),
+                                    'date': DateTime.now(),
+                                    'rich_text': jsonEncode(_controller.document
+                                        .toDelta()
+                                        .toJson()),
+                                    'rating': 0,
+                                    'reads': 0,
+                                    'tags': writingTags,
+                                    'users_read': [],
+                                    'users_rated': [],
+                                    'comments': [],
+                                  }).catchError((error) {
+                                    print('MISTAKE HERE');
+                                    print(error);
+                                    PushNotificationMessage notification =
+                                        PushNotificationMessage(
+                                      title: 'Ошибка',
+                                      body: 'Неудалось добавить историю',
+                                    );
+                                    showSimpleNotification(
+                                      Container(child: Text(notification.body)),
+                                      position: NotificationPosition.top,
+                                      background: Colors.red,
+                                    );
+                                  });
+                                }
+                                PushNotificationMessage notification =
+                                    PushNotificationMessage(
+                                  title: 'Успех',
+                                  body: 'История добавлена',
+                                );
+                                showSimpleNotification(
+                                  Container(child: Text(notification.body)),
+                                  position: NotificationPosition.top,
+                                  background: footyColor,
+                                );
+                                prefs.setString('draft', 'Text');
+                                if (newTags.length != 0) {
+                                  List nTags = [];
+                                  for (Tag t in newTags) {
+                                    nTags.add(t.name);
+                                  }
+
+                                  FirebaseFirestore.instance
+                                      .collection('appData')
+                                      .doc('LycRead')
+                                      .update({
+                                    'tags': FieldValue.arrayUnion(nTags),
+                                  });
+                                }
+                                Map tNums = {};
+                                for (Tag tag in tags) {
+                                  if (writingTags.contains(tag.name)) {
+                                    tNums.addAll({tag.name: tag.number + 1});
+                                    tag.number = tag.number + 1;
+                                  } else {
+                                    tNums.addAll({tag.name: 1});
+                                  }
+                                }
                                 FirebaseFirestore.instance
-                                    .collection('writings')
-                                    .doc()
-                                    .set({
-                                  'name': name,
-                                  // 'text': text,
-                                  'author':
-                                      FirebaseAuth.instance.currentUser.uid,
-                                  'images': 'No Image',
-                                  'genre': category.toLowerCase(),
-                                  'date': DateTime.now(),
-                                  'rich_text': jsonEncode(
-                                      _controller.document.toDelta().toJson()),
-                                  'rating': 0,
-                                  'reads': 0,
-                                  'users_read': [],
-                                  'users_rated': [],
-                                  'comments': [],
-                                }).catchError((error) {
-                                  print('MISTAKE HERE');
-                                  print(error);
-                                  PushNotificationMessage notification =
-                                      PushNotificationMessage(
-                                    title: 'Ошибка',
-                                    body: 'Неудалось добавить историю',
-                                  );
-                                  showSimpleNotification(
-                                    Container(child: Text(notification.body)),
-                                    position: NotificationPosition.top,
-                                    background: Colors.red,
-                                  );
+                                    .collection('appData')
+                                    .doc('LycRead')
+                                    .update({'tags_num': tNums});
+                                setState(() {
+                                  writingTags = [];
+                                  chosenTags = [];
+                                  newTags = [];
+                                  i1 = null;
+                                  name = null;
+                                  error = '';
+                                  category = 'Общее';
+                                  text = null;
+                                  loading = false;
                                 });
                               }
-                              PushNotificationMessage notification =
-                                  PushNotificationMessage(
-                                title: 'Успех',
-                                body: 'История добавлена',
-                              );
-                              showSimpleNotification(
-                                Container(child: Text(notification.body)),
-                                position: NotificationPosition.top,
-                                background: footyColor,
-                              );
-                              prefs.setString('draft', 'Text');
+                            } else {
                               setState(() {
-                                i1 = null;
-                                name = null;
-                                error = '';
-                                category = 'Общее';
-                                text = null;
+                                error = 'Выберите теги';
                                 loading = false;
                               });
                             }
@@ -569,6 +709,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                 position: NotificationPosition.top,
                                 background: footyColor,
                               );
+
                               setState(() {
                                 loading = false;
                               });
@@ -605,5 +746,14 @@ class _WritingScreenState extends State<WritingScreen> {
               ),
             ),
           );
+  }
+}
+
+class TagsService {
+  /// Mocks fetching language from network API with delay of 500ms.
+  static Future<List<Tag>> getTags(String query, List<Tag> tags) async {
+    return tags
+        .where((tag) => tag.get().toLowerCase().contains(query.toLowerCase()))
+        .toList();
   }
 }
