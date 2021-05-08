@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/models/documents/document.dart';
 import 'package:flutter_quill/widgets/controller.dart';
+import 'package:flutter_quill/widgets/default_styles.dart';
 import 'package:flutter_quill/widgets/editor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
@@ -18,6 +19,7 @@ import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/up_button.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:tuple/tuple.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -758,8 +760,28 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             padding: EdgeInsets.all(10),
                             width: double.infinity,
                             child: QuillEditor(
+                              customStyles: DefaultStyles(
+                                placeHolder: DefaultTextBlockStyle(
+                                  TextStyle(color: secondColor),
+                                  Tuple2<double, double>(10, 10),
+                                  Tuple2<double, double>(3, 3),
+                                  BoxDecoration(),
+                                ),
+                                paragraph: DefaultTextBlockStyle(
+                                  TextStyle(color: secondColor),
+                                  Tuple2<double, double>(10, 10),
+                                  Tuple2<double, double>(3, 3),
+                                  BoxDecoration(),
+                                ),
+                                // h1: DefaultTextBlockStyle(
+                                //   TextStyle(color: secondColor),
+                                //   Tuple2<double, double>(5, 5),
+                                //   Tuple2<double, double>(3, 3),
+                                //   BoxDecoration(),
+                                // ),
+                              ),
                               focusNode: FocusNode(),
-                              autoFocus: false,
+                              autoFocus: true,
                               expands: false,
                               scrollable: false,
                               scrollController: ScrollController(),

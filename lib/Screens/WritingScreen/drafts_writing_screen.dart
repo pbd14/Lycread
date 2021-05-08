@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/models/documents/document.dart';
 import 'package:flutter_quill/widgets/controller.dart';
+import 'package:flutter_quill/widgets/default_styles.dart';
 import 'package:flutter_quill/widgets/editor.dart';
 import 'package:flutter_quill/widgets/toolbar.dart';
 import 'package:flutter_tagging/flutter_tagging.dart';
@@ -18,6 +19,7 @@ import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/text_field_container.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:tuple/tuple.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -252,10 +254,42 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                 //   padding: EdgeInsets.all(5),
                                 //   controller: _controller,
                                 // )
-                                QuillEditor.basic(
+                                QuillEditor(
+                              placeholder: 'Text',
+                              customStyles: DefaultStyles(
+                                placeHolder: DefaultTextBlockStyle(
+                                  TextStyle(color: lightPrimaryColor),
+                                  Tuple2<double, double>(10, 10),
+                                  Tuple2<double, double>(3, 3),
+                                  BoxDecoration(),
+                                ),
+                                paragraph: DefaultTextBlockStyle(
+                                  TextStyle(color: primaryColor),
+                                  Tuple2<double, double>(10, 10),
+                                  Tuple2<double, double>(3, 3),
+                                  BoxDecoration(),
+                                ),
+                                // h1: DefaultTextBlockStyle(
+                                //   TextStyle(color: secondColor),
+                                //   Tuple2<double, double>(5, 5),
+                                //   Tuple2<double, double>(3, 3),
+                                //   BoxDecoration(),
+                                // ),
+                              ),
+                              focusNode: FocusNode(),
+                              autoFocus: false,
+                              expands: false,
+                              scrollable: false,
+                              scrollController: ScrollController(),
+                              readOnly: false,
+                              showCursor: true,
+                              padding: EdgeInsets.all(5),
                               controller: _controller,
-                              readOnly: false, // true for view only mode
                             ),
+                            //     QuillEditor.basic(
+                            //   controller: _controller,
+                            //   readOnly: false, // true for view only mode
+                            // ),
                           ),
                         ),
                         SizedBox(
