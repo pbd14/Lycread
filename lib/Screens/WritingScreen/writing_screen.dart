@@ -227,9 +227,18 @@ class _WritingScreenState extends State<WritingScreen> {
                         //   height: 20,
                         // ),
                         Container(
-                          width: size.width * 0.9,
+                          width: size.width * 0.8,
                           child: QuillToolbar.basic(
                             controller: _controller,
+                            onImagePickCallback: (File file) async {
+                              DateTime date = DateTime.now();
+                              String id = FirebaseAuth.instance.currentUser.uid;
+                              TaskSnapshot task = await FirebaseStorage.instance
+                                  .ref('uploads')
+                                  .child('$id/writings/$date')
+                                  .putFile(file);
+                              return task.ref.getDownloadURL();
+                            },
                           ),
                         ),
                         Container(

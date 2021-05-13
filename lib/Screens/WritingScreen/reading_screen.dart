@@ -378,858 +378,860 @@ class _ReadingScreenState extends State<ReadingScreen> {
             //     ),
             //   ),
             // ),
-            body: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(25.0, 30, 25, 30),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                      Column(
-                        children: [
-                          IconButton(
-                            color: secondColor,
-                            icon: Icon(Icons.bedtime),
-                            onPressed: () {
-                              // ignore: non_constant_identifier_names
-                              Color _1 = secondColor;
-                              // ignore: non_constant_identifier_names
-                              Color _2 = firstColor;
-                              setState(() {
-                                firstColor = _1;
-                                secondColor = _2;
-                                isComm = !isComm;
-                              });
-                            },
-                          ),
-                          IconButton(
-                            color: secondColor,
-                            icon: Icon(CupertinoIcons.book_solid),
-                            onPressed: () {
-                              setState(() {
-                                if (!isComm) {
-                                  isYellow
-                                      ? firstColor = whiteColor
-                                      : firstColor = yellowColor;
-                                } else {
-                                  isYellow
-                                      ? secondColor = whiteColor
-                                      : secondColor = yellowColor;
-                                }
-                                isYellow = !isYellow;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Text(
-                              widget.data.data()['name'],
-                              textScaleFactor: 1,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.fade,
-                              maxLines: 1000,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: secondColor,
-                                    fontSize: 27,
-                                    fontWeight: FontWeight.bold),
-                              ),
+            body: CustomScrollView(
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: size.height * 0.5,
+                  backgroundColor: whiteColor,
+                  floating: false,
+                  pinned: false,
+                  snap: false,
+                  flexibleSpace: Stack(
+                    children: [
+                      Container(
+                        height: size.height * 0.5,
+                        width: size.width,
+                        child: CachedNetworkImage(
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.none,
+                          placeholder: (context, url) => Transform.scale(
+                            scale: 0.2,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.0,
+                              backgroundColor: footyColor,
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(primaryColor),
                             ),
-                            SizedBox(height: 10),
-                            TextButton(
-                              onPressed: () async {
-                                setState(() {
-                                  loading = true;
-                                });
-                                var data = await FirebaseFirestore.instance
-                                    .collection('users')
-                                    // .where('id',
-                                    //     isEqualTo: widget.data.data()['author'])
-                                    .doc(widget.data.data()['author'])
-                                    .get();
-                                Navigator.push(
-                                  context,
-                                  SlideRightRoute(
-                                    page: VProfileScreen(
-                                      data: data,
+                          ),
+                          errorWidget: (context, url, error) => Icon(
+                            Icons.error,
+                            color: whiteColor,
+                          ),
+                          imageUrl: widget.data.data()['images'][0],
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        height: size.height * 0.5,
+                        width: size.width,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0, 0.8],
+                            colors: [
+                              Color.fromRGBO(33, 33, 33, 0),
+                              primaryColor
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: Container(
+                          width: size.width * 0.5,
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                widget.data.data()['name'],
+                                textScaleFactor: 1,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.fade,
+                                maxLines: 1000,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: whiteColor,
+                                      fontSize: 27,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  var data = await FirebaseFirestore.instance
+                                      .collection('users')
+                                      // .where('id',
+                                      //     isEqualTo: widget.data.data()['author'])
+                                      .doc(widget.data.data()['author'])
+                                      .get();
+                                  Navigator.push(
+                                    context,
+                                    SlideRightRoute(
+                                      page: VProfileScreen(
+                                        data: data,
+                                      ),
                                     ),
+                                  );
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                },
+                                child: Text(
+                                  'By ' + widget.author,
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: whiteColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w300),
                                   ),
-                                );
-                                setState(() {
-                                  loading = false;
-                                });
-                              },
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  color: secondColor,
-                                  child: Text(
-                                    'By ' + widget.author,
+                                ),
+                              ),
+                              Text(
+                                widget.data.data()['reads'] != null
+                                    ? widget.data.data()['genre'] +
+                                        ' | ' +
+                                        getFnum(widget.data.data()['reads']) +
+                                        ' | ' +
+                                        getDate(
+                                            widget.data.data()['date'].seconds)
+                                    : widget.data.data()['genre'],
+                                    maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                textScaleFactor: 1,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                    color: whiteColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          width: size.width * 0.5,
+                          alignment: Alignment.centerRight,
+                          margin: EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                color: whiteColor,
+                                icon: Icon(CupertinoIcons.book_solid),
+                                onPressed: () {
+                                  setState(() {
+                                    if (!isComm) {
+                                      isYellow
+                                          ? firstColor = whiteColor
+                                          : firstColor = yellowColor;
+                                    } else {
+                                      isYellow
+                                          ? secondColor = whiteColor
+                                          : secondColor = yellowColor;
+                                    }
+                                    isYellow = !isYellow;
+                                  });
+                                },
+                              ),
+                              LabelButton(
+                                isC: false,
+                                reverse: FirebaseFirestore.instance
+                                    .collection('users')
+                                    .doc(FirebaseAuth.instance.currentUser.uid),
+                                containsValue: widget.data.id,
+                                color1: footyColor,
+                                color2: whiteColor,
+                                ph: 30,
+                                pw: 30,
+                                size: 30,
+                                onTap: () {
+                                  setState(() {
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser.uid)
+                                        .update({
+                                      'favourites': FieldValue.arrayUnion(
+                                          [widget.data.id])
+                                    }).catchError((error) {
+                                      PushNotificationMessage notification =
+                                          PushNotificationMessage(
+                                        title: 'Fail',
+                                        body: 'Failed to update favourites',
+                                      );
+                                      showSimpleNotification(
+                                        Container(
+                                            child: Text(notification.body)),
+                                        position: NotificationPosition.top,
+                                        background: Colors.red,
+                                      );
+                                      if (this.mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      } else {
+                                        loading = false;
+                                      }
+                                    });
+                                  });
+                                },
+                                onTap2: () {
+                                  setState(() {
+                                    FirebaseFirestore.instance
+                                        .collection('users')
+                                        .doc(FirebaseAuth
+                                            .instance.currentUser.uid)
+                                        .update({
+                                      'favourites': FieldValue.arrayRemove(
+                                          [widget.data.id])
+                                    }).catchError((error) {
+                                      PushNotificationMessage notification =
+                                          PushNotificationMessage(
+                                        title: 'Fail',
+                                        body: 'Failed to update favourites',
+                                      );
+                                      showSimpleNotification(
+                                        Container(
+                                            child: Text(notification.body)),
+                                        position: NotificationPosition.top,
+                                        background: Colors.red,
+                                      );
+                                      if (this.mounted) {
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      } else {
+                                        loading = false;
+                                      }
+                                    });
+                                  });
+                                },
+                              ),
+                              Column(
+                                children: [
+                                  UpButton(
+                                    isC: false,
+                                    reverse: FirebaseFirestore.instance
+                                        .collection('writings')
+                                        .doc(widget.data.id),
+                                    containsValue:
+                                        FirebaseAuth.instance.currentUser.uid,
+                                    color1: footyColor,
+                                    color2: whiteColor,
+                                    ph: 30,
+                                    pw: 30,
+                                    size: 30,
+                                    onTap: () {
+                                      setState(() {
+                                        FirebaseFirestore.instance
+                                            .collection('writings')
+                                            .doc(widget.data.id)
+                                            .update({
+                                          'rating': rates + 1,
+                                          'users_rated': FieldValue.arrayUnion([
+                                            FirebaseAuth
+                                                .instance.currentUser.uid
+                                          ]),
+                                        }).catchError((error) {
+                                          PushNotificationMessage notification =
+                                              PushNotificationMessage(
+                                            title: 'Fail',
+                                            body: 'Failed to up',
+                                          );
+                                          showSimpleNotification(
+                                            Container(
+                                                child: Text(notification.body)),
+                                            position: NotificationPosition.top,
+                                            background: Colors.red,
+                                          );
+                                          if (this.mounted) {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          } else {
+                                            loading = false;
+                                          }
+                                        });
+                                      });
+                                    },
+                                    onTap2: () {
+                                      setState(() {
+                                        FirebaseFirestore.instance
+                                            .collection('writings')
+                                            .doc(widget.data.id)
+                                            .update({
+                                          'rating': rates - 1,
+                                          'users_rated':
+                                              FieldValue.arrayRemove([
+                                            FirebaseAuth
+                                                .instance.currentUser.uid
+                                          ])
+                                        }).catchError((error) {
+                                          PushNotificationMessage notification =
+                                              PushNotificationMessage(
+                                            title: 'Fail',
+                                            body: 'Failed tp up',
+                                          );
+                                          showSimpleNotification(
+                                            Container(
+                                                child: Text(notification.body)),
+                                            position: NotificationPosition.top,
+                                            background: Colors.red,
+                                          );
+                                          if (this.mounted) {
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          } else {
+                                            loading = false;
+                                          }
+                                        });
+                                      });
+                                    },
+                                  ),
+                                  Text(
+                                    ratStr,
                                     textScaleFactor: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.montserrat(
                                       textStyle: TextStyle(
-                                          color: footyColor,
+                                          color: whiteColor,
                                           fontSize: 15,
-                                          fontWeight: FontWeight.w300),
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(25.0, 30, 25, 30),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 20),
+                            widget.data.data()['text'] != null
+                                ? Center(
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                        widget.data.data()['text'],
+                                        textScaleFactor: 1,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: secondColor,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(height: 10),
+                            widget.data.data()['rich_text'] != null
+                                ? Container(
+                                    margin: EdgeInsets.all(10),
+                                    padding: EdgeInsets.all(10),
+                                    width: double.infinity,
+                                    child: QuillEditor(
+                                      customStyles: DefaultStyles(
+                                        placeHolder: DefaultTextBlockStyle(
+                                          TextStyle(color: secondColor),
+                                          Tuple2<double, double>(10, 10),
+                                          Tuple2<double, double>(3, 3),
+                                          BoxDecoration(),
+                                        ),
+                                        paragraph: DefaultTextBlockStyle(
+                                          TextStyle(color: secondColor),
+                                          Tuple2<double, double>(10, 10),
+                                          Tuple2<double, double>(3, 3),
+                                          BoxDecoration(),
+                                        ),
+                                        // h1: DefaultTextBlockStyle(
+                                        //   TextStyle(color: secondColor),
+                                        //   Tuple2<double, double>(5, 5),
+                                        //   Tuple2<double, double>(3, 3),
+                                        //   BoxDecoration(),
+                                        // ),
+                                      ),
+                                      focusNode: FocusNode(),
+                                      autoFocus: true,
+                                      expands: false,
+                                      scrollable: false,
+                                      scrollController: ScrollController(),
+                                      readOnly: true,
+                                      showCursor: false,
+                                      padding: EdgeInsets.all(5),
+                                      controller: _controller,
+                                    ),
+                                  )
+                                : Container(),
+                            SizedBox(height: 10),
+                            Divider(
+                              color: secondColor,
+                              thickness: 2,
+                            ),
+                            Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          cursorColor: secondColor,
+                                          maxLines: null,
+                                          style: TextStyle(color: secondColor),
+                                          validator: (val) => val.length > 1
+                                              ? null
+                                              : 'Минимум 2 символов',
+                                          keyboardType: TextInputType.multiline,
+                                          maxLength: 500,
+                                          onChanged: (value) {
+                                            commentText = value;
+                                          },
+                                          decoration: InputDecoration(
+                                            counterStyle:
+                                                TextStyle(color: secondColor),
+                                            hintText: "Коммент",
+                                            border: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: secondColor),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      RoundedButton(
+                                        width: 0.2,
+                                        ph: 40,
+                                        text: 'Ok',
+                                        press: () async {
+                                          if (_formKey.currentState
+                                              .validate()) {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                            await FirebaseFirestore.instance
+                                                .collection('writings')
+                                                .doc(widget.data.id)
+                                                .update({
+                                              'comments':
+                                                  FieldValue.arrayUnion([
+                                                {
+                                                  'date': DateTime.now(),
+                                                  'text': commentText,
+                                                  'author': FirebaseAuth
+                                                      .instance
+                                                      .currentUser
+                                                      .displayName,
+                                                  'author_id': FirebaseAuth
+                                                      .instance.currentUser.uid,
+                                                  'replies': [],
+                                                }
+                                              ])
+                                            }).catchError((error) {
+                                              PushNotificationMessage
+                                                  notification =
+                                                  PushNotificationMessage(
+                                                title: 'Ошибка',
+                                                body:
+                                                    'Неудалось добавить комментарий',
+                                              );
+                                              showSimpleNotification(
+                                                Container(
+                                                    child: Text(
+                                                        notification.body)),
+                                                position:
+                                                    NotificationPosition.top,
+                                                background: Colors.red,
+                                              );
+                                            });
+                                            String nText = FirebaseAuth.instance
+                                                .currentUser.displayName;
+                                            String nText1 =
+                                                widget.data.data()['name'];
+                                            if (FirebaseAuth
+                                                    .instance.currentUser.uid !=
+                                                widget.data.data()['author']) {
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(widget.data
+                                                      .data()['author'])
+                                                  .update({
+                                                'actions':
+                                                    FieldValue.arrayUnion([
+                                                  {
+                                                    'author': FirebaseAuth
+                                                        .instance
+                                                        .currentUser
+                                                        .uid,
+                                                    'seen': false,
+                                                    'text':
+                                                        '$nText прокомментировал $nText1',
+                                                    'type': 'New comment',
+                                                    'date': DateTime.now(),
+                                                    'post_id': widget.data.id,
+                                                  }
+                                                ]),
+                                              });
+                                            }
+                                            PushNotificationMessage
+                                                notification =
+                                                PushNotificationMessage(
+                                              title: 'Успех',
+                                              body: 'Комментарий добавлен',
+                                            );
+                                            showSimpleNotification(
+                                              Container(
+                                                  child:
+                                                      Text(notification.body)),
+                                              position:
+                                                  NotificationPosition.top,
+                                              background: footyColor,
+                                            );
+                                            setState(() {
+                                              loading = false;
+                                              commentText = '';
+                                            });
+                                          }
+                                        },
+                                        color: secondColor,
+                                        textColor: firstColor,
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  comments.length != 0
+                                      ? ListView.builder(
+                                          physics:
+                                              new NeverScrollableScrollPhysics(),
+                                          scrollDirection: Axis.vertical,
+                                          shrinkWrap: true,
+                                          padding: EdgeInsets.only(bottom: 10),
+                                          itemCount: comments.length,
+                                          itemBuilder: (BuildContext context,
+                                                  int index) =>
+                                              Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  comments[comments.length -
+                                                                  1 -
+                                                                  index]
+                                                              ['author_id'] !=
+                                                          null
+                                                      ? photos[comments[comments
+                                                                          .length -
+                                                                      1 -
+                                                                      index][
+                                                                  'author_id']] !=
+                                                              null
+                                                          ? photos[comments[comments
+                                                                              .length -
+                                                                          1 -
+                                                                          index]
+                                                                      [
+                                                                      'author_id']] !=
+                                                                  'No Image'
+                                                              ? Container(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                          borderRadius: BorderRadius.circular(
+                                                                              25.0),
+                                                                          child:
+                                                                              CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl: photos[comments[comments.length -
+                                                                                1 -
+                                                                                index]['author_id']],
+                                                                          )),
+                                                                )
+                                                              : Container()
+                                                          : Container()
+                                                      : Container(),
+                                                  Expanded(
+                                                    child: Container(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Text(
+                                                                    comments[comments.length -
+                                                                            1 -
+                                                                            index]
+                                                                        [
+                                                                        'text'],
+                                                                    maxLines:
+                                                                        100,
+                                                                    textScaleFactor:
+                                                                        1,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    style: GoogleFonts
+                                                                        .montserrat(
+                                                                      textStyle:
+                                                                          TextStyle(
+                                                                        color:
+                                                                            secondColor,
+                                                                        fontSize:
+                                                                            15,
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    height: 5,
+                                                                  ),
+                                                                  Text(
+                                                                    comments[comments.length - 1 - index]['author'] !=
+                                                                            null
+                                                                        ? comments[comments.length -
+                                                                            1 -
+                                                                            index]['author']
+                                                                        : 'No author',
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    textScaleFactor:
+                                                                        1,
+                                                                    style: GoogleFonts
+                                                                        .montserrat(
+                                                                      textStyle:
+                                                                          TextStyle(
+                                                                        color:
+                                                                            secondColor,
+                                                                        fontSize:
+                                                                            10,
+                                                                        fontWeight:
+                                                                            FontWeight.w300,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            TextButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  loading =
+                                                                      true;
+                                                                });
+                                                                Navigator.push(
+                                                                  context,
+                                                                  SlideRightRoute(
+                                                                    page:
+                                                                        CommentReplyScreen(
+                                                                      post_id: widget
+                                                                          .data
+                                                                          .id,
+                                                                      all:
+                                                                          comments,
+                                                                      data: comments[comments
+                                                                              .length -
+                                                                          1 -
+                                                                          index],
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                                setState(() {
+                                                                  loading =
+                                                                      false;
+                                                                });
+                                                              },
+                                                              child: Text(
+                                                                comments[comments.length -
+                                                                                1 -
+                                                                                index]
+                                                                            [
+                                                                            'replies'] !=
+                                                                        null
+                                                                    ? comments[comments.length -
+                                                                                1 -
+                                                                                index]['replies']
+                                                                            .length
+                                                                            .toString() +
+                                                                        ' replies'
+                                                                    : 'Reply',
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                textScaleFactor:
+                                                                    1,
+                                                                style: GoogleFonts
+                                                                    .montserrat(
+                                                                  textStyle:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w300,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Divider(
+                                                color: secondColor,
+                                              ),
+                                            ],
+                                          ),
+
+                                          //         Card(
+                                          //   shadowColor: secondColor,
+                                          //   color: firstColor,
+                                          //   elevation: 10,
+                                          //   child: Row(
+                                          //     children: [
+                                          //       SizedBox(
+                                          //         width: 10,
+                                          //       ),
+                                          //       Expanded(
+                                          //         child: Container(
+                                          //           child: Padding(
+                                          //             padding:
+                                          //                 const EdgeInsets.all(12.0),
+                                          //             child: Row(
+                                          //               children: [
+                                          //                 Expanded(
+                                          //                   child: Column(
+                                          //                     crossAxisAlignment:
+                                          //                         CrossAxisAlignment
+                                          //                             .start,
+                                          //                     children: [
+                                          //                       Text(
+                                          //                         comments[index]
+                                          //                             ['text'],
+                                          //                         textScaleFactor: 1,
+                                          //                         style: GoogleFonts
+                                          //                             .montserrat(
+                                          //                           textStyle:
+                                          //                               TextStyle(
+                                          //                             color:
+                                          //                                 secondColor,
+                                          //                             fontSize: 20,
+                                          //                             fontWeight:
+                                          //                                 FontWeight
+                                          //                                     .bold,
+                                          //                           ),
+                                          //                         ),
+                                          //                       ),
+                                          //                       SizedBox(
+                                          //                         height: 10,
+                                          //                       ),
+                                          //                       Text(
+                                          //                         comments[index][
+                                          //                                     'author'] !=
+                                          //                                 null
+                                          //                             ? comments[
+                                          //                                     index]
+                                          //                                 ['author']
+                                          //                             : 'No author',
+                                          //                         overflow:
+                                          //                             TextOverflow
+                                          //                                 .ellipsis,
+                                          //                         textScaleFactor: 1,
+                                          //                         style: GoogleFonts
+                                          //                             .montserrat(
+                                          //                           textStyle:
+                                          //                               TextStyle(
+                                          //                             color:
+                                          //                                 secondColor,
+                                          //                             fontSize: 15,
+                                          //                             fontWeight:
+                                          //                                 FontWeight
+                                          //                                     .w300,
+                                          //                           ),
+                                          //                         ),
+                                          //                       ),
+                                          //                     ],
+                                          //                   ),
+                                          //                 ),
+                                          //               ],
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //       Divider(
+                                          //         thickness: 0.1,
+                                          //         color: secondColor,
+                                          //       ),
+                                          //     ],
+                                          //   ),
+                                          // ),
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            'No comments',
+                                            textScaleFactor: 1,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                  color: secondColor,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w300),
+                                            ),
+                                          ),
+                                        ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Column(
-                        children: [
-                          Column(
-                            children: [
-                              UpButton(
-                                isC: false,
-                                reverse: FirebaseFirestore.instance
-                                    .collection('writings')
-                                    .doc(widget.data.id),
-                                containsValue:
-                                    FirebaseAuth.instance.currentUser.uid,
-                                color1: footyColor,
-                                color2: secondColor,
-                                ph: 45,
-                                pw: 45,
-                                size: 40,
-                                onTap: () {
-                                  setState(() {
-                                    FirebaseFirestore.instance
-                                        .collection('writings')
-                                        .doc(widget.data.id)
-                                        .update({
-                                      'rating': rates + 1,
-                                      'users_rated': FieldValue.arrayUnion([
-                                        FirebaseAuth.instance.currentUser.uid
-                                      ]),
-                                    }).catchError((error) {
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Fail',
-                                        body: 'Failed to update',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
-                                      if (this.mounted) {
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                      } else {
-                                        loading = false;
-                                      }
-                                    });
-                                  });
-                                  // Scaffold.of(context).showSnackBar(
-                                  //   SnackBar(
-                                  //     duration: Duration(seconds: 2),
-                                  //     backgroundColor: darkPrimaryColor,
-                                  //     content: Text(
-                                  //       'Успешно',
-                                  //       style: GoogleFonts.montserrat(
-                                  //         textStyle: TextStyle(
-                                  //           color: whiteColor,
-                                  //           fontSize: 15,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // );
-                                },
-                                onTap2: () {
-                                  setState(() {
-                                    FirebaseFirestore.instance
-                                        .collection('writings')
-                                        .doc(widget.data.id)
-                                        .update({
-                                      'rating': rates - 1,
-                                      'users_rated': FieldValue.arrayRemove([
-                                        FirebaseAuth.instance.currentUser.uid
-                                      ])
-                                    }).catchError((error) {
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Fail',
-                                        body: 'Failed tp up',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
-                                      if (this.mounted) {
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                      } else {
-                                        loading = false;
-                                      }
-                                    });
-                                  });
-                                  // Scaffold.of(context).showSnackBar(
-                                  //   SnackBar(
-                                  //     duration: Duration(seconds: 2),
-                                  //     backgroundColor: Colors.red,
-                                  //     content: Text(
-                                  //       'Removed from favourites',
-                                  //       style: GoogleFonts.montserrat(
-                                  //         textStyle: TextStyle(
-                                  //           color: whiteColor,
-                                  //           fontSize: 15,
-                                  //         ),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // );
-                                },
-                              ),
-                              Text(
-                                ratStr,
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: secondColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          ),
-                          LabelButton(
-                            isC: false,
-                            reverse: FirebaseFirestore.instance
-                                .collection('users')
-                                .doc(FirebaseAuth.instance.currentUser.uid),
-                            containsValue: widget.data.id,
-                            color1: footyColor,
-                            color2: secondColor,
-                            ph: 45,
-                            pw: 45,
-                            size: 40,
-                            onTap: () {
-                              setState(() {
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(FirebaseAuth.instance.currentUser.uid)
-                                    .update({
-                                  'favourites':
-                                      FieldValue.arrayUnion([widget.data.id])
-                                }).catchError((error) {
-                                  PushNotificationMessage notification =
-                                      PushNotificationMessage(
-                                    title: 'Fail',
-                                    body: 'Failed to update favourites',
-                                  );
-                                  showSimpleNotification(
-                                    Container(child: Text(notification.body)),
-                                    position: NotificationPosition.top,
-                                    background: Colors.red,
-                                  );
-                                  if (this.mounted) {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  } else {
-                                    loading = false;
-                                  }
-                                });
-                              });
-                            },
-                            onTap2: () {
-                              setState(() {
-                                FirebaseFirestore.instance
-                                    .collection('users')
-                                    .doc(FirebaseAuth.instance.currentUser.uid)
-                                    .update({
-                                  'favourites':
-                                      FieldValue.arrayRemove([widget.data.id])
-                                }).catchError((error) {
-                                  PushNotificationMessage notification =
-                                      PushNotificationMessage(
-                                    title: 'Fail',
-                                    body: 'Failed to update favourites',
-                                  );
-                                  showSimpleNotification(
-                                    Container(child: Text(notification.body)),
-                                    position: NotificationPosition.top,
-                                    background: Colors.red,
-                                  );
-                                  if (this.mounted) {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  } else {
-                                    loading = false;
-                                  }
-                                });
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ]),
-                    SizedBox(height: 10),
-                    Center(
-                      child: Text(
-                        widget.data.data()['reads'] != null
-                            ? widget.data.data()['genre'] +
-                                ' | ' +
-                                getFnum(widget.data.data()['reads']) +
-                                ' | ' +
-                                getDate(widget.data.data()['date'].seconds)
-                            : widget.data.data()['genre'],
-                        overflow: TextOverflow.ellipsis,
-                        textScaleFactor: 1,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                            color: secondColor,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Divider(
-                      color: secondColor,
-                      thickness: 2,
-                    ),
-                    widget.data.data()['images'] != 'No Image'
-                        ? SizedBox(
-                            height: 20,
-                          )
-                        : Container(),
-                    widget.data.data()['images'] != 'No Image'
-                        ? Container(
-                            child: CachedNetworkImage(
-                              filterQuality: FilterQuality.none,
-                              placeholder: (context, url) => Transform.scale(
-                                scale: 0.8,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.0,
-                                  backgroundColor: footyColor,
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                      primaryColor),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Icon(
-                                Icons.error,
-                                color: footyColor,
-                              ),
-                              imageUrl: widget.data.data()['images'][0],
-                            ),
-                          )
-                        : Container(),
-                    SizedBox(height: 20),
-                    widget.data.data()['text'] != null
-                        ? Center(
-                            child: Container(
-                              width: double.infinity,
-                              child: Text(
-                                widget.data.data()['text'],
-                                textScaleFactor: 1,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: secondColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w300),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                    SizedBox(height: 10),
-                    widget.data.data()['rich_text'] != null
-                        ? Container(
-                            margin: EdgeInsets.all(10),
-                            padding: EdgeInsets.all(10),
-                            width: double.infinity,
-                            child: QuillEditor(
-                              customStyles: DefaultStyles(
-                                placeHolder: DefaultTextBlockStyle(
-                                  TextStyle(color: secondColor),
-                                  Tuple2<double, double>(10, 10),
-                                  Tuple2<double, double>(3, 3),
-                                  BoxDecoration(),
-                                ),
-                                paragraph: DefaultTextBlockStyle(
-                                  TextStyle(color: secondColor),
-                                  Tuple2<double, double>(10, 10),
-                                  Tuple2<double, double>(3, 3),
-                                  BoxDecoration(),
-                                ),
-                                // h1: DefaultTextBlockStyle(
-                                //   TextStyle(color: secondColor),
-                                //   Tuple2<double, double>(5, 5),
-                                //   Tuple2<double, double>(3, 3),
-                                //   BoxDecoration(),
-                                // ),
-                              ),
-                              focusNode: FocusNode(),
-                              autoFocus: true,
-                              expands: false,
-                              scrollable: false,
-                              scrollController: ScrollController(),
-                              readOnly: true,
-                              showCursor: false,
-                              padding: EdgeInsets.all(5),
-                              controller: _controller,
-                            ),
-                          )
-                        : Container(),
-                    SizedBox(height: 10),
-                    Divider(
-                      color: secondColor,
-                      thickness: 2,
-                    ),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  cursorColor: secondColor,
-                                  maxLines: null,
-                                  style: TextStyle(color: secondColor),
-                                  validator: (val) => val.length > 1
-                                      ? null
-                                      : 'Минимум 2 символов',
-                                  keyboardType: TextInputType.multiline,
-                                  maxLength: 500,
-                                  onChanged: (value) {
-                                    commentText = value;
-                                  },
-                                  decoration: InputDecoration(
-                                    counterStyle: TextStyle(color: secondColor),
-                                    hintText: "Коммент",
-                                    border: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: secondColor),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              RoundedButton(
-                                width: 0.2,
-                                ph: 40,
-                                text: 'Ok',
-                                press: () async {
-                                  if (_formKey.currentState.validate()) {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    await FirebaseFirestore.instance
-                                        .collection('writings')
-                                        .doc(widget.data.id)
-                                        .update({
-                                      'comments': FieldValue.arrayUnion([
-                                        {
-                                          'date': DateTime.now(),
-                                          'text': commentText,
-                                          'author': FirebaseAuth
-                                              .instance.currentUser.displayName,
-                                          'author_id': FirebaseAuth
-                                              .instance.currentUser.uid,
-                                          'replies': [],
-                                        }
-                                      ])
-                                    }).catchError((error) {
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Ошибка',
-                                        body: 'Неудалось добавить комментарий',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
-                                    });
-                                    String nText = FirebaseAuth
-                                        .instance.currentUser.displayName;
-                                    String nText1 = widget.data.data()['name'];
-                                    if (FirebaseAuth.instance.currentUser.uid !=
-                                        widget.data.data()['author']) {
-                                      await FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(widget.data.data()['author'])
-                                          .update({
-                                        'actions': FieldValue.arrayUnion([
-                                          {
-                                            'author': FirebaseAuth
-                                                .instance.currentUser.uid,
-                                            'seen': false,
-                                            'text':
-                                                '$nText прокомментировал $nText1',
-                                            'type': 'New comment',
-                                            'date': DateTime.now(),
-                                            'post_id': widget.data.id,
-                                          }
-                                        ]),
-                                      });
-                                    }
-                                    PushNotificationMessage notification =
-                                        PushNotificationMessage(
-                                      title: 'Успех',
-                                      body: 'Комментарий добавлен',
-                                    );
-                                    showSimpleNotification(
-                                      Container(child: Text(notification.body)),
-                                      position: NotificationPosition.top,
-                                      background: footyColor,
-                                    );
-                                    setState(() {
-                                      loading = false;
-                                      commentText = '';
-                                    });
-                                  }
-                                },
-                                color: secondColor,
-                                textColor: firstColor,
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          comments.length != 0
-                              ? ListView.builder(
-                                  physics: new NeverScrollableScrollPhysics(),
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.only(bottom: 10),
-                                  itemCount: comments.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) =>
-                                          Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          comments[comments.length - 1 - index]
-                                                      ['author_id'] !=
-                                                  null
-                                              ? photos[comments[
-                                                              comments.length -
-                                                                  1 -
-                                                                  index]
-                                                          ['author_id']] !=
-                                                      null
-                                                  ? photos[comments[comments
-                                                                      .length -
-                                                                  1 -
-                                                                  index]
-                                                              ['author_id']] !=
-                                                          'No Image'
-                                                      ? Container(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: ClipRRect(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          25.0),
-                                                              child:
-                                                                  CachedNetworkImage(
-                                                                filterQuality:
-                                                                    FilterQuality
-                                                                        .none,
-                                                                fit: BoxFit
-                                                                    .cover,
-                                                                placeholder: (context,
-                                                                        url) =>
-                                                                    Transform
-                                                                        .scale(
-                                                                  scale: 0.8,
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                    strokeWidth:
-                                                                        2.0,
-                                                                    backgroundColor:
-                                                                        footyColor,
-                                                                    valueColor:
-                                                                        AlwaysStoppedAnimation<Color>(
-                                                                            primaryColor),
-                                                                  ),
-                                                                ),
-                                                                errorWidget:
-                                                                    (context,
-                                                                            url,
-                                                                            error) =>
-                                                                        Icon(
-                                                                  Icons.error,
-                                                                  color:
-                                                                      footyColor,
-                                                                ),
-                                                                imageUrl: photos[comments[
-                                                                        comments.length -
-                                                                            1 -
-                                                                            index]
-                                                                    [
-                                                                    'author_id']],
-                                                              )),
-                                                        )
-                                                      : Container()
-                                                  : Container()
-                                              : Container(),
-                                          Expanded(
-                                            child: Container(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Text(
-                                                            comments[comments
-                                                                    .length -
-                                                                1 -
-                                                                index]['text'],
-                                                            maxLines: 100,
-                                                            textScaleFactor: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: GoogleFonts
-                                                                .montserrat(
-                                                              textStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    secondColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          Text(
-                                                            comments[comments.length -
-                                                                            1 -
-                                                                            index]
-                                                                        [
-                                                                        'author'] !=
-                                                                    null
-                                                                ? comments[comments
-                                                                        .length -
-                                                                    1 -
-                                                                    index]['author']
-                                                                : 'No author',
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            textScaleFactor: 1,
-                                                            style: GoogleFonts
-                                                                .montserrat(
-                                                              textStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    secondColor,
-                                                                fontSize: 10,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w300,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          loading = true;
-                                                        });
-                                                        Navigator.push(
-                                                          context,
-                                                          SlideRightRoute(
-                                                            page:
-                                                                CommentReplyScreen(
-                                                              post_id: widget
-                                                                  .data.id,
-                                                              all: comments,
-                                                              data: comments[
-                                                                  comments.length -
-                                                                      1 -
-                                                                      index],
-                                                            ),
-                                                          ),
-                                                        );
-                                                        setState(() {
-                                                          loading = false;
-                                                        });
-                                                      },
-                                                      child: Text(
-                                                        comments[comments.length -
-                                                                        1 -
-                                                                        index][
-                                                                    'replies'] !=
-                                                                null
-                                                            ? comments[comments.length -
-                                                                            1 -
-                                                                            index]
-                                                                        [
-                                                                        'replies']
-                                                                    .length
-                                                                    .toString() +
-                                                                ' replies'
-                                                            : 'Reply',
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textScaleFactor: 1,
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle: TextStyle(
-                                                            color: Colors.blue,
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Divider(
-                                        color: secondColor,
-                                      ),
-                                    ],
-                                  ),
-
-                                  //         Card(
-                                  //   shadowColor: secondColor,
-                                  //   color: firstColor,
-                                  //   elevation: 10,
-                                  //   child: Row(
-                                  //     children: [
-                                  //       SizedBox(
-                                  //         width: 10,
-                                  //       ),
-                                  //       Expanded(
-                                  //         child: Container(
-                                  //           child: Padding(
-                                  //             padding:
-                                  //                 const EdgeInsets.all(12.0),
-                                  //             child: Row(
-                                  //               children: [
-                                  //                 Expanded(
-                                  //                   child: Column(
-                                  //                     crossAxisAlignment:
-                                  //                         CrossAxisAlignment
-                                  //                             .start,
-                                  //                     children: [
-                                  //                       Text(
-                                  //                         comments[index]
-                                  //                             ['text'],
-                                  //                         textScaleFactor: 1,
-                                  //                         style: GoogleFonts
-                                  //                             .montserrat(
-                                  //                           textStyle:
-                                  //                               TextStyle(
-                                  //                             color:
-                                  //                                 secondColor,
-                                  //                             fontSize: 20,
-                                  //                             fontWeight:
-                                  //                                 FontWeight
-                                  //                                     .bold,
-                                  //                           ),
-                                  //                         ),
-                                  //                       ),
-                                  //                       SizedBox(
-                                  //                         height: 10,
-                                  //                       ),
-                                  //                       Text(
-                                  //                         comments[index][
-                                  //                                     'author'] !=
-                                  //                                 null
-                                  //                             ? comments[
-                                  //                                     index]
-                                  //                                 ['author']
-                                  //                             : 'No author',
-                                  //                         overflow:
-                                  //                             TextOverflow
-                                  //                                 .ellipsis,
-                                  //                         textScaleFactor: 1,
-                                  //                         style: GoogleFonts
-                                  //                             .montserrat(
-                                  //                           textStyle:
-                                  //                               TextStyle(
-                                  //                             color:
-                                  //                                 secondColor,
-                                  //                             fontSize: 15,
-                                  //                             fontWeight:
-                                  //                                 FontWeight
-                                  //                                     .w300,
-                                  //                           ),
-                                  //                         ),
-                                  //                       ),
-                                  //                     ],
-                                  //                   ),
-                                  //                 ),
-                                  //               ],
-                                  //             ),
-                                  //           ),
-                                  //         ),
-                                  //       ),
-                                  //       Divider(
-                                  //         thickness: 0.1,
-                                  //         color: secondColor,
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                )
-                              : Center(
-                                  child: Text(
-                                    'No comments',
-                                    textScaleFactor: 1,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                          color: secondColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           );
   }
