@@ -504,18 +504,12 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                                 barrierDismissible: false,
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return CupertinoAlertDialog(
+                                  return AlertDialog(
                                     title: const Text('Удалить?'),
                                     content: const Text(
                                         'Хотите ли вы удалить историю'),
                                     actions: <Widget>[
-                                      CupertinoDialogAction(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: const Text('No')),
-                                      CupertinoDialogAction(
-                                        isDestructiveAction: true,
+                                      TextButton(
                                         onPressed: () {
                                           setState(() {
                                             FirebaseFirestore.instance
@@ -545,8 +539,13 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                                           });
                                           Navigator.of(context).pop(true);
                                         },
-                                        child: const Text('Yes'),
+                                        child: const Text('Yes', style: TextStyle(color: footyColor),),
                                       ),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: const Text('No', style: TextStyle(color: Colors.red),),),
                                     ],
                                   );
                                 },

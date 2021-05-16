@@ -233,24 +233,30 @@ class _PlaceScreenState extends State<ProfileScreen> {
                           barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) {
-                            return CupertinoAlertDialog(
+                            return AlertDialog(
                               title: const Text('Выйти?'),
                               content:
                                   const Text('Хотите ли вы выйти из аккаунта?'),
                               actions: <Widget>[
-                                CupertinoDialogAction(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(false),
-                                    child: const Text('No')),
-                                CupertinoDialogAction(
-                                  isDestructiveAction: true,
+                                TextButton(
                                   onPressed: () {
                                     prefs.setBool('local_auth', false);
                                     prefs.setString('local_password', '');
                                     Navigator.of(context).pop(true);
                                     AuthService().signOut(context);
                                   },
-                                  child: const Text('Yes'),
+                                  child: const Text(
+                                    'Yes',
+                                    style: TextStyle(color: footyColor),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text(
+                                    'No',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
                                 ),
                               ],
                             );

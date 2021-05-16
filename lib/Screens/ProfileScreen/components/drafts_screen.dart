@@ -155,19 +155,12 @@ class _DraftsScreenState extends State<DraftsScreen> {
                                     barrierDismissible: false,
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return CupertinoAlertDialog(
+                                      return AlertDialog(
                                         title: const Text('Удалить?'),
                                         content: const Text(
                                             'Хотите ли вы удалить черновик'),
                                         actions: <Widget>[
-                                          CupertinoDialogAction(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(false);
-                                              },
-                                              child: const Text('No')),
-                                          CupertinoDialogAction(
-                                            isDestructiveAction: true,
+                                          TextButton(
                                             onPressed: () {
                                               setState(() {
                                                 widget.data.remove(widget.data[
@@ -205,8 +198,22 @@ class _DraftsScreenState extends State<DraftsScreen> {
                                               });
                                               Navigator.of(context).pop(true);
                                             },
-                                            child: const Text('Yes'),
+                                            child: const Text(
+                                              'Yes',
+                                              style:
+                                                  TextStyle(color: footyColor),
+                                            ),
                                           ),
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(false);
+                                              },
+                                              child: const Text(
+                                                'No',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              )),
                                         ],
                                       );
                                     },
