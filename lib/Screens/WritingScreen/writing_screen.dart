@@ -581,6 +581,14 @@ class _WritingScreenState extends State<WritingScreen> {
                                   background: footyColor,
                                 );
                                 prefs.setString('draft', 'Text');
+                                _controller = QuillController(
+                                  document: Document.fromJson([
+                                    {
+                                      "insert": 'Text' + "\n",
+                                    },
+                                  ]),
+                                  selection: TextSelection.collapsed(offset: 0),
+                                );
                                 if (newTags.length != 0) {
                                   List nTags = [];
                                   for (Tag t in newTags) {
@@ -615,7 +623,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                   name = null;
                                   error = '';
                                   category = 'Общее';
-                                  text = null;
+                                  text = 'Text';
                                   loading = false;
                                 });
                               }

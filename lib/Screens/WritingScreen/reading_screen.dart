@@ -307,17 +307,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             barrierDismissible: false,
                             context: context,
                             builder: (BuildContext context) {
-                              return CupertinoAlertDialog(
+                              return AlertDialog(
                                 title: const Text('Удалить?'),
                                 content:
                                     const Text('Хотите ли вы удалить историю?'),
                                 actions: <Widget>[
-                                  CupertinoDialogAction(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: const Text('No')),
-                                  CupertinoDialogAction(
-                                    isDestructiveAction: true,
+                                  TextButton(
                                     onPressed: () async {
                                       setState(() {
                                         loading = true;
@@ -348,7 +343,15 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       Navigator.of(context).pop(true);
                                       Navigator.pop(context);
                                     },
-                                    child: const Text('Yes'),
+                                    child: const Text('Yes', style: TextStyle(color: footyColor),),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text(
+                                      'No',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
                                   ),
                                 ],
                               );
@@ -492,7 +495,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                         getDate(
                                             widget.data.data()['date'].seconds)
                                     : widget.data.data()['genre'],
-                                    maxLines: 3,
+                                maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
                                 textScaleFactor: 1,
                                 style: GoogleFonts.montserrat(
@@ -978,9 +981,52 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                                 index]['author_id']],
                                                                           )),
                                                                 )
-                                                              : Container()
-                                                          : Container()
-                                                      : Container(),
+                                                              : Container(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: Image
+                                                                        .asset(
+                                                                      'assets/images/User.png',
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                          : Container(
+                                                              width: 40,
+                                                              height: 40,
+                                                              child: ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            25.0),
+                                                                child:
+                                                                    Image.asset(
+                                                                  'assets/images/User.png',
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                              ),
+                                                            )
+                                                      : Container(
+                                                          width: 40,
+                                                          height: 40,
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        25.0),
+                                                            child: Image.asset(
+                                                              'assets/images/User.png',
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        ),
                                                   Expanded(
                                                     child: Container(
                                                       child: Padding(
