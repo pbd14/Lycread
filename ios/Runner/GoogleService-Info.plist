@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>131662116631-1ej3ea9gfvm0488fok5k1oos8rv308ds.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.131662116631-1ej3ea9gfvm0488fok5k1oos8rv308ds</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDmgthUrKeTjvDATNOUAzQUnVcm6Y1mObY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>131662116631</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.lycread</string>
+	<key>PROJECT_ID</key>
+	<string>lycread</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lycread.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:131662116631:ios:96f0db5dd0f88e9247e952</string>
+	<key>DATABASE_URL</key>
+	<string>https://lycread-default-rtdb.europe-west1.firebasedatabase.app</string>
+</dict>
+</plist>

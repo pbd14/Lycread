@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>LycRead</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,6 +24,12 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Needed to make photos</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Needed to record videos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Needed for photo uploads</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,12 +49,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<!-- Image picker -->
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Needed for photo uploads</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Needed to make photos</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Needed to record videos</string>
 </dict>
 </plist>
