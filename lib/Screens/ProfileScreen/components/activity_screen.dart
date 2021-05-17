@@ -114,22 +114,22 @@ class _ActivityScreenState extends State<ActivityScreen> {
     return loading
         ? LoadingScreen()
         : Scaffold(
-            appBar: AppBar(
-              backgroundColor: whiteColor,
-              centerTitle: true,
-              title: Text(
-                'Активность',
-                overflow: TextOverflow.ellipsis,
-                textScaleFactor: 1,
-                style: GoogleFonts.montserrat(
-                  textStyle: TextStyle(
-                    color: primaryColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
+            // appBar: AppBar(
+            //   backgroundColor: whiteColor,
+            //   centerTitle: true,
+            //   title: Text(
+            //     'Активность',
+            //     overflow: TextOverflow.ellipsis,
+            //     textScaleFactor: 1,
+            //     style: GoogleFonts.montserrat(
+            //       textStyle: TextStyle(
+            //         color: primaryColor,
+            //         fontSize: 24,
+            //         fontWeight: FontWeight.w500,
+            //       ),
+            //     ),
+            //   ),
+            // ),
             body: Column(
               children: [
                 SizedBox(height: 20),

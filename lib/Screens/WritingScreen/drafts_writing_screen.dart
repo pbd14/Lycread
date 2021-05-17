@@ -490,78 +490,46 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                               writingTags.add(tt.name);
                             }
                             if (writingTags.isNotEmpty) {
-                              if (_formKey.currentState.validate()) {
-                                setState(() {
-                                  loading = true;
-                                });
-                                String id =
-                                    FirebaseAuth.instance.currentUser.uid;
-                                String date = DateTime.now().toString();
-                                if (i1 != null) {
-                                  a1 = await FirebaseStorage.instance
-                                      .ref('uploads')
-                                      .child('$id/writings/$date')
-                                      .putFile(i1);
-                                }
-                                if (a1 != null) {
-                                  FirebaseFirestore.instance
-                                      .collection('writings')
-                                      .doc()
-                                      .set({
-                                    'name': name,
-                                    // 'text': text,
-                                    'author':
-                                        FirebaseAuth.instance.currentUser.uid,
-                                    'images': [
-                                      await a1.ref.getDownloadURL(),
-                                    ],
-                                    'genre': category.toLowerCase(),
-                                    'date': DateTime.now(),
-                                    'rich_text': jsonEncode(_controller.document
-                                        .toDelta()
-                                        .toJson()),
-                                    'rating': 0,
-                                    'users_rated': [],
-                                    'tags': writingTags,
-                                    'reads': 0,
-                                    'users_read': [],
-                                    'comments': [],
-                                  }).catchError((error) {
-                                    print('MISTAKE HERE');
-                                    print(error);
-                                    PushNotificationMessage notification =
-                                        PushNotificationMessage(
-                                      title: 'Ошибка',
-                                      body: 'Неудалось добавить историю',
-                                    );
-                                    showSimpleNotification(
-                                      Container(child: Text(notification.body)),
-                                      position: NotificationPosition.top,
-                                      background: Colors.red,
-                                    );
+                              if (writingTags.length < 20) {
+                                if (_formKey.currentState.validate()) {
+                                  setState(() {
+                                    loading = true;
                                   });
-                                } else {
-                                  if (widget.data['images'][0] != 'No Image') {
+                                  String id =
+                                      FirebaseAuth.instance.currentUser.uid;
+                                  String date = DateTime.now().toString();
+                                  if (i1 != null) {
+                                    a1 = await FirebaseStorage.instance
+                                        .ref('uploads')
+                                        .child('$id/writings/$date')
+                                        .putFile(i1);
+                                  }
+                                  if (a1 != null) {
+                                    String id =
+                                        DateTime.now().millisecondsSinceEpoch.toString();
                                     FirebaseFirestore.instance
                                         .collection('writings')
-                                        .doc()
+                                        .doc(id)
                                         .set({
+                                      'id': id,
                                       'name': name,
                                       // 'text': text,
                                       'author':
                                           FirebaseAuth.instance.currentUser.uid,
-                                      'images': [widget.data['images'][0]],
+                                      'images': [
+                                        await a1.ref.getDownloadURL(),
+                                      ],
                                       'genre': category.toLowerCase(),
                                       'date': DateTime.now(),
                                       'rich_text': jsonEncode(_controller
                                           .document
                                           .toDelta()
                                           .toJson()),
-                                      'tags': writingTags,
                                       'rating': 0,
+                                      'users_rated': [],
+                                      'tags': writingTags,
                                       'reads': 0,
                                       'users_read': [],
-                                      'users_rated': [],
                                       'comments': [],
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
@@ -579,85 +547,134 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                       );
                                     });
                                   } else {
+                                    if (widget.data['images'][0] !=
+                                        'No Image') {
+                                      DateTime.now().millisecondsSinceEpoch.toString();
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc(id)
+                                          .set({
+                                        'id': id,
+                                        'name': name,
+                                        // 'text': text,
+                                        'author': FirebaseAuth
+                                            .instance.currentUser.uid,
+                                        'images': [widget.data['images'][0]],
+                                        'genre': category.toLowerCase(),
+                                        'date': DateTime.now(),
+                                        'rich_text': jsonEncode(_controller
+                                            .document
+                                            .toDelta()
+                                            .toJson()),
+                                        'tags': writingTags,
+                                        'rating': 0,
+                                        'reads': 0,
+                                        'users_read': [],
+                                        'users_rated': [],
+                                        'comments': [],
+                                      }).catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось добавить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                    } else {
+                                      DateTime.now().millisecondsSinceEpoch.toString();
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc(id)
+                                          .set({
+                                        'id': id,
+                                        'name': name,
+                                        // 'text': text,
+                                        'author': FirebaseAuth
+                                            .instance.currentUser.uid,
+                                        'images': 'No Image',
+                                        'genre': category.toLowerCase(),
+                                        'date': DateTime.now(),
+                                        'rich_text': jsonEncode(_controller
+                                            .document
+                                            .toDelta()
+                                            .toJson()),
+                                        'tags': writingTags,
+                                        'rating': 0,
+                                        'reads': 0,
+                                        'users_read': [],
+                                        'users_rated': [],
+                                        'comments': [],
+                                      }).catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось добавить историю',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                    }
+                                  }
+                                  PushNotificationMessage notification =
+                                      PushNotificationMessage(
+                                    title: 'Успех',
+                                    body: 'История добавлена',
+                                  );
+                                  showSimpleNotification(
+                                    Container(child: Text(notification.body)),
+                                    position: NotificationPosition.top,
+                                    background: footyColor,
+                                  );
+                                  if (newTags.length != 0) {
+                                    List nTags = [];
+                                    for (Tag t in newTags) {
+                                      nTags.add(t.name);
+                                    }
+
                                     FirebaseFirestore.instance
-                                        .collection('writings')
-                                        .doc()
-                                        .set({
-                                      'name': name,
-                                      // 'text': text,
-                                      'author':
-                                          FirebaseAuth.instance.currentUser.uid,
-                                      'images': 'No Image',
-                                      'genre': category.toLowerCase(),
-                                      'date': DateTime.now(),
-                                      'rich_text': jsonEncode(_controller
-                                          .document
-                                          .toDelta()
-                                          .toJson()),
-                                      'tags': writingTags,
-                                      'rating': 0,
-                                      'reads': 0,
-                                      'users_read': [],
-                                      'users_rated': [],
-                                      'comments': [],
-                                    }).catchError((error) {
-                                      print('MISTAKE HERE');
-                                      print(error);
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Ошибка',
-                                        body: 'Неудалось добавить историю',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
+                                        .collection('appData')
+                                        .doc('LycRead')
+                                        .update({
+                                      'tags': FieldValue.arrayUnion(nTags),
                                     });
                                   }
-                                }
-                                PushNotificationMessage notification =
-                                    PushNotificationMessage(
-                                  title: 'Успех',
-                                  body: 'История добавлена',
-                                );
-                                showSimpleNotification(
-                                  Container(child: Text(notification.body)),
-                                  position: NotificationPosition.top,
-                                  background: footyColor,
-                                );
-                                if (newTags.length != 0) {
-                                  List nTags = [];
-                                  for (Tag t in newTags) {
-                                    nTags.add(t.name);
+                                  Map tNums = {};
+                                  for (Tag tag in tags) {
+                                    if (writingTags.contains(tag.name)) {
+                                      tNums.addAll({tag.name: tag.number + 1});
+                                      tag.number = tag.number + 1;
+                                    } else {
+                                      tNums.addAll({tag.name: 1});
+                                    }
                                   }
-
                                   FirebaseFirestore.instance
                                       .collection('appData')
                                       .doc('LycRead')
-                                      .update({
-                                    'tags': FieldValue.arrayUnion(nTags),
+                                      .update({'tags_num': tNums});
+                                  setState(() {
+                                    writingTags = [];
+                                    chosenTags = [];
+                                    newTags = [];
+                                    error = '';
+                                    loading = false;
                                   });
                                 }
-                                Map tNums = {};
-                                for (Tag tag in tags) {
-                                  if (writingTags.contains(tag.name)) {
-                                    tNums.addAll({tag.name: tag.number + 1});
-                                    tag.number = tag.number + 1;
-                                  } else {
-                                    tNums.addAll({tag.name: 1});
-                                  }
-                                }
-                                FirebaseFirestore.instance
-                                    .collection('appData')
-                                    .doc('LycRead')
-                                    .update({'tags_num': tNums});
+                              } else {
                                 setState(() {
-                                  writingTags = [];
-                                  chosenTags = [];
-                                  newTags = [];
-                                  error = '';
+                                  error = 'Максимум 20 тегов';
                                   loading = false;
                                 });
                               }

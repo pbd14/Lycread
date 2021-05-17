@@ -243,7 +243,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     if (results.length < 30) {
       QuerySnapshot data = await FirebaseFirestore.instance
           .collection('writings')
-          .orderBy('rating', descending: true)
+          .orderBy('date', descending: true)
           .limit(30 - results.length)
           .get();
       for (QueryDocumentSnapshot d in data.docs) {

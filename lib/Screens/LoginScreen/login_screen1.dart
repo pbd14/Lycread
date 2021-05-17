@@ -256,7 +256,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                           'actions': [],
                                           'reads': [],
                                           'stats': {},
-                                          'recommendations': [],
+                                          'recommendations': ['lycread'],
                                           'isVerified': false,
                                           'id': FirebaseAuth
                                               .instance.currentUser.uid,
