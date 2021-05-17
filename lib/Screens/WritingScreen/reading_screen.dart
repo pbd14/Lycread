@@ -343,7 +343,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       Navigator.of(context).pop(true);
                                       Navigator.pop(context);
                                     },
-                                    child: const Text('Yes', style: TextStyle(color: footyColor),),
+                                    child: const Text(
+                                      'Yes',
+                                      style: TextStyle(color: footyColor),
+                                    ),
                                   ),
                                   TextButton(
                                     onPressed: () =>
@@ -441,9 +444,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               Text(
                                 widget.data.data()['name'],
                                 textScaleFactor: 1,
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.start,
                                 overflow: TextOverflow.fade,
-                                maxLines: 1000,
+                                maxLines: 3,
                                 style: GoogleFonts.montserrat(
                                   textStyle: TextStyle(
                                       color: whiteColor,
@@ -477,6 +480,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                 child: Text(
                                   'By ' + widget.author,
                                   textScaleFactor: 1,
+                                  textAlign: TextAlign.start,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.montserrat(
                                     textStyle: TextStyle(
@@ -717,7 +721,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                   delegate: SliverChildListDelegate(
                     [
                       Container(
-                        padding: EdgeInsets.fromLTRB(25.0, 30, 25, 30),
+                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                         child: Column(
                           children: [
                             SizedBox(height: 20),
@@ -741,19 +745,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             SizedBox(height: 10),
                             widget.data.data()['rich_text'] != null
                                 ? Container(
-                                    margin: EdgeInsets.all(10),
+                                    margin: EdgeInsets.all(3),
                                     padding: EdgeInsets.all(10),
                                     width: double.infinity,
                                     child: QuillEditor(
                                       customStyles: DefaultStyles(
                                         placeHolder: DefaultTextBlockStyle(
-                                          TextStyle(color: secondColor),
+                                          TextStyle(color: secondColor, fontSize: 20),
                                           Tuple2<double, double>(10, 10),
                                           Tuple2<double, double>(3, 3),
                                           BoxDecoration(),
                                         ),
                                         paragraph: DefaultTextBlockStyle(
-                                          TextStyle(color: secondColor),
+                                          TextStyle(color: secondColor, fontSize: 20),
                                           Tuple2<double, double>(10, 10),
                                           Tuple2<double, double>(3, 3),
                                           BoxDecoration(),
@@ -782,493 +786,496 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               color: secondColor,
                               thickness: 2,
                             ),
-                            Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          cursorColor: secondColor,
-                                          maxLines: null,
-                                          style: TextStyle(color: secondColor),
-                                          validator: (val) => val.length > 1
-                                              ? null
-                                              : 'Минимум 2 символов',
-                                          keyboardType: TextInputType.multiline,
-                                          maxLength: 500,
-                                          onChanged: (value) {
-                                            commentText = value;
-                                          },
-                                          decoration: InputDecoration(
-                                            counterStyle:
-                                                TextStyle(color: secondColor),
-                                            hintText: "Коммент",
-                                            border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: secondColor),
+                            Padding(
+                              padding: const EdgeInsets.all(14.0),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            cursorColor: secondColor,
+                                            maxLines: null,
+                                            style: TextStyle(color: secondColor),
+                                            validator: (val) => val.length > 1
+                                                ? null
+                                                : 'Минимум 2 символов',
+                                            keyboardType: TextInputType.multiline,
+                                            maxLength: 500,
+                                            onChanged: (value) {
+                                              commentText = value;
+                                            },
+                                            decoration: InputDecoration(
+                                              counterStyle:
+                                                  TextStyle(color: secondColor),
+                                              hintText: "Коммент",
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: secondColor),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      RoundedButton(
-                                        width: 0.2,
-                                        ph: 40,
-                                        text: 'Ok',
-                                        press: () async {
-                                          if (_formKey.currentState
-                                              .validate()) {
-                                            setState(() {
-                                              loading = true;
-                                            });
-                                            await FirebaseFirestore.instance
-                                                .collection('writings')
-                                                .doc(widget.data.id)
-                                                .update({
-                                              'comments':
-                                                  FieldValue.arrayUnion([
-                                                {
-                                                  'date': DateTime.now(),
-                                                  'text': commentText,
-                                                  'author': FirebaseAuth
-                                                      .instance
-                                                      .currentUser
-                                                      .displayName,
-                                                  'author_id': FirebaseAuth
-                                                      .instance.currentUser.uid,
-                                                  'replies': [],
-                                                }
-                                              ])
-                                            }).catchError((error) {
-                                              PushNotificationMessage
-                                                  notification =
-                                                  PushNotificationMessage(
-                                                title: 'Ошибка',
-                                                body:
-                                                    'Неудалось добавить комментарий',
-                                              );
-                                              showSimpleNotification(
-                                                Container(
-                                                    child: Text(
-                                                        notification.body)),
-                                                position:
-                                                    NotificationPosition.top,
-                                                background: Colors.red,
-                                              );
-                                            });
-                                            String nText = FirebaseAuth.instance
-                                                .currentUser.displayName;
-                                            String nText1 =
-                                                widget.data.data()['name'];
-                                            if (FirebaseAuth
-                                                    .instance.currentUser.uid !=
-                                                widget.data.data()['author']) {
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        RoundedButton(
+                                          width: 0.2,
+                                          ph: 40,
+                                          text: 'Ok',
+                                          press: () async {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              setState(() {
+                                                loading = true;
+                                              });
                                               await FirebaseFirestore.instance
-                                                  .collection('users')
-                                                  .doc(widget.data
-                                                      .data()['author'])
+                                                  .collection('writings')
+                                                  .doc(widget.data.id)
                                                   .update({
-                                                'actions':
+                                                'comments':
                                                     FieldValue.arrayUnion([
                                                   {
+                                                    'date': DateTime.now(),
+                                                    'text': commentText,
                                                     'author': FirebaseAuth
                                                         .instance
                                                         .currentUser
-                                                        .uid,
-                                                    'seen': false,
-                                                    'text':
-                                                        '$nText прокомментировал $nText1',
-                                                    'type': 'New comment',
-                                                    'date': DateTime.now(),
-                                                    'post_id': widget.data.id,
+                                                        .displayName,
+                                                    'author_id': FirebaseAuth
+                                                        .instance.currentUser.uid,
+                                                    'replies': [],
                                                   }
-                                                ]),
+                                                ])
+                                              }).catchError((error) {
+                                                PushNotificationMessage
+                                                    notification =
+                                                    PushNotificationMessage(
+                                                  title: 'Ошибка',
+                                                  body:
+                                                      'Неудалось добавить комментарий',
+                                                );
+                                                showSimpleNotification(
+                                                  Container(
+                                                      child: Text(
+                                                          notification.body)),
+                                                  position:
+                                                      NotificationPosition.top,
+                                                  background: Colors.red,
+                                                );
+                                              });
+                                              String nText = FirebaseAuth.instance
+                                                  .currentUser.displayName;
+                                              String nText1 =
+                                                  widget.data.data()['name'];
+                                              if (FirebaseAuth
+                                                      .instance.currentUser.uid !=
+                                                  widget.data.data()['author']) {
+                                                await FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(widget.data
+                                                        .data()['author'])
+                                                    .update({
+                                                  'actions':
+                                                      FieldValue.arrayUnion([
+                                                    {
+                                                      'author': FirebaseAuth
+                                                          .instance
+                                                          .currentUser
+                                                          .uid,
+                                                      'seen': false,
+                                                      'text':
+                                                          '$nText прокомментировал $nText1',
+                                                      'type': 'New comment',
+                                                      'date': DateTime.now(),
+                                                      'post_id': widget.data.id,
+                                                    }
+                                                  ]),
+                                                });
+                                              }
+                                              PushNotificationMessage
+                                                  notification =
+                                                  PushNotificationMessage(
+                                                title: 'Успех',
+                                                body: 'Комментарий добавлен',
+                                              );
+                                              showSimpleNotification(
+                                                Container(
+                                                    child:
+                                                        Text(notification.body)),
+                                                position:
+                                                    NotificationPosition.top,
+                                                background: footyColor,
+                                              );
+                                              setState(() {
+                                                loading = false;
+                                                commentText = '';
                                               });
                                             }
-                                            PushNotificationMessage
-                                                notification =
-                                                PushNotificationMessage(
-                                              title: 'Успех',
-                                              body: 'Комментарий добавлен',
-                                            );
-                                            showSimpleNotification(
-                                              Container(
-                                                  child:
-                                                      Text(notification.body)),
-                                              position:
-                                                  NotificationPosition.top,
-                                              background: footyColor,
-                                            );
-                                            setState(() {
-                                              loading = false;
-                                              commentText = '';
-                                            });
-                                          }
-                                        },
-                                        color: secondColor,
-                                        textColor: firstColor,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  comments.length != 0
-                                      ? ListView.builder(
-                                          physics:
-                                              new NeverScrollableScrollPhysics(),
-                                          scrollDirection: Axis.vertical,
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.only(bottom: 10),
-                                          itemCount: comments.length,
-                                          itemBuilder: (BuildContext context,
-                                                  int index) =>
-                                              Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  comments[comments.length -
-                                                                  1 -
-                                                                  index]
-                                                              ['author_id'] !=
-                                                          null
-                                                      ? photos[comments[comments
-                                                                          .length -
-                                                                      1 -
-                                                                      index][
-                                                                  'author_id']] !=
-                                                              null
-                                                          ? photos[comments[comments
-                                                                              .length -
-                                                                          1 -
-                                                                          index]
-                                                                      [
-                                                                      'author_id']] !=
-                                                                  'No Image'
-                                                              ? Container(
-                                                                  width: 40,
-                                                                  height: 40,
-                                                                  child:
-                                                                      ClipRRect(
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              25.0),
-                                                                          child:
-                                                                              CachedNetworkImage(
-                                                                            filterQuality:
-                                                                                FilterQuality.none,
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                            placeholder: (context, url) =>
-                                                                                Transform.scale(
-                                                                              scale: 0.8,
-                                                                              child: CircularProgressIndicator(
-                                                                                strokeWidth: 2.0,
-                                                                                backgroundColor: footyColor,
-                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                              ),
-                                                                            ),
-                                                                            errorWidget: (context, url, error) =>
-                                                                                Icon(
-                                                                              Icons.error,
-                                                                              color: footyColor,
-                                                                            ),
-                                                                            imageUrl: photos[comments[comments.length -
-                                                                                1 -
-                                                                                index]['author_id']],
-                                                                          )),
-                                                                )
-                                                              : Container(
-                                                                  width: 40,
-                                                                  height: 40,
-                                                                  child:
-                                                                      ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            25.0),
-                                                                    child: Image
-                                                                        .asset(
-                                                                      'assets/images/User.png',
-                                                                      fit: BoxFit
-                                                                          .cover,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                          : Container(
-                                                              width: 40,
-                                                              height: 40,
-                                                              child: ClipRRect(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            25.0),
-                                                                child:
-                                                                    Image.asset(
-                                                                  'assets/images/User.png',
-                                                                  fit: BoxFit
-                                                                      .cover,
-                                                                ),
-                                                              ),
-                                                            )
-                                                      : Container(
-                                                          width: 40,
-                                                          height: 40,
-                                                          child: ClipRRect(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        25.0),
-                                                            child: Image.asset(
-                                                              'assets/images/User.png',
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                  Expanded(
-                                                    child: Container(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    comments[comments.length -
+                                          },
+                                          color: secondColor,
+                                          textColor: firstColor,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    comments.length != 0
+                                        ? ListView.builder(
+                                            physics:
+                                                new NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            padding: EdgeInsets.only(bottom: 10),
+                                            itemCount: comments.length,
+                                            itemBuilder: (BuildContext context,
+                                                    int index) =>
+                                                Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    comments[comments.length -
+                                                                    1 -
+                                                                    index]
+                                                                ['author_id'] !=
+                                                            null
+                                                        ? photos[comments[comments
+                                                                            .length -
+                                                                        1 -
+                                                                        index][
+                                                                    'author_id']] !=
+                                                                null
+                                                            ? photos[comments[comments
+                                                                                .length -
                                                                             1 -
                                                                             index]
                                                                         [
-                                                                        'text'],
-                                                                    maxLines:
-                                                                        100,
-                                                                    textScaleFactor:
-                                                                        1,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    style: GoogleFonts
-                                                                        .montserrat(
-                                                                      textStyle:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            secondColor,
-                                                                        fontSize:
-                                                                            15,
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
+                                                                        'author_id']] !=
+                                                                    'No Image'
+                                                                ? Container(
+                                                                    width: 40,
+                                                                    height: 40,
+                                                                    child:
+                                                                        ClipRRect(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                                25.0),
+                                                                            child:
+                                                                                CachedNetworkImage(
+                                                                              filterQuality:
+                                                                                  FilterQuality.none,
+                                                                              fit:
+                                                                                  BoxFit.cover,
+                                                                              placeholder: (context, url) =>
+                                                                                  Transform.scale(
+                                                                                scale: 0.8,
+                                                                                child: CircularProgressIndicator(
+                                                                                  strokeWidth: 2.0,
+                                                                                  backgroundColor: footyColor,
+                                                                                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                                ),
+                                                                              ),
+                                                                              errorWidget: (context, url, error) =>
+                                                                                  Icon(
+                                                                                Icons.error,
+                                                                                color: footyColor,
+                                                                              ),
+                                                                              imageUrl: photos[comments[comments.length -
+                                                                                  1 -
+                                                                                  index]['author_id']],
+                                                                            )),
+                                                                  )
+                                                                : Container(
+                                                                    width: 40,
+                                                                    height: 40,
+                                                                    child:
+                                                                        ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              25.0),
+                                                                      child: Image
+                                                                          .asset(
+                                                                        'assets/images/User.png',
+                                                                        fit: BoxFit
+                                                                            .cover,
                                                                       ),
                                                                     ),
+                                                                  )
+                                                            : Container(
+                                                                width: 40,
+                                                                height: 40,
+                                                                child: ClipRRect(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              25.0),
+                                                                  child:
+                                                                      Image.asset(
+                                                                    'assets/images/User.png',
+                                                                    fit: BoxFit
+                                                                        .cover,
                                                                   ),
-                                                                  SizedBox(
-                                                                    height: 5,
-                                                                  ),
-                                                                  Text(
-                                                                    comments[comments.length - 1 - index]['author'] !=
-                                                                            null
-                                                                        ? comments[comments.length -
-                                                                            1 -
-                                                                            index]['author']
-                                                                        : 'No author',
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    textScaleFactor:
-                                                                        1,
-                                                                    style: GoogleFonts
-                                                                        .montserrat(
-                                                                      textStyle:
-                                                                          TextStyle(
-                                                                        color:
-                                                                            secondColor,
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight.w300,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
+                                                              )
+                                                        : Container(
+                                                            width: 40,
+                                                            height: 40,
+                                                            child: ClipRRect(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          25.0),
+                                                              child: Image.asset(
+                                                                'assets/images/User.png',
+                                                                fit: BoxFit.cover,
                                                               ),
                                                             ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                setState(() {
-                                                                  loading =
-                                                                      true;
-                                                                });
-                                                                Navigator.push(
-                                                                  context,
-                                                                  SlideRightRoute(
-                                                                    page:
-                                                                        CommentReplyScreen(
-                                                                      post_id: widget
-                                                                          .data
-                                                                          .id,
-                                                                      all:
-                                                                          comments,
-                                                                      data: comments[comments
-                                                                              .length -
-                                                                          1 -
-                                                                          index],
+                                                          ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      comments[comments.length -
+                                                                              1 -
+                                                                              index]
+                                                                          [
+                                                                          'text'],
+                                                                      maxLines:
+                                                                          100,
+                                                                      textScaleFactor:
+                                                                          1,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: GoogleFonts
+                                                                          .montserrat(
+                                                                        textStyle:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              secondColor,
+                                                                          fontSize:
+                                                                              15,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                );
-                                                                setState(() {
-                                                                  loading =
-                                                                      false;
-                                                                });
-                                                              },
-                                                              child: Text(
-                                                                comments[comments.length -
-                                                                                1 -
-                                                                                index]
-                                                                            [
-                                                                            'replies'] !=
-                                                                        null
-                                                                    ? comments[comments.length -
-                                                                                1 -
-                                                                                index]['replies']
-                                                                            .length
-                                                                            .toString() +
-                                                                        ' replies'
-                                                                    : 'Reply',
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                textScaleFactor:
-                                                                    1,
-                                                                style: GoogleFonts
-                                                                    .montserrat(
-                                                                  textStyle:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .blue,
-                                                                    fontSize:
-                                                                        12,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w300,
+                                                                    SizedBox(
+                                                                      height: 5,
+                                                                    ),
+                                                                    Text(
+                                                                      comments[comments.length - 1 - index]['author'] !=
+                                                                              null
+                                                                          ? comments[comments.length -
+                                                                              1 -
+                                                                              index]['author']
+                                                                          : 'No author',
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      textScaleFactor:
+                                                                          1,
+                                                                      style: GoogleFonts
+                                                                          .montserrat(
+                                                                        textStyle:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              secondColor,
+                                                                          fontSize:
+                                                                              10,
+                                                                          fontWeight:
+                                                                              FontWeight.w300,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  setState(() {
+                                                                    loading =
+                                                                        true;
+                                                                  });
+                                                                  Navigator.push(
+                                                                    context,
+                                                                    SlideRightRoute(
+                                                                      page:
+                                                                          CommentReplyScreen(
+                                                                        post_id: widget
+                                                                            .data
+                                                                            .id,
+                                                                        all:
+                                                                            comments,
+                                                                        data: comments[comments
+                                                                                .length -
+                                                                            1 -
+                                                                            index],
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                  setState(() {
+                                                                    loading =
+                                                                        false;
+                                                                  });
+                                                                },
+                                                                child: Text(
+                                                                  comments[comments.length -
+                                                                                  1 -
+                                                                                  index]
+                                                                              [
+                                                                              'replies'] !=
+                                                                          null
+                                                                      ? comments[comments.length -
+                                                                                  1 -
+                                                                                  index]['replies']
+                                                                              .length
+                                                                              .toString() +
+                                                                          ' replies'
+                                                                      : 'Reply',
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  textScaleFactor:
+                                                                      1,
+                                                                  style: GoogleFonts
+                                                                      .montserrat(
+                                                                    textStyle:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .blue,
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w300,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Divider(
-                                                color: secondColor,
-                                              ),
-                                            ],
-                                          ),
-
-                                          //         Card(
-                                          //   shadowColor: secondColor,
-                                          //   color: firstColor,
-                                          //   elevation: 10,
-                                          //   child: Row(
-                                          //     children: [
-                                          //       SizedBox(
-                                          //         width: 10,
-                                          //       ),
-                                          //       Expanded(
-                                          //         child: Container(
-                                          //           child: Padding(
-                                          //             padding:
-                                          //                 const EdgeInsets.all(12.0),
-                                          //             child: Row(
-                                          //               children: [
-                                          //                 Expanded(
-                                          //                   child: Column(
-                                          //                     crossAxisAlignment:
-                                          //                         CrossAxisAlignment
-                                          //                             .start,
-                                          //                     children: [
-                                          //                       Text(
-                                          //                         comments[index]
-                                          //                             ['text'],
-                                          //                         textScaleFactor: 1,
-                                          //                         style: GoogleFonts
-                                          //                             .montserrat(
-                                          //                           textStyle:
-                                          //                               TextStyle(
-                                          //                             color:
-                                          //                                 secondColor,
-                                          //                             fontSize: 20,
-                                          //                             fontWeight:
-                                          //                                 FontWeight
-                                          //                                     .bold,
-                                          //                           ),
-                                          //                         ),
-                                          //                       ),
-                                          //                       SizedBox(
-                                          //                         height: 10,
-                                          //                       ),
-                                          //                       Text(
-                                          //                         comments[index][
-                                          //                                     'author'] !=
-                                          //                                 null
-                                          //                             ? comments[
-                                          //                                     index]
-                                          //                                 ['author']
-                                          //                             : 'No author',
-                                          //                         overflow:
-                                          //                             TextOverflow
-                                          //                                 .ellipsis,
-                                          //                         textScaleFactor: 1,
-                                          //                         style: GoogleFonts
-                                          //                             .montserrat(
-                                          //                           textStyle:
-                                          //                               TextStyle(
-                                          //                             color:
-                                          //                                 secondColor,
-                                          //                             fontSize: 15,
-                                          //                             fontWeight:
-                                          //                                 FontWeight
-                                          //                                     .w300,
-                                          //                           ),
-                                          //                         ),
-                                          //                       ),
-                                          //                     ],
-                                          //                   ),
-                                          //                 ),
-                                          //               ],
-                                          //             ),
-                                          //           ),
-                                          //         ),
-                                          //       ),
-                                          //       Divider(
-                                          //         thickness: 0.1,
-                                          //         color: secondColor,
-                                          //       ),
-                                          //     ],
-                                          //   ),
-                                          // ),
-                                        )
-                                      : Center(
-                                          child: Text(
-                                            'No comments',
-                                            textScaleFactor: 1,
-                                            style: GoogleFonts.montserrat(
-                                              textStyle: TextStyle(
+                                                  ],
+                                                ),
+                                                Divider(
                                                   color: secondColor,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w300),
+                                                ),
+                                              ],
+                                            ),
+
+                                            //         Card(
+                                            //   shadowColor: secondColor,
+                                            //   color: firstColor,
+                                            //   elevation: 10,
+                                            //   child: Row(
+                                            //     children: [
+                                            //       SizedBox(
+                                            //         width: 10,
+                                            //       ),
+                                            //       Expanded(
+                                            //         child: Container(
+                                            //           child: Padding(
+                                            //             padding:
+                                            //                 const EdgeInsets.all(12.0),
+                                            //             child: Row(
+                                            //               children: [
+                                            //                 Expanded(
+                                            //                   child: Column(
+                                            //                     crossAxisAlignment:
+                                            //                         CrossAxisAlignment
+                                            //                             .start,
+                                            //                     children: [
+                                            //                       Text(
+                                            //                         comments[index]
+                                            //                             ['text'],
+                                            //                         textScaleFactor: 1,
+                                            //                         style: GoogleFonts
+                                            //                             .montserrat(
+                                            //                           textStyle:
+                                            //                               TextStyle(
+                                            //                             color:
+                                            //                                 secondColor,
+                                            //                             fontSize: 20,
+                                            //                             fontWeight:
+                                            //                                 FontWeight
+                                            //                                     .bold,
+                                            //                           ),
+                                            //                         ),
+                                            //                       ),
+                                            //                       SizedBox(
+                                            //                         height: 10,
+                                            //                       ),
+                                            //                       Text(
+                                            //                         comments[index][
+                                            //                                     'author'] !=
+                                            //                                 null
+                                            //                             ? comments[
+                                            //                                     index]
+                                            //                                 ['author']
+                                            //                             : 'No author',
+                                            //                         overflow:
+                                            //                             TextOverflow
+                                            //                                 .ellipsis,
+                                            //                         textScaleFactor: 1,
+                                            //                         style: GoogleFonts
+                                            //                             .montserrat(
+                                            //                           textStyle:
+                                            //                               TextStyle(
+                                            //                             color:
+                                            //                                 secondColor,
+                                            //                             fontSize: 15,
+                                            //                             fontWeight:
+                                            //                                 FontWeight
+                                            //                                     .w300,
+                                            //                           ),
+                                            //                         ),
+                                            //                       ),
+                                            //                     ],
+                                            //                   ),
+                                            //                 ),
+                                            //               ],
+                                            //             ),
+                                            //           ),
+                                            //         ),
+                                            //       ),
+                                            //       Divider(
+                                            //         thickness: 0.1,
+                                            //         color: secondColor,
+                                            //       ),
+                                            //     ],
+                                            //   ),
+                                            // ),
+                                          )
+                                        : Center(
+                                            child: Text(
+                                              'No comments',
+                                              textScaleFactor: 1,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                    color: secondColor,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.w300),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],
