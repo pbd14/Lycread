@@ -41,12 +41,18 @@ class _WritingScreenState extends State<WritingScreen> {
   List<Tag> chosenTags = [];
   SharedPreferences prefs;
   bool isError = false;
+  bool isMonetized = false;
   bool loading = false;
   File i1;
   TaskSnapshot a1;
   QuillController _controller = QuillController.basic();
+  DocumentSnapshot user;
 
   Future<void> prepare() async {
+    DocumentSnapshot dcuser = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
     prefs = await SharedPreferences.getInstance();
     text = prefs.getString('draft') ?? 'Text';
     _controller = QuillController(
@@ -72,10 +78,12 @@ class _WritingScreenState extends State<WritingScreen> {
     }
     if (this.mounted) {
       setState(() {
+        user = dcuser;
         categs = dc.data()['genres'];
         tags = tempTags;
       });
     } else {
+      user = dcuser;
       categs = dc.data()['genres'];
       tags = tempTags;
     }
@@ -473,6 +481,51 @@ class _WritingScreenState extends State<WritingScreen> {
                               )
                             : Container(),
                         SizedBox(
+                          height: 20,
+                        ),
+                        user != null
+                            ? user.data()['isMember'] != null
+                                ? user.data()['isMember']
+                                    ? Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text(
+                                                'Монетизация',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Switch(
+                                                activeColor: footyColor,
+                                                value: isMonetized,
+                                                onChanged: (val) {
+                                                  if (this.mounted) {
+                                                    setState(() {
+                                                      isMonetized = val;
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    )
+                                    : Container()
+                                : Container()
+                            : Container(),
+                        SizedBox(
                           height: 40,
                         ),
                         RoundedButton(
@@ -499,8 +552,9 @@ class _WritingScreenState extends State<WritingScreen> {
                                         .putFile(i1);
                                   }
                                   if (a1 != null) {
-                                    String id =
-                                            DateTime.now().millisecondsSinceEpoch.toString();
+                                    String id = DateTime.now()
+                                        .millisecondsSinceEpoch
+                                        .toString();
                                     FirebaseFirestore.instance
                                         .collection('writings')
                                         .doc(id)
@@ -519,6 +573,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                           .document
                                           .toDelta()
                                           .toJson()),
+                                      'isMonetized': isMonetized,
                                       'rating': 0,
                                       'users_rated': [],
                                       'tags': writingTags,
@@ -541,7 +596,9 @@ class _WritingScreenState extends State<WritingScreen> {
                                       );
                                     });
                                   } else {
-                                    String id = DateTime.now().millisecondsSinceEpoch.toString();
+                                    String id = DateTime.now()
+                                        .millisecondsSinceEpoch
+                                        .toString();
                                     FirebaseFirestore.instance
                                         .collection('writings')
                                         .doc(id)
@@ -558,6 +615,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                           .document
                                           .toDelta()
                                           .toJson()),
+                                      'isMonetized': isMonetized,
                                       'rating': 0,
                                       'reads': 0,
                                       'tags': writingTags,

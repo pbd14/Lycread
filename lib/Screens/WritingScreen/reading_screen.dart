@@ -10,15 +10,17 @@ import 'package:flutter_quill/widgets/controller.dart';
 import 'package:flutter_quill/widgets/default_styles.dart';
 import 'package:flutter_quill/widgets/editor.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
-import 'package:lycread/Models/Tags.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/WritingScreen/comment_reply_screen.dart';
+import 'package:lycread/Services/ad_service.dart';
 import 'package:lycread/widgets/label_button.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/up_button.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
@@ -46,6 +48,23 @@ class _ReadingScreenState extends State<ReadingScreen> {
   QuillController _controller = QuillController.basic();
   List comments = [];
   Map photos = {};
+  BannerAd bannerAd;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final adState = Provider.of<AdService>(context);
+    adState.initialization.then((status) => {
+          setState(() {
+            bannerAd = BannerAd(
+              adUnitId: adState.bannerAdUnitId,
+              request: AdRequest(),
+              size: AdSize.largeBanner,
+              listener: adState.adListener,
+            )..load();
+          })
+        });
+  }
 
   @override
   void dispose() {
@@ -194,6 +213,20 @@ class _ReadingScreenState extends State<ReadingScreen> {
         .update({'stats': userStats, 'recommendations': recoms});
   }
 
+  Future<void> manageFinances() async {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .update({
+      'balance': FieldValue.increment(1.0),
+      'membershipLogs': FieldValue.arrayUnion([
+        {
+          DateTime.now().toString(): [widget.data.id, 1.0]
+        }
+      ])
+    });
+  }
+
   @override
   void initState() {
     if (widget.data.data()['rich_text'] != null) {
@@ -209,6 +242,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
           .contains(FirebaseAuth.instance.currentUser.uid)) {
         if (widget.data.data()['tags'] != null) {
           manageTags();
+        }
+        if (widget.data.data()['isMonetized'] != null &&
+            widget.data.data()['isMonetized']) {
+          manageFinances();
         }
         FirebaseFirestore.instance
             .collection('writings')
@@ -725,6 +762,34 @@ class _ReadingScreenState extends State<ReadingScreen> {
                         child: Column(
                           children: [
                             SizedBox(height: 20),
+                            if (bannerAd == null)
+                              Container()
+                            else
+                              widget.data.data()['isMonetized'] != null
+                                  ? widget.data.data()['isMonetized']
+                                      ? Container(
+                                          height: 150,
+                                          child: AdWidget(
+                                            ad: bannerAd,
+                                          ),
+                                        )
+                                      : Container()
+                                  : Container(),
+                            widget.data.data()['isMonetized'] != null
+                                ? widget.data.data()['isMonetized']
+                                    ? Text(
+                                        'Реклама от автора',
+                                        textScaleFactor: 1,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: secondColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      )
+                                    : Container()
+                                : Container(),
+                            SizedBox(height: 20),
                             widget.data.data()['text'] != null
                                 ? Center(
                                     child: Container(
@@ -751,13 +816,15 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     child: QuillEditor(
                                       customStyles: DefaultStyles(
                                         placeHolder: DefaultTextBlockStyle(
-                                          TextStyle(color: secondColor, fontSize: 20),
+                                          TextStyle(
+                                              color: secondColor, fontSize: 20),
                                           Tuple2<double, double>(10, 10),
                                           Tuple2<double, double>(3, 3),
                                           BoxDecoration(),
                                         ),
                                         paragraph: DefaultTextBlockStyle(
-                                          TextStyle(color: secondColor, fontSize: 20),
+                                          TextStyle(
+                                              color: secondColor, fontSize: 20),
                                           Tuple2<double, double>(10, 10),
                                           Tuple2<double, double>(3, 3),
                                           BoxDecoration(),
@@ -798,11 +865,13 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                           child: TextFormField(
                                             cursorColor: secondColor,
                                             maxLines: null,
-                                            style: TextStyle(color: secondColor),
+                                            style:
+                                                TextStyle(color: secondColor),
                                             validator: (val) => val.length > 1
                                                 ? null
                                                 : 'Минимум 2 символов',
-                                            keyboardType: TextInputType.multiline,
+                                            keyboardType:
+                                                TextInputType.multiline,
                                             maxLength: 500,
                                             onChanged: (value) {
                                               commentText = value;
@@ -845,7 +914,9 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                         .currentUser
                                                         .displayName,
                                                     'author_id': FirebaseAuth
-                                                        .instance.currentUser.uid,
+                                                        .instance
+                                                        .currentUser
+                                                        .uid,
                                                     'replies': [],
                                                   }
                                                 ])
@@ -866,13 +937,16 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                   background: Colors.red,
                                                 );
                                               });
-                                              String nText = FirebaseAuth.instance
-                                                  .currentUser.displayName;
+                                              String nText = FirebaseAuth
+                                                  .instance
+                                                  .currentUser
+                                                  .displayName;
                                               String nText1 =
                                                   widget.data.data()['name'];
-                                              if (FirebaseAuth
-                                                      .instance.currentUser.uid !=
-                                                  widget.data.data()['author']) {
+                                              if (FirebaseAuth.instance
+                                                      .currentUser.uid !=
+                                                  widget.data
+                                                      .data()['author']) {
                                                 await FirebaseFirestore.instance
                                                     .collection('users')
                                                     .doc(widget.data
@@ -903,8 +977,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                               );
                                               showSimpleNotification(
                                                 Container(
-                                                    child:
-                                                        Text(notification.body)),
+                                                    child: Text(
+                                                        notification.body)),
                                                 position:
                                                     NotificationPosition.top,
                                                 background: footyColor,
@@ -929,7 +1003,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 new NeverScrollableScrollPhysics(),
                                             scrollDirection: Axis.vertical,
                                             shrinkWrap: true,
-                                            padding: EdgeInsets.only(bottom: 10),
+                                            padding:
+                                                EdgeInsets.only(bottom: 10),
                                             itemCount: comments.length,
                                             itemBuilder: (BuildContext context,
                                                     int index) =>
@@ -958,34 +1033,34 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                 ? Container(
                                                                     width: 40,
                                                                     height: 40,
-                                                                    child:
-                                                                        ClipRRect(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                                25.0),
+                                                                    child: ClipRRect(
+                                                                        borderRadius: BorderRadius.circular(25.0),
+                                                                        child: CachedNetworkImage(
+                                                                          filterQuality:
+                                                                              FilterQuality.none,
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                          placeholder: (context, url) =>
+                                                                              Transform.scale(
+                                                                            scale:
+                                                                                0.8,
                                                                             child:
-                                                                                CachedNetworkImage(
-                                                                              filterQuality:
-                                                                                  FilterQuality.none,
-                                                                              fit:
-                                                                                  BoxFit.cover,
-                                                                              placeholder: (context, url) =>
-                                                                                  Transform.scale(
-                                                                                scale: 0.8,
-                                                                                child: CircularProgressIndicator(
-                                                                                  strokeWidth: 2.0,
-                                                                                  backgroundColor: footyColor,
-                                                                                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                                ),
-                                                                              ),
-                                                                              errorWidget: (context, url, error) =>
-                                                                                  Icon(
-                                                                                Icons.error,
-                                                                                color: footyColor,
-                                                                              ),
-                                                                              imageUrl: photos[comments[comments.length -
-                                                                                  1 -
-                                                                                  index]['author_id']],
-                                                                            )),
+                                                                                CircularProgressIndicator(
+                                                                              strokeWidth: 2.0,
+                                                                              backgroundColor: footyColor,
+                                                                              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                            ),
+                                                                          ),
+                                                                          errorWidget: (context, url, error) =>
+                                                                              Icon(
+                                                                            Icons.error,
+                                                                            color:
+                                                                                footyColor,
+                                                                          ),
+                                                                          imageUrl: photos[comments[comments.length -
+                                                                              1 -
+                                                                              index]['author_id']],
+                                                                        )),
                                                                   )
                                                                 : Container(
                                                                     width: 40,
@@ -1006,13 +1081,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                             : Container(
                                                                 width: 40,
                                                                 height: 40,
-                                                                child: ClipRRect(
+                                                                child:
+                                                                    ClipRRect(
                                                                   borderRadius:
                                                                       BorderRadius
                                                                           .circular(
                                                                               25.0),
-                                                                  child:
-                                                                      Image.asset(
+                                                                  child: Image
+                                                                      .asset(
                                                                     'assets/images/User.png',
                                                                     fit: BoxFit
                                                                         .cover,
@@ -1027,9 +1103,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           25.0),
-                                                              child: Image.asset(
+                                                              child:
+                                                                  Image.asset(
                                                                 'assets/images/User.png',
-                                                                fit: BoxFit.cover,
+                                                                fit: BoxFit
+                                                                    .cover,
                                                               ),
                                                             ),
                                                           ),
@@ -1048,11 +1126,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                           .start,
                                                                   children: [
                                                                     Text(
-                                                                      comments[comments.length -
-                                                                              1 -
-                                                                              index]
-                                                                          [
-                                                                          'text'],
+                                                                      comments[comments
+                                                                              .length -
+                                                                          1 -
+                                                                          index]['text'],
                                                                       maxLines:
                                                                           100,
                                                                       textScaleFactor:
@@ -1110,7 +1187,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                     loading =
                                                                         true;
                                                                   });
-                                                                  Navigator.push(
+                                                                  Navigator
+                                                                      .push(
                                                                     context,
                                                                     SlideRightRoute(
                                                                       page:
@@ -1120,8 +1198,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                             .id,
                                                                         all:
                                                                             comments,
-                                                                        data: comments[comments
-                                                                                .length -
+                                                                        data: comments[comments.length -
                                                                             1 -
                                                                             index],
                                                                       ),
@@ -1133,15 +1210,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                                   });
                                                                 },
                                                                 child: Text(
-                                                                  comments[comments.length -
-                                                                                  1 -
-                                                                                  index]
+                                                                  comments[comments.length - 1 - index]
                                                                               [
                                                                               'replies'] !=
                                                                           null
-                                                                      ? comments[comments.length -
-                                                                                  1 -
-                                                                                  index]['replies']
+                                                                      ? comments[comments.length - 1 - index]['replies']
                                                                               .length
                                                                               .toString() +
                                                                           ' replies'
@@ -1270,7 +1343,8 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 textStyle: TextStyle(
                                                     color: secondColor,
                                                     fontSize: 20,
-                                                    fontWeight: FontWeight.w300),
+                                                    fontWeight:
+                                                        FontWeight.w300),
                                               ),
                                             ),
                                           ),

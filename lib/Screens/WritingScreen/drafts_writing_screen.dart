@@ -42,12 +42,18 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
   List<Tag> newTags = [];
   List<Tag> chosenTags = [];
   bool isError = false;
+  bool isMonetized = false;
   bool loading = false;
   File i1;
   TaskSnapshot a1;
   QuillController _controller = QuillController.basic();
+  DocumentSnapshot user;
 
   Future<void> prepare() async {
+    DocumentSnapshot dcuser = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
     DocumentSnapshot dc = await FirebaseFirestore.instance
         .collection('appData')
         .doc('LycRead')
@@ -63,6 +69,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
     }
     if (this.mounted) {
       setState(() {
+        user = dcuser;
         name = widget.data['name'];
         text = widget.data['text'];
         category = widget.data['genre'];
@@ -70,6 +77,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
         tags = tempTags;
       });
     } else {
+      user = dcuser;
       name = widget.data['name'];
       text = widget.data['text'];
       category = widget.data['genre'];
@@ -479,6 +487,51 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                               )
                             : Container(),
                         SizedBox(
+                          height: 20,
+                        ),
+                        user != null
+                            ? user.data()['isMember'] != null
+                                ? user.data()['isMember']
+                                    ? Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Row(
+                                          children: [
+                                            Expanded(
+                                              flex: 7,
+                                              child: Text(
+                                                'Монетизация',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Switch(
+                                                activeColor: footyColor,
+                                                value: isMonetized,
+                                                onChanged: (val) {
+                                                  if (this.mounted) {
+                                                    setState(() {
+                                                      isMonetized = val;
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                    )
+                                    : Container()
+                                : Container()
+                            : Container(),
+                        SizedBox(
                           height: 40,
                         ),
                         RoundedButton(
@@ -505,8 +558,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                         .putFile(i1);
                                   }
                                   if (a1 != null) {
-                                    String id =
-                                        DateTime.now().millisecondsSinceEpoch.toString();
+                                    String id = DateTime.now()
+                                        .millisecondsSinceEpoch
+                                        .toString();
                                     FirebaseFirestore.instance
                                         .collection('writings')
                                         .doc(id)
@@ -525,6 +579,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                           .document
                                           .toDelta()
                                           .toJson()),
+                                      'isMonetized': isMonetized,
                                       'rating': 0,
                                       'users_rated': [],
                                       'tags': writingTags,
@@ -549,7 +604,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                   } else {
                                     if (widget.data['images'][0] !=
                                         'No Image') {
-                                      DateTime.now().millisecondsSinceEpoch.toString();
+                                      DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString();
                                       FirebaseFirestore.instance
                                           .collection('writings')
                                           .doc(id)
@@ -566,6 +623,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                             .document
                                             .toDelta()
                                             .toJson()),
+                                        'isMonetized': isMonetized,
                                         'tags': writingTags,
                                         'rating': 0,
                                         'reads': 0,
@@ -588,7 +646,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                         );
                                       });
                                     } else {
-                                      DateTime.now().millisecondsSinceEpoch.toString();
+                                      DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString();
                                       FirebaseFirestore.instance
                                           .collection('writings')
                                           .doc(id)
@@ -605,6 +665,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                             .document
                                             .toDelta()
                                             .toJson()),
+                                        'isMonetized': isMonetized,
                                         'tags': writingTags,
                                         'rating': 0,
                                         'reads': 0,

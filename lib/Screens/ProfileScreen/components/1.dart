@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/components/drafts_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/components/favourites_screen.dart';
+import 'package:lycread/Screens/ProfileScreen/components/monetizing_screen.dart';
 import 'package:lycread/Screens/ProfileScreen/components/settings.dart';
 import 'package:lycread/Screens/ProfileScreen/components/view_users_screen.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
@@ -168,6 +169,25 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
               excludeHeaderSemantics: true,
               backgroundColor: whiteColor,
               actions: [
+                IconButton(
+                  color: primaryColor,
+                  icon: Icon(
+                    CupertinoIcons.money_dollar_circle_fill,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      loading = true;
+                    });
+                    Navigator.push(
+                        context,
+                        SlideRightRoute(
+                          page: MonetizingScreen(),
+                        ));
+                    setState(() {
+                      loading = false;
+                    });
+                  },
+                ),
                 data.data()['favourites'] != null
                     ? data.data()['favourites'].length != 0
                         ? IconButton(
@@ -539,13 +559,20 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                                           });
                                           Navigator.of(context).pop(true);
                                         },
-                                        child: const Text('Yes', style: TextStyle(color: footyColor),),
+                                        child: const Text(
+                                          'Yes',
+                                          style: TextStyle(color: footyColor),
+                                        ),
                                       ),
                                       TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: const Text('No', style: TextStyle(color: Colors.red),),),
+                                        onPressed: () {
+                                          Navigator.of(context).pop(false);
+                                        },
+                                        child: const Text(
+                                          'No',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
                                     ],
                                   );
                                 },
