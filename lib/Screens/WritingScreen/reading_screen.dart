@@ -216,12 +216,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
   Future<void> manageFinances() async {
     FirebaseFirestore.instance
         .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.uid)
+        .doc(widget.data.data()['author'])
         .update({
       'balance': FieldValue.increment(1.0),
       'membershipLogs': FieldValue.arrayUnion([
         {
-          DateTime.now().toString(): [widget.data.id, 1.0]
+          'date': DateTime.now().toString(),
+          'wr_id': widget.data.id,
+          'sum': 1.0,
         }
       ])
     });
@@ -768,7 +770,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               widget.data.data()['isMonetized'] != null
                                   ? widget.data.data()['isMonetized']
                                       ? Container(
-                                          height: 150,
+                                          height: 100,
                                           child: AdWidget(
                                             ad: bannerAd,
                                           ),

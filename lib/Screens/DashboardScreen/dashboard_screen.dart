@@ -596,13 +596,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                                               : Container(),
                                           SizedBox(height: 10),
                                           Container(
-                                            margin: EdgeInsets.fromLTRB(
-                                                10, 0, 0, 0),
                                             child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
                                                 Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
