@@ -303,7 +303,11 @@ class _DraftsScreenState extends State<DraftsScreen> {
                                                                     .data
                                                                     .length -
                                                                 1 -
-                                                                index]['name'],
+                                                                index]['name'] != null ? widget.data[widget
+                                                                    .data
+                                                                    .length -
+                                                                1 -
+                                                                index]['name'] : 'No Name',
                                                             textScaleFactor: 1,
                                                             overflow:
                                                                 TextOverflow

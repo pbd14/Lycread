@@ -180,10 +180,11 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                       loading = true;
                     });
                     Navigator.push(
-                        context,
-                        SlideRightRoute(
-                          page: MonetizingScreen(),
-                        ));
+                      context,
+                      SlideRightRoute(
+                        page: MonetizingScreen(),
+                      ),
+                    );
                     setState(() {
                       loading = false;
                     });

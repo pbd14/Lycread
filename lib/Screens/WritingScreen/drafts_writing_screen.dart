@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/models/documents/document.dart';
 import 'package:flutter_quill/widgets/controller.dart';
@@ -186,6 +187,69 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                         // SizedBox(
                         //   height: 20,
                         // ),
+                        widget.data['parent'] != null
+                            ? Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                child: Card(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(10, 15, 10, 15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.link,
+                                          size: 30,
+                                          color: primaryColor,
+                                        ),
+                                        SizedBox(width: 20),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              widget.data['parent']['data']
+                                                  ['name'],
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              widget.data['parent']['author'] !=
+                                                      null
+                                                  ? widget.data['parent']
+                                                      ['author']
+                                                  : 'Loading',
+                                              overflow: TextOverflow.ellipsis,
+                                              textScaleFactor: 1,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  color: footyColor,
+                                ),
+                              )
+                            : Container(),
+                        SizedBox(height: 20),
                         Container(
                           height: 110,
                           child: TextFieldContainer(
@@ -492,8 +556,8 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                             ? user.data()['isMember'] != null
                                 ? user.data()['isMember']
                                     ? Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Row(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Row(
                                           children: [
                                             Expanded(
                                               flex: 7,
@@ -526,7 +590,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                             ),
                                           ],
                                         ),
-                                    )
+                                      )
                                     : Container()
                                 : Container()
                             : Container(),
@@ -560,6 +624,20 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                     String id = DateTime.now()
                                         .millisecondsSinceEpoch
                                         .toString();
+                                    if (widget.data != null) {
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc(widget.data['parent']['id'])
+                                          .update({
+                                        'children': FieldValue.arrayUnion([
+                                          {
+                                            'author': FirebaseAuth.instance
+                                                .currentUser.displayName,
+                                            'id': id,
+                                          }
+                                        ])
+                                      });
+                                    }
                                     FirebaseFirestore.instance
                                         .collection('writings')
                                         .doc(id)
@@ -585,6 +663,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                       'reads': 0,
                                       'users_read': [],
                                       'comments': [],
+                                      'parent': widget.data['parent'] != null
+                                          ? widget.data['parent']
+                                          : null,
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
@@ -603,9 +684,23 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                   } else {
                                     if (widget.data['images'][0] !=
                                         'No Image') {
-                                      DateTime.now()
+                                      String id = DateTime.now()
                                           .millisecondsSinceEpoch
                                           .toString();
+                                      if (widget.data != null) {
+                                        FirebaseFirestore.instance
+                                            .collection('writings')
+                                            .doc(widget.data['parent']['id'])
+                                            .update({
+                                          'children': FieldValue.arrayUnion([
+                                            {
+                                              'author': FirebaseAuth.instance
+                                                  .currentUser.displayName,
+                                              'id': id,
+                                            }
+                                          ])
+                                        });
+                                      }
                                       FirebaseFirestore.instance
                                           .collection('writings')
                                           .doc(id)
@@ -629,6 +724,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                         'users_read': [],
                                         'users_rated': [],
                                         'comments': [],
+                                        'parent': widget.data['parent'] != null
+                                            ? widget.data['parent']
+                                            : null,
                                       }).catchError((error) {
                                         print('MISTAKE HERE');
                                         print(error);
@@ -645,9 +743,23 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                         );
                                       });
                                     } else {
-                                      DateTime.now()
+                                      String id = DateTime.now()
                                           .millisecondsSinceEpoch
                                           .toString();
+                                      if (widget.data != null) {
+                                        FirebaseFirestore.instance
+                                            .collection('writings')
+                                            .doc(widget.data['parent']['id'])
+                                            .update({
+                                          'children': FieldValue.arrayUnion([
+                                            {
+                                              'author': FirebaseAuth.instance
+                                                  .currentUser.displayName,
+                                              'id': id,
+                                            }
+                                          ])
+                                        });
+                                      }
                                       FirebaseFirestore.instance
                                           .collection('writings')
                                           .doc(id)
@@ -671,6 +783,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                         'users_read': [],
                                         'users_rated': [],
                                         'comments': [],
+                                        'parent': widget.data['parent'] != null
+                                            ? widget.data['parent']
+                                            : null,
                                       }).catchError((error) {
                                         print('MISTAKE HERE');
                                         print(error);
@@ -786,6 +901,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                         await a1.ref.getDownloadURL(),
                                       ],
                                       'genre': category.toLowerCase(),
+                                      'parent': widget.data['parent'] != null
+                                          ? widget.data['parent']
+                                          : null,
                                     }
                                   ]),
                                   // 'name': name,
@@ -834,6 +952,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                             .toJson()),
                                         'images': [widget.data['images'][0]],
                                         'genre': category.toLowerCase(),
+                                        'parent': widget.data['parent'] != null
+                                            ? widget.data['parent']
+                                            : null,
                                       }
                                     ]),
                                     // 'name': name,
@@ -879,6 +1000,9 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                             .toJson()),
                                         'images': 'No Image',
                                         'genre': category.toLowerCase(),
+                                        'parent': widget.data['parent'] != null
+                                            ? widget.data['parent']
+                                            : null,
                                       }
                                     ]),
                                     // 'name': name,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/models/documents/document.dart';
 import 'package:flutter_quill/widgets/controller.dart';
@@ -23,6 +24,17 @@ import '../../constants.dart';
 import '../loading_screen.dart';
 
 class WritingScreen extends StatefulWidget {
+  String parentId;
+  String parentAuthor;
+  Map data;
+  bool isEmpty;
+  WritingScreen(
+      {Key key,
+      this.data,
+      this.parentId: '',
+      this.parentAuthor: '',
+      this.isEmpty: true})
+      : super(key: key);
   @override
   _WritingScreenState createState() => _WritingScreenState();
 }
@@ -54,19 +66,30 @@ class _WritingScreenState extends State<WritingScreen> {
         .get();
     prefs = await SharedPreferences.getInstance();
     text = prefs.getString('draft') ?? 'Text';
-    _controller = QuillController(
-      document: Document.fromJson([
-        // {
-        //   "insert": 'Text',
-        //   "attributes": {"color": "#e53935", "bold": true},
-        //   "insert": '\n',
-        // }
-        {
-          "insert": text.trim() + "\n",
-        },
-      ]),
-      selection: TextSelection.collapsed(offset: 0),
-    );
+    if (!widget.isEmpty) {
+      var myJSON = jsonDecode(widget.data['rich_text']);
+      _controller = QuillController(
+        document: Document.fromJson(myJSON),
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    } else {
+      if (widget.parentId.isEmpty) {
+        _controller = QuillController(
+          document: Document.fromJson([
+            // {
+            //   "insert": 'Text',
+            //   "attributes": {"color": "#e53935", "bold": true},
+            //   "insert": '\n',
+            // }
+            {
+              "insert": text.trim() + "\n",
+            },
+          ]),
+          selection: TextSelection.collapsed(offset: 0),
+        );
+      }
+    }
+
     DocumentSnapshot dc = await FirebaseFirestore.instance
         .collection('appData')
         .doc('LycRead')
@@ -184,6 +207,68 @@ class _WritingScreenState extends State<WritingScreen> {
                         //     name = value;
                         //   },
                         // ),
+                        widget.data != null
+                            ? Container(
+                                margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                child: Card(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.fromLTRB(10, 15, 10, 15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.link,
+                                          size: 30,
+                                          color: primaryColor,
+                                        ),
+                                        SizedBox(width: 20),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              widget.data['name'],
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              widget.parentAuthor != null
+                                                  ? widget.parentAuthor
+                                                  : 'Loading',
+                                              overflow: TextOverflow.ellipsis,
+                                              textScaleFactor: 1,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  color: footyColor,
+                                ),
+                              )
+                            : Container(),
+                        SizedBox(
+                          height: 20,
+                        ),
                         Container(
                           height: 110,
                           child: TextFieldContainer(
@@ -429,22 +514,6 @@ class _WritingScreenState extends State<WritingScreen> {
                         SizedBox(
                           height: 30,
                         ),
-
-                        // Text(
-                        //   'Фотография',
-                        //   textScaleFactor: 1,
-                        //   style: GoogleFonts.montserrat(
-                        //     textStyle: TextStyle(
-                        //       color: primaryColor,
-                        //       fontSize: 25,
-                        //       fontWeight: FontWeight.bold,
-                        //     ),
-                        //   ),
-                        // ),
-                        // Divider(),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
                         GestureDetector(
                           onTap: () {
                             _getImage();
@@ -486,8 +555,8 @@ class _WritingScreenState extends State<WritingScreen> {
                             ? user.data()['isMember'] != null
                                 ? user.data()['isMember']
                                     ? Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: Row(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: Row(
                                           children: [
                                             Expanded(
                                               flex: 7,
@@ -520,7 +589,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                             ),
                                           ],
                                         ),
-                                    )
+                                      )
                                     : Container()
                                 : Container()
                             : Container(),
@@ -554,6 +623,20 @@ class _WritingScreenState extends State<WritingScreen> {
                                     String id = DateTime.now()
                                         .millisecondsSinceEpoch
                                         .toString();
+                                    if (widget.data != null) {
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc(widget.parentId)
+                                          .update({
+                                        'children': FieldValue.arrayUnion([
+                                          {
+                                            'author': FirebaseAuth.instance
+                                                .currentUser.displayName,
+                                            'id': id,
+                                          }
+                                        ])
+                                      });
+                                    }
                                     FirebaseFirestore.instance
                                         .collection('writings')
                                         .doc(id)
@@ -579,6 +662,13 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'reads': 0,
                                       'users_read': [],
                                       'comments': [],
+                                      'parent': widget.data != null
+                                          ? {
+                                              'id': widget.parentId,
+                                              'author': widget.parentAuthor,
+                                              'data': widget.data,
+                                            }
+                                          : null,
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
@@ -598,6 +688,20 @@ class _WritingScreenState extends State<WritingScreen> {
                                     String id = DateTime.now()
                                         .millisecondsSinceEpoch
                                         .toString();
+                                    if (widget.data != null) {
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .doc(widget.parentId)
+                                          .update({
+                                        'children': FieldValue.arrayUnion([
+                                          {
+                                            'author': FirebaseAuth.instance
+                                                .currentUser.displayName,
+                                            'id': id,
+                                          }
+                                        ])
+                                      });
+                                    }
                                     FirebaseFirestore.instance
                                         .collection('writings')
                                         .doc(id)
@@ -621,6 +725,13 @@ class _WritingScreenState extends State<WritingScreen> {
                                       'users_read': [],
                                       'users_rated': [],
                                       'comments': [],
+                                      'parent': widget.data != null
+                                          ? {
+                                              'id': widget.parentId,
+                                              'author': widget.parentAuthor,
+                                              'data': widget.data,
+                                            }
+                                          : null,
                                     }).catchError((error) {
                                       print('MISTAKE HERE');
                                       print(error);
@@ -749,6 +860,13 @@ class _WritingScreenState extends State<WritingScreen> {
                                         await a1.ref.getDownloadURL(),
                                       ],
                                       'genre': category.toLowerCase(),
+                                      'parent': widget.data != null
+                                          ? {
+                                              'id': widget.parentId,
+                                              'author': widget.parentAuthor,
+                                              'data': widget.data,
+                                            }
+                                          : null,
                                     }
                                   ]),
                                   // 'name': name,
@@ -795,6 +913,13 @@ class _WritingScreenState extends State<WritingScreen> {
                                           .toDelta()
                                           .toJson()),
                                       'genre': category.toLowerCase(),
+                                      'parent': widget.data != null
+                                          ? {
+                                              'id': widget.parentId,
+                                              'author': widget.parentAuthor,
+                                              'data': widget.data,
+                                            }
+                                          : null,
                                     }
                                   ]),
                                   // 'name': name,

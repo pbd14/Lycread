@@ -14,6 +14,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/WritingScreen/comment_reply_screen.dart';
+import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:lycread/Services/ad_service.dart';
 import 'package:lycread/widgets/label_button.dart';
 import 'package:lycread/widgets/rounded_button.dart';
@@ -38,6 +39,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   bool loading = false;
   bool isComm = false;
   bool isYellow = false;
+  bool allLinksShown = false;
   Color firstColor = whiteColor;
   Color yellowColor = Color.fromRGBO(255, 255, 225, 1.0);
   Color secondColor = Color.fromRGBO(43, 43, 43, 1.0);
@@ -47,8 +49,10 @@ class _ReadingScreenState extends State<ReadingScreen> {
   StreamSubscription<DocumentSnapshot> subscription;
   QuillController _controller = QuillController.basic();
   List comments = [];
+  List ids = [];
   Map photos = {};
   BannerAd bannerAd;
+  QuerySnapshot childLinks;
 
   @override
   void didChangeDependencies() {
@@ -229,8 +233,33 @@ class _ReadingScreenState extends State<ReadingScreen> {
     });
   }
 
+  Future<void> prepare() async {
+    if (widget.data.data()['children'] != null &&
+        widget.data.data()['children'].length != 0) {
+      for (Map m in widget.data.data()['children']) {
+        ids.add(m['id']);
+      }
+      print('HERE');
+      print(ids);
+      QuerySnapshot middleChildLnks = await FirebaseFirestore.instance
+          .collection('writings')
+          .where('id', whereIn: ids)
+          .orderBy('rating')
+          .limit(2)
+          .get();
+      if (this.mounted) {
+        setState(() {
+          childLinks = middleChildLnks;
+        });
+      } else {
+        childLinks = middleChildLnks;
+      }
+    }
+  }
+
   @override
   void initState() {
+    prepare();
     if (widget.data.data()['rich_text'] != null) {
       var myJSON = jsonDecode(widget.data.data()['rich_text']);
       _controller = QuillController(
@@ -320,7 +349,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         ? LoadingScreen()
         : Scaffold(
             appBar: AppBar(
-              centerTitle: true,
+              centerTitle: false,
               iconTheme: IconThemeData(color: firstColor),
               backgroundColor: secondColor,
               title: Text(
@@ -335,13 +364,159 @@ class _ReadingScreenState extends State<ReadingScreen> {
                 ),
               ),
               actions: [
+                TextButton(
+                  child: Text(
+                    'RePub',
+                    textScaleFactor: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: footyColor,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Выберите способ'),
+                          content: Container(
+                            height: size.height * 0.2,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.zero),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: WritingScreen(
+                                          parentId: widget.data.id,
+                                          data: widget.data.data(),
+                                          parentAuthor: widget.author,
+                                          isEmpty: true,
+                                        ),
+                                      ),
+                                    );
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '1',
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Пусто',
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                TextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.zero)),
+                                  onPressed: () {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: WritingScreen(
+                                          parentId: widget.data.id,
+                                          data: widget.data.data(),
+                                          parentAuthor: widget.author,
+                                          isEmpty: false,
+                                        ),
+                                      ),
+                                    );
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '2',
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      Text(
+                                        'Скопировать',
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text(
+                                'Отменить',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
                 FirebaseAuth.instance.currentUser.uid ==
                         widget.data.data()['author']
-                    ? RoundedButton(
-                        pw: 85,
-                        ph: 45,
-                        text: 'Удалить',
-                        press: () async {
+                    ? IconButton(
+                        color: Colors.red,
+                        icon: Icon(
+                          CupertinoIcons.trash,
+                        ),
+                        onPressed: () {
                           showDialog(
                             barrierDismissible: false,
                             context: context,
@@ -352,7 +527,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     const Text('Хотите ли вы удалить историю?'),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () async {
+                                    onPressed: () {
                                       setState(() {
                                         loading = true;
                                       });
@@ -400,29 +575,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
                             },
                           );
                         },
-                        color: Colors.red,
-                        textColor: whiteColor,
                       )
                     : Container(),
               ],
             ),
             backgroundColor: firstColor,
-            // appBar: AppBar(
-            //   elevation: 10,
-            //   toolbarHeight: size.height * 0.1,
-            //   backgroundColor: whiteColor,
-            //   title: Text(
-            //     widget.data.data()['name'],
-            //     textScaleFactor: 1,
-            //     overflow: TextOverflow.ellipsis,
-            //     style: GoogleFonts.montserrat(
-            //       textStyle: TextStyle(
-            //           color: darkPrimaryColor,
-            //           fontSize: 30,
-            //           fontWeight: FontWeight.bold),
-            //     ),
-            //   ),
-            // ),
             body: CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -763,6 +920,125 @@ class _ReadingScreenState extends State<ReadingScreen> {
                         padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
                         child: Column(
                           children: [
+                            if (widget.data.data()['parent'] != null)
+                              SizedBox(height: 20),
+                            if (widget.data.data()['parent'] != null)
+                              Text(
+                                'RePub из',
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: primaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w300),
+                                ),
+                              ),
+                            if (widget.data.data()['parent'] != null)
+                              widget.data.data()['parent'] != null
+                                  ? TextButton(
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all(
+                                              EdgeInsets.zero)),
+                                      onPressed: () async {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        QuerySnapshot story =
+                                            await FirebaseFirestore.instance
+                                                .collection('writings')
+                                                .where('id',
+                                                    isEqualTo: widget.data
+                                                        .data()['parent']['id'])
+                                                .limit(1)
+                                                .get();
+                                        Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ReadingScreen(
+                                              data: story.docs.first,
+                                              author: widget.data
+                                                  .data()['parent']['author'],
+                                            ),
+                                          ),
+                                        );
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                        child: Card(
+                                          child: Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                10, 15, 10, 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  CupertinoIcons.link,
+                                                  size: 30,
+                                                  color: primaryColor,
+                                                ),
+                                                SizedBox(width: 20),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      widget.data
+                                                              .data()['parent']
+                                                          ['data']['name'],
+                                                      textScaleFactor: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                      widget.data.data()[
+                                                                      'parent']
+                                                                  ['author'] !=
+                                                              null
+                                                          ? widget.data.data()[
+                                                                  'parent']
+                                                              ['author']
+                                                          : 'Loading',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      textScaleFactor: 1,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          color: footyColor,
+                                        ),
+                                      ),
+                                    )
+                                  : Container(),
                             SizedBox(height: 20),
                             if (bannerAd == null)
                               Container()
@@ -850,6 +1126,123 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     ),
                                   )
                                 : Container(),
+                            SizedBox(height: 20),
+                            if (widget.data.data()['children'] != null &&
+                                widget.data.data()['children'].length != 0 &&
+                                childLinks != null)
+                              Center(
+                                child: Text(
+                                  'Линки',
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ),
+                              ),
+                            if (widget.data.data()['children'] != null &&
+                                widget.data.data()['children'].length != 0 &&
+                                childLinks != null)
+                              for (QueryDocumentSnapshot child
+                                  in childLinks.docs)
+                                TextButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.zero),
+                                  ),
+                                  onPressed: () async {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: ReadingScreen(
+                                          data: child,
+                                          author: child.data()['author'],
+                                        ),
+                                      ),
+                                    );
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          CupertinoIcons.link,
+                                          size: 20,
+                                          color: primaryColor,
+                                        ),
+                                        SizedBox(width: 20),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              child.data()['name'],
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: primaryColor,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            if (widget.data.data()['children'] != null &&
+                                widget.data.data()['children'].length != 0 &&
+                                childLinks != null &&
+                                !allLinksShown)
+                              Center(
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.zero),
+                                  ),
+                                  onPressed: () async {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    QuerySnapshot middleChildLnks =
+                                        await FirebaseFirestore.instance
+                                            .collection('writings')
+                                            .where('id', whereIn: ids)
+                                            .orderBy('rating')
+                                            .get();
+                                    setState(() {
+                                      allLinksShown = true;
+                                      childLinks = middleChildLnks;
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Text(
+                                    'Показать все',
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: primaryColor,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             SizedBox(height: 10),
                             Divider(
                               color: secondColor,
@@ -1253,89 +1646,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 ),
                                               ],
                                             ),
-
-                                            //         Card(
-                                            //   shadowColor: secondColor,
-                                            //   color: firstColor,
-                                            //   elevation: 10,
-                                            //   child: Row(
-                                            //     children: [
-                                            //       SizedBox(
-                                            //         width: 10,
-                                            //       ),
-                                            //       Expanded(
-                                            //         child: Container(
-                                            //           child: Padding(
-                                            //             padding:
-                                            //                 const EdgeInsets.all(12.0),
-                                            //             child: Row(
-                                            //               children: [
-                                            //                 Expanded(
-                                            //                   child: Column(
-                                            //                     crossAxisAlignment:
-                                            //                         CrossAxisAlignment
-                                            //                             .start,
-                                            //                     children: [
-                                            //                       Text(
-                                            //                         comments[index]
-                                            //                             ['text'],
-                                            //                         textScaleFactor: 1,
-                                            //                         style: GoogleFonts
-                                            //                             .montserrat(
-                                            //                           textStyle:
-                                            //                               TextStyle(
-                                            //                             color:
-                                            //                                 secondColor,
-                                            //                             fontSize: 20,
-                                            //                             fontWeight:
-                                            //                                 FontWeight
-                                            //                                     .bold,
-                                            //                           ),
-                                            //                         ),
-                                            //                       ),
-                                            //                       SizedBox(
-                                            //                         height: 10,
-                                            //                       ),
-                                            //                       Text(
-                                            //                         comments[index][
-                                            //                                     'author'] !=
-                                            //                                 null
-                                            //                             ? comments[
-                                            //                                     index]
-                                            //                                 ['author']
-                                            //                             : 'No author',
-                                            //                         overflow:
-                                            //                             TextOverflow
-                                            //                                 .ellipsis,
-                                            //                         textScaleFactor: 1,
-                                            //                         style: GoogleFonts
-                                            //                             .montserrat(
-                                            //                           textStyle:
-                                            //                               TextStyle(
-                                            //                             color:
-                                            //                                 secondColor,
-                                            //                             fontSize: 15,
-                                            //                             fontWeight:
-                                            //                                 FontWeight
-                                            //                                     .w300,
-                                            //                           ),
-                                            //                         ),
-                                            //                       ),
-                                            //                     ],
-                                            //                   ),
-                                            //                 ),
-                                            //               ],
-                                            //             ),
-                                            //           ),
-                                            //         ),
-                                            //       ),
-                                            //       Divider(
-                                            //         thickness: 0.1,
-                                            //         color: secondColor,
-                                            //       ),
-                                            //     ],
-                                            //   ),
-                                            // ),
                                           )
                                         : Center(
                                             child: Text(
