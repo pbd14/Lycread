@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lycread/Screens/HomeScreen/home_screen.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
@@ -478,6 +477,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return loading

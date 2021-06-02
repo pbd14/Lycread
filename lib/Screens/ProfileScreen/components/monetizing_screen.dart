@@ -1,6 +1,4 @@
 import 'dart:math';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
-import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';

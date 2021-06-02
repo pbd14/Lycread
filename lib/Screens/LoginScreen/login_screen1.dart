@@ -10,7 +10,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/HomeScreen/home_screen.dart';
 import 'package:lycread/constants.dart';
-import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';

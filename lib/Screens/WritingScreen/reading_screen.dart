@@ -186,7 +186,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         .get();
     Map userStats = user.data()['stats'];
     List tags = [];
-    List tags_rec = [];
+    List tagsRec = [];
     List recoms = widget.data.data()['tags'];
     for (String tag in widget.data.data()['tags']) {
       if (userStats[tag] != null) {
@@ -197,11 +197,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
     }
     tags = userStats.values.toList();
     tags.sort();
-    tags_rec.add(tags.reversed.first);
-    tags_rec.add(tags.reversed.elementAt(1));
-    tags_rec.add(tags.reversed.elementAt(2));
+    tagsRec.add(tags.reversed.first);
+    tagsRec.add(tags.reversed.elementAt(1));
+    tagsRec.add(tags.reversed.elementAt(2));
     userStats.forEach((key, value) {
-      if (tags_rec.contains(value)) {
+      if (tagsRec.contains(value)) {
         recoms.add(key);
       }
     });

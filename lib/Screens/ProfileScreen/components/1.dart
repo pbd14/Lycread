@@ -158,6 +158,7 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
   }
 
   @override
+  // ignore: must_call_super
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return loading

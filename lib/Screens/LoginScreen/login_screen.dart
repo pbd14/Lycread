@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Services/auth_service.dart';
-import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_phone_input_field.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';

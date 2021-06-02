@@ -6,15 +6,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screen_lock/functions.dart';
-import 'package:flutter_screen_lock/screen_lock.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/constants.dart';
-import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
-import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

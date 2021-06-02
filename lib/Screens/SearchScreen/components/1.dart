@@ -60,7 +60,7 @@ class _SearchScreen1State extends State<SearchScreen1>
       loading1 = true;
     });
     QuerySnapshot qs =
-        await FirebaseFirestore.instance.collection('users').limit(20).get();
+        await FirebaseFirestore.instance.collection('users').get();
     setState(() {
       List preresults = [];
       for (var doc in qs.docs) {
