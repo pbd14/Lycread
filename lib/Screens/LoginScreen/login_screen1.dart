@@ -127,7 +127,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                           RegExp(r"[a-zA-z0-9]+|\s")),
                                     ],
                                     validator: (val) {
-                                      if (names.contains(val)) {
+                                      if (names.contains(val.trim())) {
                                         return "Имя уже занято";
                                       }
                                       return val.length >= 1
@@ -241,7 +241,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                             .doc(FirebaseAuth
                                                 .instance.currentUser.uid)
                                             .set({
-                                          'name': this.name,
+                                          'name': this.name.trim(),
                                           'phones': FieldValue.arrayUnion([
                                             FirebaseAuth.instance.currentUser
                                                 .phoneNumber

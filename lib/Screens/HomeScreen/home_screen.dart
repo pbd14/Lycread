@@ -6,6 +6,7 @@ import 'package:flutter_screen_lock/functions.dart';
 import 'package:lycread/Screens/DashboardScreen/dashboard_screen.dart';
 import 'package:lycread/Screens/LoginScreen/login_screen1.dart';
 import 'package:lycread/Screens/ProfileScreen/profile_screen.dart';
+import 'package:lycread/Screens/ProjectScreen/project_screen.dart';
 import 'package:lycread/Screens/SearchScreen/search_screen.dart';
 import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     DashboardScreen(),
     SearchScreen(),
     WritingScreen(),
+    ProjectScreen(),
     ProfileScreen(),
   ];
 
@@ -133,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : !can
@@ -145,18 +148,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   items: <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home),
-                      label: 'Лента',
+                      label: '',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.search),
-                      label: 'Поиск',
+                      label: '',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(
                         Icons.add_box_rounded,
                         color: footyColor,
                       ),
-                      label: 'Добавить',
+                      label: '',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        CupertinoIcons.briefcase,
+                        color: primaryColor,
+                      ),
+                      label: '',
                     ),
                     BottomNavigationBarItem(
                       icon: isNotif
@@ -169,7 +179,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: EdgeInsets.all(1),
                                     decoration: new BoxDecoration(
                                       color: Colors.red,
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius:
+                                          BorderRadius.circular(10),
                                     ),
                                     constraints: BoxConstraints(
                                       minWidth: 15,
@@ -198,8 +209,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: _onItemTapped,
                   backgroundColor: whiteColor,
                   elevation: 50,
-                  iconSize: 33.0,
-                  selectedFontSize: 17.0,
+                  iconSize: 27.0,
+                  selectedFontSize: 0.0,
+                  unselectedFontSize: 0,
+                  selectedIconTheme: IconThemeData(size: 35),
                   type: BottomNavigationBarType.fixed,
                 ),
               );

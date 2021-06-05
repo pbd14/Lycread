@@ -319,7 +319,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   SizedBox(height: 30),
                                   RoundedTextInput(
                                     validator: (val) {
-                                      if (names.contains(val)) {
+                                      if (names.contains(val.trim())) {
                                         return "Имя уже занято";
                                       }
                                     },
@@ -464,7 +464,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                   .instance.currentUser.uid)
                                               .update({
                                             'name': this.name != null
-                                                ? this.name
+                                                ? this.name.trim()
                                                 : FirebaseAuth.instance
                                                     .currentUser.displayName,
                                             'bio': this.bio != null

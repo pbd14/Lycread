@@ -18,10 +18,18 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: Container(
           color: whiteColor,
           child: Center(
-            child: SpinKitChasingDots(
-              color: primaryColor,
-              size: 50.0,
+            child: Transform.scale(
+              scale: 2,
+              child: CircularProgressIndicator(
+                strokeWidth: 1.0,
+                backgroundColor: footyColor,
+                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+              ),
             ),
+            // SpinKitChasingDots(
+            //   color: primaryColor,
+            //   size: 50.0,
+            // ),
           ),
         ),
       ),
