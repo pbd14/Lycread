@@ -1,24 +1,29 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
+import 'package:lycread/Screens/ProjectScreen/project_info_screen.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
+import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
-
 import '../../../constants.dart';
 import '../../loading_screen.dart';
 
-class AddProjectScreen extends StatefulWidget {
+class AddBranchScreen extends StatefulWidget {
+  String id;
+  AddBranchScreen({
+    Key key,
+    @required this.id,
+  }) : super(key: key);
   @override
-  _AddProjectScreenState createState() => _AddProjectScreenState();
+  _AddBranchScreenState createState() => _AddBranchScreenState();
 }
 
-class _AddProjectScreenState extends State<AddProjectScreen> {
+class _AddBranchScreenState extends State<AddBranchScreen> {
   Size size;
   bool loading = false;
   bool loading1 = false;
@@ -36,16 +41,17 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
     prepare();
     super.initState();
     subscription = FirebaseFirestore.instance
-        .collection('projects')
+        .collection('branches')
+        .where('project_id', isEqualTo: widget.id)
         .snapshots()
         .listen((event) {
-      for (QueryDocumentSnapshot project in event.docs) {
+      for (QueryDocumentSnapshot branch in event.docs) {
         if (this.mounted) {
           setState(() {
-            names.add(project.data()['name']);
+            names.add(branch.data()['name']);
           });
         } else {
-          names.add(project.data()['name']);
+          names.add(branch.data()['name']);
         }
       }
     });
@@ -82,7 +88,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                     padding: const EdgeInsets.all(10.0),
                                     child: Center(
                                       child: Text(
-                                        'Создайте проект',
+                                        'Создайте ветку',
                                         style: GoogleFonts.montserrat(
                                           textStyle: TextStyle(
                                             color: primaryColor,
@@ -151,17 +157,14 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                             .millisecondsSinceEpoch
                                             .toString();
                                         FirebaseFirestore.instance
-                                            .collection('projects')
+                                            .collection('branches')
                                             .doc(id)
                                             .set({
                                           'id': id,
                                           'name': name.trim(),
                                           'bio': bio,
-                                          'authors': [
-                                            FirebaseAuth
-                                                .instance.currentUser.uid
-                                          ],
-                                          'branches': [],
+                                          'project_id': widget.id,
+                                          'subbranches': [],
                                           'date': DateTime.now(),
                                           'last_update': DateTime.now(),
                                         }).catchError((error) {
@@ -170,7 +173,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                           PushNotificationMessage notification =
                                               PushNotificationMessage(
                                             title: 'Ошибка',
-                                            body: 'Неудалось добавить проект',
+                                            body: 'Неудалось добавить ветку',
                                           );
                                           showSimpleNotification(
                                             Container(
@@ -182,7 +185,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                         PushNotificationMessage notification =
                                             PushNotificationMessage(
                                           title: 'Сохранено',
-                                          body: 'Проект добавлен',
+                                          body: 'Ветка добавлена',
                                         );
                                         showSimpleNotification(
                                           Container(
@@ -190,12 +193,14 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                           position: NotificationPosition.top,
                                           background: footyColor,
                                         );
-                                        // Navigator.push(
-                                        //     context,
-                                        //     SlideRightRoute(
-                                        //       page: HomeScreen(),
-                                        //     ));
-                                        Navigator.pop(context);
+                                        Navigator.push(
+                                            context,
+                                            SlideRightRoute(
+                                              page: ProjectInfoScreen(
+                                                id: widget.id,
+                                              ),
+                                            ));
+                                        // Navigator.pop(context);
                                         setState(() {
                                           loading = false;
                                           this.name = '';

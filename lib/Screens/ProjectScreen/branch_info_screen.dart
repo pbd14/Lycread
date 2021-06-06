@@ -1,37 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/ProjectScreen/components/add_project.dart';
-import 'package:lycread/Screens/ProjectScreen/project_info_screen.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 
 import '../../constants.dart';
 import '../loading_screen.dart';
+import 'components/add_branch.dart';
 
-class ProjectScreen extends StatefulWidget {
+class BranchInfoScreen extends StatefulWidget {
+  String id;
+  BranchInfoScreen({
+    Key key,
+    @required this.id,
+  }) : super(key: key);
   @override
-  _ProjectScreenState createState() => _ProjectScreenState();
+  _BranchInfoScreenState createState() => _BranchInfoScreenState();
 }
 
-class _ProjectScreenState extends State<ProjectScreen> {
+class _BranchInfoScreenState extends State<BranchInfoScreen> {
   Size size;
   bool loading = true;
-  List projects = [];
+  List branches = [];
 
   Future<void> prepare() async {
-    QuerySnapshot projectsSnap = await FirebaseFirestore.instance
-        .collection('projects')
-        .where('authors', arrayContains: FirebaseAuth.instance.currentUser.uid)
+    QuerySnapshot branchesSnap = await FirebaseFirestore.instance
+        .collection('branches')
+        .where('project_id', isEqualTo: widget.id)
         .get();
     if (this.mounted) {
       setState(() {
-        projects = projectsSnap.docs;
+        branches = branchesSnap.docs;
         loading = false;
       });
     } else {
-      projects = projectsSnap.docs;
+      branches = branchesSnap.docs;
       loading = false;
     }
   }
@@ -69,10 +73,10 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  projects.length != 0
+                  branches.length != 0
                       ? Expanded(
                           child: ListView.builder(
-                            itemCount: projects.length,
+                            itemCount: branches.length,
                             itemBuilder: (BuildContext context, int index) =>
                                 Container(
                               margin: EdgeInsets.all(10),
@@ -85,16 +89,14 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                   Navigator.push(
                                       context,
                                       SlideRightRoute(
-                                        page: ProjectInfoScreen(
-                                          id: projects[index].id,
-                                        ),
+                                        page: AddProjectScreen(),
                                       ));
                                   setState(() {
                                     loading = false;
                                   });
                                 },
                                 child: Container(
-                                  width: size.width * 0.9,
+                                  width: size.width * 0.8,
                                   child: Card(
                                     elevation: 10,
                                     child: Padding(
@@ -102,7 +104,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                       child: Column(
                                         children: [
                                           Text(
-                                            projects[index].data()['name'],
+                                            branches[index].data()['name'],
                                             textScaleFactor: 1,
                                             maxLines: 2,
                                             overflow: TextOverflow.ellipsis,
@@ -117,7 +119,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                           Text(
                                             'Update: ' +
                                                 DateTime.fromMicrosecondsSinceEpoch(
-                                                        projects[index]
+                                                        branches[index]
                                                             .data()[
                                                                 'last_update']
                                                             .microsecondsSinceEpoch)
@@ -125,7 +127,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                                     .toString() +
                                                 '-' +
                                                 DateTime.fromMicrosecondsSinceEpoch(
-                                                        projects[index]
+                                                        branches[index]
                                                             .data()[
                                                                 'last_update']
                                                             .microsecondsSinceEpoch)
@@ -133,7 +135,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                                     .toString() +
                                                 '-' +
                                                 DateTime.fromMicrosecondsSinceEpoch(
-                                                        projects[index]
+                                                        branches[index]
                                                             .data()[
                                                                 'last_update']
                                                             .microsecondsSinceEpoch)
@@ -168,7 +170,9 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         Navigator.push(
                             context,
                             SlideRightRoute(
-                              page: AddProjectScreen(),
+                              page: AddBranchScreen(
+                                id: widget.id,
+                              ),
                             ));
                         setState(() {
                           loading = false;
@@ -189,7 +193,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                'Добавьте новый проект',
+                                'Добавьте новую суб-ветку',
                                 textScaleFactor: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.montserrat(
