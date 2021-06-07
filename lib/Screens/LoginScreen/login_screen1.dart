@@ -15,6 +15,7 @@ import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
 import '../loading_screen.dart';
+import 'components/background.dart';
 
 class LoginScreen1 extends StatefulWidget {
   final String errors;
@@ -87,230 +88,238 @@ class _LoginScreen1State extends State<LoginScreen1> {
         ? LoadingScreen()
         : Scaffold(
             backgroundColor: primaryColor,
-            body: Container(
-              child: SingleChildScrollView(
-                child: Center(
-                  child: Column(
-                    children: [
-                      SizedBox(height: size.height * 0.5 - 225),
-                      Container(
-                        width: size.width * 0.9,
-                        child: Card(
-                          margin: EdgeInsets.all(5),
-                          shadowColor: whiteColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(25.0),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Center(
-                                      child: Text(
-                                        'Создайте аккаунт',
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: TextStyle(
-                                            color: primaryColor,
-                                            fontSize: 27,
-                                            fontWeight: FontWeight.bold,
+            body: Background(
+              child: Container(
+                child: SingleChildScrollView(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        SizedBox(height: size.height * 0.5 - 125),
+                        Container(
+                          width: size.width * 0.9,
+                          child: Card(
+                            margin: EdgeInsets.all(5),
+                            shadowColor: whiteColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(25.0),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Center(
+                                        child: Text(
+                                          'Создайте аккаунт',
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 27,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(height: 30),
-                                  RoundedTextInput(
-                                    formatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp(r"[a-zA-z0-9]+|\s")),
-                                    ],
-                                    validator: (val) {
-                                      if (names.contains(val.trim())) {
-                                        return "Имя уже занято";
-                                      }
-                                      return val.length >= 1
-                                          ? null
-                                          : 'Минимум 2 символа';
-                                    },
-                                    hintText: "Имя",
-                                    type: TextInputType.text,
-                                    onChanged: (value) {
-                                      this.name = value;
-                                    },
-                                  ),
-                                  SizedBox(height: 20),
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(
-                                        size.width * 0.05,
-                                        0,
-                                        size.width * 0.05,
-                                        0),
-                                    child: TextFormField(
-                                      maxLength: 200,
-                                      maxLines: null,
-                                      style: TextStyle(
-                                        color: primaryColor,
-                                      ),
-                                      validator: (val) => val.length > 1
-                                          ? null
-                                          : 'Минимум 2 символов',
-                                      keyboardType: TextInputType.multiline,
-                                      onChanged: (value) {
-                                        bio = value;
-                                      },
-                                      decoration: InputDecoration(
-                                        hintText: 'Bio',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 30),
-                                  Text(
-                                    'Фотография',
-                                    textScaleFactor: 1,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                        color: primaryColor,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Divider(),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      _getImage();
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: footyColor,
-                                          shape: BoxShape.circle),
-                                      width: size.width * 0.5,
-                                      height: size.width * 0.5,
-                                      child: i1 == null
-                                          ? Icon(Icons.add)
-                                          : Container(
-                                              decoration: ShapeDecoration(
-                                                  color: footyColor,
-                                                  shape: CircleBorder(
-                                                    side: BorderSide(
-                                                        width: 1,
-                                                        color: footyColor),
-                                                  ),
-                                                  image: DecorationImage(
-                                                    image: AssetImage(path),
-                                                    fit: BoxFit.cover,
-                                                    alignment: Alignment.center,
-                                                  )),
-                                            ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 30),
-                                  RoundedButton(
-                                    width: 0.7,
-                                    ph: 45,
-                                    text: 'CONTINUE',
-                                    press: () async {
-                                      if (_formKey.currentState.validate()) {
-                                        setState(() {
-                                          loading = true;
-                                        });
-                                        String id = FirebaseAuth
-                                            .instance.currentUser.uid;
-                                        String date = DateTime.now().toString();
-                                        if (i1 != null) {
-                                          a1 = await FirebaseStorage.instance
-                                              .ref('uploads')
-                                              .child('$id/user/$date')
-                                              .putFile(i1);
+                                    SizedBox(height: 30),
+                                    RoundedTextInput(
+                                      formatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r"[a-zA-z0-9]+|\s")),
+                                      ],
+                                      validator: (val) {
+                                        if (names.contains(val.trim())) {
+                                          return "Имя уже занято";
                                         }
-                                        FirebaseAuth.instance.currentUser
-                                            .updateProfile(
-                                          displayName: this.name,
-                                          photoURL: i1 != null
-                                              ? await a1.ref.getDownloadURL()
-                                              : null,
-                                        );
-                                        FirebaseFirestore.instance
-                                            .collection('users')
-                                            .doc(FirebaseAuth
-                                                .instance.currentUser.uid)
-                                            .set({
-                                          'name': this.name.trim(),
-                                          'phones': FieldValue.arrayUnion([
-                                            FirebaseAuth.instance.currentUser
-                                                .phoneNumber
-                                          ]),
-                                          'followers_num': 0,
-                                          'following_num': 0,
-                                          'photo': i1 != null
-                                              ? await a1.ref.getDownloadURL()
-                                              : null,
-                                          'bio': bio,
-                                          'actions': [],
-                                          'reads': [],
-                                          'stats': {},
-                                          'recommendations': ['lycread'],
-                                          'isMember': false,
-                                          'balance': 0.0,
-                                          'membershipLogs': [],
-                                          'isVerified': false,
-                                          'id': FirebaseAuth
-                                              .instance.currentUser.uid,
-                                        }).catchError((error) {
-                                          PushNotificationMessage notification =
-                                              PushNotificationMessage(
-                                            title: 'Fail',
-                                            body: 'Failed to login',
-                                          );
-                                          showSimpleNotification(
-                                            Container(
-                                                child: Text(notification.body)),
-                                            position: NotificationPosition.top,
-                                            background: Colors.red,
-                                          );
-                                        });
-                                        Navigator.push(
-                                            context,
-                                            SlideRightRoute(
-                                              page: HomeScreen(),
-                                            ));
-                                        setState(() {
-                                          loading = false;
-                                          this.name = '';
-                                        });
-                                      }
-                                    },
-                                    color: darkPrimaryColor,
-                                    textColor: whiteColor,
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text(
-                                      error,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 14,
+                                        return val.length >= 1
+                                            ? null
+                                            : 'Минимум 2 символа';
+                                      },
+                                      hintText: "Имя",
+                                      type: TextInputType.text,
+                                      onChanged: (value) {
+                                        this.name = value;
+                                      },
+                                    ),
+                                    SizedBox(height: 20),
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(
+                                          size.width * 0.05,
+                                          0,
+                                          size.width * 0.05,
+                                          0),
+                                      child: TextFormField(
+                                        maxLength: 200,
+                                        maxLines: null,
+                                        style: TextStyle(
+                                          color: primaryColor,
+                                        ),
+                                        validator: (val) => val.length > 1
+                                            ? null
+                                            : 'Минимум 2 символов',
+                                        keyboardType: TextInputType.multiline,
+                                        onChanged: (value) {
+                                          bio = value;
+                                        },
+                                        decoration: InputDecoration(
+                                          hintText: 'Bio',
+                                          border: OutlineInputBorder(),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 30),
+                                    Text(
+                                      'Фотография',
+                                      textScaleFactor: 1,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                          color: primaryColor,
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Divider(),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _getImage();
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: footyColor,
+                                            shape: BoxShape.circle),
+                                        width: size.width * 0.5,
+                                        height: size.width * 0.5,
+                                        child: i1 == null
+                                            ? Icon(Icons.add)
+                                            : Container(
+                                                decoration: ShapeDecoration(
+                                                    color: footyColor,
+                                                    shape: CircleBorder(
+                                                      side: BorderSide(
+                                                          width: 1,
+                                                          color: footyColor),
+                                                    ),
+                                                    image: DecorationImage(
+                                                      image: AssetImage(path),
+                                                      fit: BoxFit.cover,
+                                                      alignment:
+                                                          Alignment.center,
+                                                    )),
+                                              ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 30),
+                                    RoundedButton(
+                                      width: 0.7,
+                                      ph: 45,
+                                      text: 'CONTINUE',
+                                      press: () async {
+                                        if (_formKey.currentState.validate()) {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          String id = FirebaseAuth
+                                              .instance.currentUser.uid;
+                                          String date =
+                                              DateTime.now().toString();
+                                          if (i1 != null) {
+                                            a1 = await FirebaseStorage.instance
+                                                .ref('uploads')
+                                                .child('$id/user/$date')
+                                                .putFile(i1);
+                                          }
+                                          FirebaseAuth.instance.currentUser
+                                              .updateProfile(
+                                            displayName: this.name,
+                                            photoURL: i1 != null
+                                                ? await a1.ref.getDownloadURL()
+                                                : null,
+                                          );
+                                          FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(FirebaseAuth
+                                                  .instance.currentUser.uid)
+                                              .set({
+                                            'name': this.name.trim(),
+                                            'phones': FieldValue.arrayUnion([
+                                              FirebaseAuth.instance.currentUser
+                                                  .phoneNumber
+                                            ]),
+                                            'followers_num': 0,
+                                            'following_num': 0,
+                                            'photo': i1 != null
+                                                ? await a1.ref.getDownloadURL()
+                                                : null,
+                                            'bio': bio,
+                                            'actions': [],
+                                            'reads': [],
+                                            'stats': {},
+                                            'recommendations': ['lycread'],
+                                            'isMember': false,
+                                            'balance': 0.0,
+                                            'membershipLogs': [],
+                                            'isVerified': false,
+                                            'id': FirebaseAuth
+                                                .instance.currentUser.uid,
+                                          }).catchError((error) {
+                                            PushNotificationMessage
+                                                notification =
+                                                PushNotificationMessage(
+                                              title: 'Fail',
+                                              body: 'Failed to login',
+                                            );
+                                            showSimpleNotification(
+                                              Container(
+                                                  child:
+                                                      Text(notification.body)),
+                                              position:
+                                                  NotificationPosition.top,
+                                              background: Colors.red,
+                                            );
+                                          });
+                                          Navigator.push(
+                                              context,
+                                              SlideRightRoute(
+                                                page: HomeScreen(),
+                                              ));
+                                          setState(() {
+                                            loading = false;
+                                            this.name = '';
+                                          });
+                                        }
+                                      },
+                                      color: darkPrimaryColor,
+                                      textColor: whiteColor,
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: Text(
+                                        error,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                            color: Colors.red,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 200),
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -91,19 +91,26 @@ class _HomeScreenState extends State<HomeScreen> {
         .doc(FirebaseAuth.instance.currentUser.uid)
         .snapshots()
         .listen((docsnap) {
-      if (docsnap.data()['actions'] != null) {
-        if (docsnap.data()['actions'].length != 0) {
-          List acts = [];
-          for (var act in docsnap.data()['actions']) {
-            if (!act['seen']) {
-              acts.add(act);
+      if (docsnap != null) {
+        if (docsnap.data()['actions'] != null) {
+          if (docsnap.data()['actions'].length != 0) {
+            List acts = [];
+            for (var act in docsnap.data()['actions']) {
+              if (!act['seen']) {
+                acts.add(act);
+              }
             }
-          }
-          if (acts.length != 0) {
-            setState(() {
-              isNotif = true;
-              notifCounter = acts.length;
-            });
+            if (acts.length != 0) {
+              setState(() {
+                isNotif = true;
+                notifCounter = acts.length;
+              });
+            } else {
+              setState(() {
+                isNotif = false;
+                notifCounter = 0;
+              });
+            }
           } else {
             setState(() {
               isNotif = false;
@@ -116,11 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
             notifCounter = 0;
           });
         }
-      } else {
-        setState(() {
-          isNotif = false;
-          notifCounter = 0;
-        });
       }
     });
     prepare();
@@ -179,8 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: EdgeInsets.all(1),
                                     decoration: new BoxDecoration(
                                       color: Colors.red,
-                                      borderRadius:
-                                          BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                     constraints: BoxConstraints(
                                       minWidth: 15,
