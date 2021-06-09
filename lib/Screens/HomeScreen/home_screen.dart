@@ -106,10 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 notifCounter = acts.length;
               });
             } else {
-              setState(() {
+              if (this.mounted) {
+                setState(() {
+                  isNotif = false;
+                  notifCounter = 0;
+                });
+              } else {
                 isNotif = false;
                 notifCounter = 0;
-              });
+              }
             }
           } else {
             setState(() {

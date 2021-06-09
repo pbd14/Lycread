@@ -1,11 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/ProjectScreen/components/add_project.dart';
+import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
+import 'package:overlay_support/overlay_support.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 import 'components/add_branch.dart';
@@ -26,8 +30,31 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
   List branches = [];
   List authors = [];
   DocumentSnapshot project;
+  QuerySnapshot all_users;
+  List added_users = [];
+  List listed_users = [];
+
+  Future<void> search(String st) async {
+    setState(() {
+      List preresults = [];
+      for (var doc in all_users.docs) {
+        if (doc.data()['name'].toLowerCase().contains(st.toLowerCase())) {
+          if (!added_users.contains(doc)) {
+            if (!project.data()['authors'].contains(doc.id)) {
+              preresults.add(doc);
+            }
+          }
+        }
+      }
+      listed_users = preresults;
+      preresults = [];
+      print('SEARCHED ');
+      print(listed_users);
+    });
+  }
 
   Future<void> prepare() async {
+    all_users = await FirebaseFirestore.instance.collection('users').get();
     project = await FirebaseFirestore.instance
         .collection('projects')
         .doc(widget.id)
@@ -242,10 +269,511 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                                 fontWeight: FontWeight.w300),
                                           ),
                                         ),
+                                        SizedBox(width: 5),
+                                        project.data()['owner'] == author.id
+                                            ? Icon(
+                                                CupertinoIcons.star_circle_fill,
+                                                color: footyColor,
+                                              )
+                                            : Container(),
                                       ],
                                     ),
                                   ),
-                                )
+                                ),
+                              project.data()['owner'] ==
+                                      FirebaseAuth.instance.currentUser.uid
+                                  ? Container(
+                                      height: (added_users.length * 20 +
+                                              listed_users.length * 20 +
+                                              250)
+                                          .toDouble(),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Center(
+                                            child: RoundedTextInput(
+                                              validator: (val) => val.length > 1
+                                                  ? null
+                                                  : 'Минимум 2 символов',
+                                              hintText: "Имя",
+                                              type: TextInputType.text,
+                                              height: 80,
+                                              onChanged: (value) {
+                                                value != null
+                                                    ? value.length != 0
+                                                        ? search(value)
+                                                        : setState(() {
+                                                            listed_users = [];
+                                                          })
+                                                    : setState(() {
+                                                        added_users = [];
+                                                        listed_users = [];
+                                                      });
+                                              },
+                                            ),
+                                          ),
+                                          listed_users.isNotEmpty
+                                              ? Expanded(
+                                                  child: ListView.builder(
+                                                    itemCount:
+                                                        listed_users.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                                int index) =>
+                                                            CupertinoButton(
+                                                      padding: EdgeInsets.zero,
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          added_users.add(
+                                                              listed_users[
+                                                                  index]);
+                                                          listed_users.remove(
+                                                              listed_users[
+                                                                  index]);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          listed_users[index]
+                                                                          .data()[
+                                                                      'photo'] !=
+                                                                  null
+                                                              ? listed_users[index]
+                                                                              .data()[
+                                                                          'photo'] !=
+                                                                      'No Image'
+                                                                  ? Container(
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      child: ClipRRect(
+                                                                          borderRadius: BorderRadius.circular(25.0),
+                                                                          child: CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl:
+                                                                                listed_users[index].data()['photo'],
+                                                                          )),
+                                                                    )
+                                                                  : Container(
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      child:
+                                                                          ClipRRect(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(25.0),
+                                                                        child: Image
+                                                                            .asset(
+                                                                          'assets/images/User.png',
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                              : Container(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: Image
+                                                                        .asset(
+                                                                      'assets/images/User.png',
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                            listed_users[index]
+                                                                .data()['name'],
+                                                            textScaleFactor: 1,
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle: TextStyle(
+                                                                  color:
+                                                                      darkPrimaryColor,
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          project.data()[
+                                                                      'owner'] ==
+                                                                  listed_users[
+                                                                          index]
+                                                                      .id
+                                                              ? Icon(
+                                                                  CupertinoIcons
+                                                                      .star_circle_fill,
+                                                                  color:
+                                                                      footyColor,
+                                                                )
+                                                              : Container(),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          Divider(
+                                            thickness: 1,
+                                            color: darkPrimaryColor,
+                                          ),
+                                          added_users.isNotEmpty
+                                              ? Text(
+                                                  'Выбранные',
+                                                  textScaleFactor: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: TextStyle(
+                                                        color: darkPrimaryColor,
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          added_users.isNotEmpty
+                                              ? Expanded(
+                                                  child: ListView.builder(
+                                                    itemCount:
+                                                        added_users.length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                                int index) =>
+                                                            CupertinoButton(
+                                                      padding: EdgeInsets.zero,
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          added_users.remove(
+                                                              added_users[
+                                                                  index]);
+                                                        });
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          added_users[index]
+                                                                          .data()[
+                                                                      'photo'] !=
+                                                                  null
+                                                              ? added_users[index]
+                                                                              .data()[
+                                                                          'photo'] !=
+                                                                      'No Image'
+                                                                  ? Container(
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      child: ClipRRect(
+                                                                          borderRadius: BorderRadius.circular(25.0),
+                                                                          child: CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl:
+                                                                                added_users[index].data()['photo'],
+                                                                          )),
+                                                                    )
+                                                                  : Container(
+                                                                      width: 40,
+                                                                      height:
+                                                                          40,
+                                                                      child:
+                                                                          ClipRRect(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(25.0),
+                                                                        child: Image
+                                                                            .asset(
+                                                                          'assets/images/User.png',
+                                                                          fit: BoxFit
+                                                                              .cover,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                              : Container(
+                                                                  width: 40,
+                                                                  height: 40,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: Image
+                                                                        .asset(
+                                                                      'assets/images/User.png',
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                            added_users[index]
+                                                                .data()['name'],
+                                                            textScaleFactor: 1,
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle: TextStyle(
+                                                                  color:
+                                                                      darkPrimaryColor,
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          project.data()[
+                                                                      'owner'] ==
+                                                                  added_users[
+                                                                          index]
+                                                                      .id
+                                                              ? Icon(
+                                                                  CupertinoIcons
+                                                                      .star_circle_fill,
+                                                                  color:
+                                                                      footyColor,
+                                                                )
+                                                              : Container(),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(),
+                                          CupertinoButton(
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () {
+                                              if (added_users.isNotEmpty) {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Пригласить?'),
+                                                      content: const Text(
+                                                          'Уверены что хотите пригласить этих пользователей?'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              loading = true;
+                                                            });
+                                                            String name =
+                                                                FirebaseAuth
+                                                                    .instance
+                                                                    .currentUser
+                                                                    .displayName;
+                                                            String
+                                                                project_name =
+                                                                project.data()[
+                                                                    'name'];
+                                                            for (QueryDocumentSnapshot user
+                                                                in added_users) {
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      'users')
+                                                                  .doc(user.id)
+                                                                  .update({
+                                                                'actions':
+                                                                    FieldValue
+                                                                        .arrayUnion([
+                                                                  {
+                                                                    'author': FirebaseAuth
+                                                                        .instance
+                                                                        .currentUser
+                                                                        .uid,
+                                                                    'seen':
+                                                                        false,
+                                                                    'text':
+                                                                        '$name пригласил в $project_name',
+                                                                    'type':
+                                                                        'Invitation',
+                                                                    'date':
+                                                                        DateTime
+                                                                            .now(),
+                                                                    'metadata':
+                                                                        {
+                                                                      'project_id':
+                                                                          project
+                                                                              .id,
+                                                                    },
+                                                                  }
+                                                                ]),
+                                                              }).catchError(
+                                                                      (error) {
+                                                                print(
+                                                                    'MISTAKE HERE');
+                                                                print(error);
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop(false);
+                                                                PushNotificationMessage
+                                                                    notification =
+                                                                    PushNotificationMessage(
+                                                                  title:
+                                                                      'Ошибка',
+                                                                  body: 'Неудалось удалить пригласить ' +
+                                                                      user.data()[
+                                                                          'name'],
+                                                                );
+                                                                showSimpleNotification(
+                                                                  Container(
+                                                                      child: Text(
+                                                                          notification
+                                                                              .body)),
+                                                                  position:
+                                                                      NotificationPosition
+                                                                          .top,
+                                                                  background:
+                                                                      Colors
+                                                                          .red,
+                                                                );
+                                                              });
+                                                            }
+
+                                                            PushNotificationMessage
+                                                                notification =
+                                                                PushNotificationMessage(
+                                                              title: 'Успех',
+                                                              body:
+                                                                  'Приглашения отправлены',
+                                                            );
+                                                            showSimpleNotification(
+                                                              Container(
+                                                                  child: Text(
+                                                                      notification
+                                                                          .body)),
+                                                              position:
+                                                                  NotificationPosition
+                                                                      .top,
+                                                              background:
+                                                                  footyColor,
+                                                            );
+                                                            setState(() {
+                                                              added_users = [];
+                                                              listed_users = [];
+                                                              loading = false;
+                                                            });
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(true);
+                                                          },
+                                                          child: const Text(
+                                                            'Yes',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    footyColor),
+                                                          ),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () =>
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(false),
+                                                          child: const Text(
+                                                            'No',
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                            child: Container(
+                                              width: size.width * 0.8,
+                                              padding: EdgeInsets.all(15),
+                                              child: Card(
+                                                elevation: 0,
+                                                margin: EdgeInsets.all(15),
+                                                child: Column(
+                                                  children: [
+                                                    Icon(
+                                                      CupertinoIcons
+                                                          .person_crop_circle_fill_badge_plus,
+                                                      color: footyColor,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      'Добавить',
+                                                      textScaleFactor: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                            color:
+                                                                darkPrimaryColor,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : Container(),
                             ],
                           ),
                         ),
@@ -314,7 +842,7 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                                             .microsecondsSinceEpoch)
                                                     .day
                                                     .toString() +
-                                                '-' +
+                                                '.' +
                                                 DateTime.fromMicrosecondsSinceEpoch(
                                                         branch
                                                             .data()[
@@ -322,7 +850,7 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                                             .microsecondsSinceEpoch)
                                                     .month
                                                     .toString() +
-                                                '-' +
+                                                '.' +
                                                 DateTime.fromMicrosecondsSinceEpoch(
                                                         branch
                                                             .data()[

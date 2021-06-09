@@ -101,10 +101,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                         return "Имя уже занято";
                                       }
                                     },
-                                    formatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp(r"[a-zA-z0-9]+|\s")),
-                                    ],
                                     hintText: 'Название',
                                     type: TextInputType.text,
                                     onChanged: (value) {
@@ -161,6 +157,8 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                             FirebaseAuth
                                                 .instance.currentUser.uid
                                           ],
+                                          'owner': FirebaseAuth
+                                              .instance.currentUser.uid,
                                           'branches': [],
                                           'date': DateTime.now(),
                                           'last_update': DateTime.now(),

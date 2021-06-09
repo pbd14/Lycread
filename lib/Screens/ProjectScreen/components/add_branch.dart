@@ -107,10 +107,6 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                                         return "Имя уже занято";
                                       }
                                     },
-                                    formatters: [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp(r"[a-zA-z0-9]+|\s")),
-                                    ],
                                     hintText: 'Название',
                                     type: TextInputType.text,
                                     onChanged: (value) {

@@ -131,7 +131,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                                                   .microsecondsSinceEpoch)
                                                           .day
                                                           .toString() +
-                                                      '-' +
+                                                      '.' +
                                                       DateTime.fromMicrosecondsSinceEpoch(
                                                               projects[index]
                                                                   .data()[
@@ -139,7 +139,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                                                   .microsecondsSinceEpoch)
                                                           .month
                                                           .toString() +
-                                                      '-' +
+                                                      '.' +
                                                       DateTime.fromMicrosecondsSinceEpoch(
                                                               projects[index]
                                                                   .data()[

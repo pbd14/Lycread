@@ -23,6 +23,7 @@ class _SearchScreen1State extends State<SearchScreen1>
   bool loading = true;
   bool loading1 = false;
   Size size;
+  QuerySnapshot all_users;
 
   String getFnum(int fnum) {
     String fnum1 = '';
@@ -36,6 +37,10 @@ class _SearchScreen1State extends State<SearchScreen1>
       fnum1 = fnum.toString();
     }
     return fnum1 + ' подписчиков';
+  }
+
+  Future<void> getUsers() async {
+    all_users = await FirebaseFirestore.instance.collection('users').get();
   }
 
   Future<void> prepare() async {
@@ -59,11 +64,9 @@ class _SearchScreen1State extends State<SearchScreen1>
     setState(() {
       loading1 = true;
     });
-    QuerySnapshot qs =
-        await FirebaseFirestore.instance.collection('users').get();
     setState(() {
       List preresults = [];
-      for (var doc in qs.docs) {
+      for (var doc in all_users.docs) {
         if (doc.data()['name'].toLowerCase().contains(st.toLowerCase())) {
           preresults.add(doc);
         }
@@ -76,6 +79,7 @@ class _SearchScreen1State extends State<SearchScreen1>
 
   @override
   void initState() {
+    getUsers();
     prepare();
     super.initState();
   }

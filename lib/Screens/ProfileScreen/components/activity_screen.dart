@@ -4,10 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import '../../../constants.dart';
 
@@ -214,7 +216,10 @@ class _ActivityScreenState extends State<ActivityScreen> {
                           shadow: !results[results.length - 1 - index]['seen']
                               ? whiteColor
                               : primaryColor,
-                          ph: 105,
+                          ph: results[results.length - 1 - index]['type'] ==
+                                  'Invitation'
+                              ? 130
+                              : 105,
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Row(
@@ -261,6 +266,166 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                           ),
                                         ),
                                       ),
+                                      results[results.length - 1 - index]
+                                                  ['type'] ==
+                                              'Invitation'
+                                          ? Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      loading = true;
+                                                    });
+                                                    FirebaseFirestore.instance
+                                                        .collection('projects')
+                                                        .doc(results[results
+                                                                        .length -
+                                                                    1 -
+                                                                    index]
+                                                                ['metadata']
+                                                            ['project_id'])
+                                                        .update({
+                                                      'authors': FieldValue
+                                                          .arrayUnion([
+                                                        FirebaseAuth.instance
+                                                            .currentUser.uid
+                                                      ]),
+                                                    }).catchError((error) {
+                                                      print('MISTAKE HERE');
+                                                      print(error);
+                                                      Navigator.of(context)
+                                                          .pop(false);
+                                                      PushNotificationMessage
+                                                          notification =
+                                                          PushNotificationMessage(
+                                                        title: 'Ошибка',
+                                                        body: 'Возникла ошибка',
+                                                      );
+                                                      showSimpleNotification(
+                                                        Container(
+                                                            child: Text(
+                                                                notification
+                                                                    .body)),
+                                                        position:
+                                                            NotificationPosition
+                                                                .top,
+                                                        background: Colors.red,
+                                                      );
+                                                    });
+                                                    PushNotificationMessage
+                                                        notification =
+                                                        PushNotificationMessage(
+                                                      title: 'Успех',
+                                                      body: 'Вы присоединились',
+                                                    );
+                                                    showSimpleNotification(
+                                                      Container(
+                                                          child: Text(
+                                                              notification
+                                                                  .body)),
+                                                      position:
+                                                          NotificationPosition
+                                                              .top,
+                                                      background: footyColor,
+                                                    );
+                                                    results.remove(results[
+                                                        results.length -
+                                                            1 -
+                                                            index]);
+                                                    FirebaseFirestore.instance
+                                                        .collection('users')
+                                                        .doc(FirebaseAuth
+                                                            .instance
+                                                            .currentUser
+                                                            .uid)
+                                                        .update({
+                                                      'actions': results
+                                                    }).catchError((error) {
+                                                      print('MISTAKE HERE');
+                                                      print(error);
+                                                      Navigator.of(context)
+                                                          .pop(false);
+                                                      PushNotificationMessage
+                                                          notification =
+                                                          PushNotificationMessage(
+                                                        title: 'Ошибка',
+                                                        body: 'Возникла ошибка',
+                                                      );
+                                                      showSimpleNotification(
+                                                        Container(
+                                                            child: Text(
+                                                                notification
+                                                                    .body)),
+                                                        position:
+                                                            NotificationPosition
+                                                                .top,
+                                                        background: Colors.red,
+                                                      );
+                                                    });
+                                                    setState(() {
+                                                      loading = false;
+                                                    });
+                                                  },
+                                                  child: const Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                        color: footyColor),
+                                                  ),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      loading = true;
+                                                    });
+                                                    results.remove(results[
+                                                        results.length -
+                                                            1 -
+                                                            index]);
+                                                    FirebaseFirestore.instance
+                                                        .collection('users')
+                                                        .doc(FirebaseAuth
+                                                            .instance
+                                                            .currentUser
+                                                            .uid)
+                                                        .update({
+                                                      'actions': results
+                                                    }).catchError((error) {
+                                                      print('MISTAKE HERE');
+                                                      print(error);
+                                                      Navigator.of(context)
+                                                          .pop(false);
+                                                      PushNotificationMessage
+                                                          notification =
+                                                          PushNotificationMessage(
+                                                        title: 'Ошибка',
+                                                        body: 'Возникла ошибка',
+                                                      );
+                                                      showSimpleNotification(
+                                                        Container(
+                                                            child: Text(
+                                                                notification
+                                                                    .body)),
+                                                        position:
+                                                            NotificationPosition
+                                                                .top,
+                                                        background: Colors.red,
+                                                      );
+                                                    });
+                                                    setState(() {
+                                                      loading = false;
+                                                    });
+                                                  },
+                                                  child: const Text(
+                                                    'No',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Container(),
                                     ],
                                   ),
                                 ),
@@ -275,15 +440,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                   1 -
                                                   index]['author']] !=
                                               null
-                                          ?
-                                          // names[results[results.length -
-                                          //                     1 -
-                                          //                     index]
-                                          //                 [
-                                          //                 'author']]
-                                          //             ['photo'] !=
-                                          //         null
-                                          CachedNetworkImage(
+                                          ? CachedNetworkImage(
                                               filterQuality: FilterQuality.none,
                                               fit: BoxFit.cover,
                                               placeholder: (context, url) =>
@@ -303,10 +460,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                       1 -
                                                       index]['author']],
                                             )
-                                          // : Image.asset(
-                                          //     'assets/images/User.png',
-                                          //     fit: BoxFit.cover,
-                                          //   )
                                           : Image.asset(
                                               'assets/images/User.png',
                                               fit: BoxFit.cover,
@@ -323,308 +476,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
                     ),
                   ),
                 ),
-                // Center(
-                //   child: Text(
-                //     'Старые события',
-                //     overflow: TextOverflow.ellipsis,
-                //     textScaleFactor: 1,
-                //     style: GoogleFonts.montserrat(
-                //       textStyle: TextStyle(
-                //         color: primaryColor,
-                //         fontSize: 20,
-                //         fontWeight: FontWeight.w400,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 10),
-                // results1 != null
-                //     ? Expanded(
-                //         child: ListView.builder(
-                //           padding: EdgeInsets.only(bottom: 10),
-                //           itemCount: results1.length,
-                //           itemBuilder: (BuildContext context, int index) =>
-                //               CupertinoButton(
-                //             padding: EdgeInsets.zero,
-                //             onPressed: () {
-                //               setState(() {
-                //                 loading = true;
-                //               });
-                //               // Navigator.push(
-                //               //   context,
-                //               //   SlideRightRoute(
-                //               //     page: ServiceScreen(
-                //               //       data: service,
-                //               //       serviceId: widget.data['services']
-                //               //           .indexOf(service),
-                //               //       placeId: widget.data['id'],
-                //               //     ),
-                //               //   ),
-                //               // );
-                //               setState(() {
-                //                 loading = false;
-                //               });
-                //             },
-                //             child: Container(
-                //               child: CardW(
-                //                 ph: 105,
-                //                 child: Padding(
-                //                   padding: const EdgeInsets.all(12.0),
-                //                   child: Row(
-                //                     children: [
-                //                       Expanded(
-                //                         flex: 8,
-                //                         child: Column(
-                //                           children: [
-                //                             Text(
-                //                               results1[results1.length -
-                //                                   1 -
-                //                                   index]['type'],
-                //                               textScaleFactor: 1,
-                //                               overflow: TextOverflow.ellipsis,
-                //                               style: GoogleFonts.montserrat(
-                //                                 textStyle: TextStyle(
-                //                                   color: primaryColor,
-                //                                   fontSize: 18,
-                //                                   fontWeight: FontWeight.bold,
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                             SizedBox(
-                //                               height: 5,
-                //                             ),
-                //                             Text(
-                //                               results1[results1.length -
-                //                                   1 -
-                //                                   index]['text'],
-                //                               textScaleFactor: 1,
-                //                               maxLines: 2,
-                //                               overflow: TextOverflow.ellipsis,
-                //                               style: GoogleFonts.montserrat(
-                //                                 textStyle: TextStyle(
-                //                                   color: primaryColor,
-                //                                   fontSize: 13,
-                //                                   fontWeight: FontWeight.w300,
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                           ],
-                //                         ),
-                //                       ),
-                //                       Align(
-                //                         alignment: Alignment.centerRight,
-                //                         child: Container(
-                //                           width: 40,
-                //                           height: 40,
-                //                           child: ClipRRect(
-                //                             borderRadius:
-                //                                 BorderRadius.circular(25.0),
-                //                             child: names1[results1[
-                //                                         results1.length -
-                //                                             1 -
-                //                                             index]['author']] !=
-                //                                     null
-                //                                 ? CachedNetworkImage(
-                //                                     filterQuality:
-                //                                         FilterQuality.none,
-                //                                     fit: BoxFit.cover,
-                //                                     placeholder: (context,
-                //                                             url) =>
-                //                                         CircularProgressIndicator(
-                //                                       strokeWidth: 2.0,
-                //                                       backgroundColor:
-                //                                           footyColor,
-                //                                       valueColor:
-                //                                           AlwaysStoppedAnimation<
-                //                                                   Color>(
-                //                                               primaryColor),
-                //                                     ),
-                //                                     errorWidget:
-                //                                         (context, url, error) =>
-                //                                             Icon(Icons.error),
-                //                                     imageUrl: names1[results1[
-                //                                         results1.length -
-                //                                             1 -
-                //                                             index]['author']],
-                //                                   )
-                //                                 : Image.asset(
-                //                                     'assets/images/User.png',
-                //                                     fit: BoxFit.cover,
-                //                                   ),
-                //                           ),
-                //                         ),
-                //                       ),
-                //                       SizedBox(width: 15),
-                //                     ],
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       )
-                //     : Container(),
-                // SizedBox(height: 5),
-                // results1.length != 0
-                //     ? Expanded(
-                //         child: Column(
-                //           children: [
-                //             Center(
-                //               child: Text(
-                //                 'Старые события',
-                //                 overflow: TextOverflow.ellipsis,
-                //                 textScaleFactor: 1,
-                //                 style: GoogleFonts.montserrat(
-                //                   textStyle: TextStyle(
-                //                     color: primaryColor,
-                //                     fontSize: 20,
-                //                     fontWeight: FontWeight.w400,
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //             SizedBox(height: 10),
-                //             Expanded(
-                //               child: ListView.builder(
-                //                 padding: EdgeInsets.only(bottom: 10),
-                //                 itemCount: results1.length,
-                //                 itemBuilder:
-                //                     (BuildContext context, int index) =>
-                //                         CupertinoButton(
-                //                   padding: EdgeInsets.zero,
-                //                   onPressed: () {
-                //                     setState(() {
-                //                       loading = true;
-                //                     });
-                //                     // Navigator.push(
-                //                     //   context,
-                //                     //   SlideRightRoute(
-                //                     //     page: ServiceScreen(
-                //                     //       data: service,
-                //                     //       serviceId: widget.data['services']
-                //                     //           .indexOf(service),
-                //                     //       placeId: widget.data['id'],
-                //                     //     ),
-                //                     //   ),
-                //                     // );
-                //                     setState(() {
-                //                       loading = false;
-                //                     });
-                //                   },
-                //                   child: Container(
-                //                     child: CardW(
-                //                       ph: 105,
-                //                       child: Padding(
-                //                         padding: const EdgeInsets.all(12.0),
-                //                         child: Row(
-                //                           children: [
-                //                             Expanded(
-                //                               flex: 8,
-                //                               child: Column(
-                //                                 children: [
-                //                                   Text(
-                //                                     results1[results1.length -
-                //                                         1 -
-                //                                         index]['type'],
-                //                                     textScaleFactor: 1,
-                //                                     overflow:
-                //                                         TextOverflow.ellipsis,
-                //                                     style:
-                //                                         GoogleFonts.montserrat(
-                //                                       textStyle: TextStyle(
-                //                                         color: primaryColor,
-                //                                         fontSize: 18,
-                //                                         fontWeight:
-                //                                             FontWeight.bold,
-                //                                       ),
-                //                                     ),
-                //                                   ),
-                //                                   SizedBox(
-                //                                     height: 5,
-                //                                   ),
-                //                                   Text(
-                //                                     results1[results1.length -
-                //                                         1 -
-                //                                         index]['text'],
-                //                                     textScaleFactor: 1,
-                //                                     maxLines: 2,
-                //                                     overflow:
-                //                                         TextOverflow.ellipsis,
-                //                                     style:
-                //                                         GoogleFonts.montserrat(
-                //                                       textStyle: TextStyle(
-                //                                         color: primaryColor,
-                //                                         fontSize: 13,
-                //                                         fontWeight:
-                //                                             FontWeight.w300,
-                //                                       ),
-                //                                     ),
-                //                                   ),
-                //                                 ],
-                //                               ),
-                //                             ),
-                //                             Align(
-                //                               alignment: Alignment.centerRight,
-                //                               child: Container(
-                //                                 width: 40,
-                //                                 height: 40,
-                //                                 child: ClipRRect(
-                //                                   borderRadius:
-                //                                       BorderRadius.circular(
-                //                                           25.0),
-                //                                   child: names1[results1[results1
-                //                                                       .length -
-                //                                                   1 -
-                //                                                   index]
-                //                                               ['author']] !=
-                //                                           null
-                //                                       ? CachedNetworkImage(
-                //                                           filterQuality:
-                //                                               FilterQuality
-                //                                                   .none,
-                //                                           fit: BoxFit.cover,
-                //                                           placeholder: (context,
-                //                                                   url) =>
-                //                                               CircularProgressIndicator(
-                //                                             strokeWidth: 2.0,
-                //                                             backgroundColor:
-                //                                                 footyColor,
-                //                                             valueColor:
-                //                                                 AlwaysStoppedAnimation<
-                //                                                         Color>(
-                //                                                     primaryColor),
-                //                                           ),
-                //                                           errorWidget: (context,
-                //                                                   url, error) =>
-                //                                               Icon(Icons.error),
-                //                                           imageUrl: names1[
-                //                                               results1[results1
-                //                                                           .length -
-                //                                                       1 -
-                //                                                       index]
-                //                                                   ['author']],
-                //                                         )
-                //                                       : Image.asset(
-                //                                           'assets/images/User.png',
-                //                                           fit: BoxFit.cover,
-                //                                         ),
-                //                                 ),
-                //                               ),
-                //                             ),
-                //                             SizedBox(width: 15),
-                //                           ],
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //             SizedBox(height: 5),
-                //           ],
-                //         ),
-                //       )
-                //     : Container(),
               ],
             ),
           );
