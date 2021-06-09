@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../constants.dart';
-
 class Background extends StatelessWidget {
   final Widget child;
   const Background({
@@ -19,21 +17,23 @@ class Background extends StatelessWidget {
         alignment: Alignment.center,
         children: <Widget>[
           Container(
+            width: size.width,
             // decoration: BoxDecoration(
             //   gradient: LinearGradient(
-            //     begin: Alignment.bottomCenter,
-            //     end: Alignment.topCenter,
+            //     begin: Alignment.topCenter,
+            //     end: Alignment.bottomCenter,
             //     stops: [0, 0.8],
-            //     colors: [Color.fromRGBO(33, 33, 33, 0), darkPrimaryColor],
+            //     colors: [Color.fromRGBO(33, 33, 33, 0), primaryColor],
             //   ),
             // ),
             child: Image.asset(
-              'assets/images/hub_screen.jpg',
+              'assets/images/membership_screen.jpg',
               fit: BoxFit.cover,
               height: size.height,
+              width: size.width,
             ),
           ),
-          child,
+          Container(width: size.width, child: child),
         ],
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -222,96 +224,111 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 : Background(
                     child: SingleChildScrollView(
                       child: Container(
+                        margin: EdgeInsets.fromLTRB(0, size.width, 0, 0),
+                        color: Color.fromRGBO(0, 0, 0, 0.01),
                         padding: EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Откройте океан возможностей',
-                              textScaleFactor: 1,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold),
+                        child: ClipRRect(
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(
+                              sigmaX: 6.0,
+                              sigmaY: 6.0,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Откройте океан возможностей',
+                                    textScaleFactor: 1,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    'Попробуйте командное авторство с LycHub',
+                                    maxLines: 2,
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    '• Создавайте проекты',
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    '• Приглашайте авторов',
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    '• Развивайте ветки',
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: RoundedButton(
+                                      width: 0.5,
+                                      ph: 45,
+                                      text: 'Начать',
+                                      press: () {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        Navigator.push(
+                                            context,
+                                            SlideRightRoute(
+                                              page: AddProjectScreen(),
+                                            ));
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      },
+                                      color: footyColor,
+                                      textColor: whiteColor,
+                                    ),
+                                  ),
+                                  SizedBox(height: 50),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Попробуйте командное авторство с LycHub',
-                              maxLines: 2,
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Text(
-                              '• Создавайте проекты',
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              '• Приглашайте авторов',
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              '• Развивайте ветки',
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w300),
-                              ),
-                            ),
-                            SizedBox(height: size.height * 0.3),
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: RoundedButton(
-                                width: 0.5,
-                                ph: 45,
-                                text: 'Начать',
-                                press: () {
-                                  setState(() {
-                                    loading = true;
-                                  });
-                                  Navigator.push(
-                                      context,
-                                      SlideRightRoute(
-                                        page: AddProjectScreen(),
-                                      ));
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                },
-                                color: footyColor,
-                                textColor: whiteColor,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
