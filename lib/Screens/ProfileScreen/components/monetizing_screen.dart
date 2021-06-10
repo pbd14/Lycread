@@ -164,7 +164,9 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
             .collection('writings')
             .where('author', isEqualTo: FirebaseAuth.instance.currentUser.uid)
             .where('isMonetized', isEqualTo: true)
+            .where('reads', isNotEqualTo: 0)
             .orderBy('reads', descending: true)
+            .limit(5)
             .get();
 
         if (this.mounted) {
