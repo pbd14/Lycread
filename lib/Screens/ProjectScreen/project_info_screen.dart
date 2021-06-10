@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
-import 'package:lycread/Screens/ProjectScreen/components/add_project.dart';
+import 'package:lycread/Screens/ProjectScreen/branch_info_screen.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -33,6 +33,73 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
   QuerySnapshot all_users;
   List added_users = [];
   List listed_users = [];
+
+  String getDate(int millisecondsSinceEpoch) {
+    String date = '';
+    DateTime d = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+    if (d.year == DateTime.now().year) {
+      if (d.month == DateTime.now().month) {
+        if (d.day == DateTime.now().day) {
+          date = 'сегодня';
+        } else {
+          int n = DateTime.now().day - d.day;
+          switch (n) {
+            case 1:
+              date = 'вчера';
+              break;
+            case 2:
+              date = 'позавчера';
+              break;
+            case 3:
+              date = n.toString() + ' дня назад';
+              break;
+            case 4:
+              date = n.toString() + ' дня назад';
+              break;
+            default:
+              date = n.toString() + ' дней назад';
+          }
+        }
+      } else {
+        int n = DateTime.now().month - d.month;
+        switch (n) {
+          case 1:
+            date = 'месяц назад';
+            break;
+          case 2:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 3:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 4:
+            date = n.toString() + ' месяца назад';
+            break;
+          default:
+            date = n.toString() + ' месяцев назад';
+        }
+      }
+    } else {
+      int n = DateTime.now().year - d.year;
+      switch (n) {
+        case 1:
+          date = 'год назад';
+          break;
+        case 2:
+          date = n.toString() + ' года назад';
+          break;
+        case 3:
+          date = n.toString() + ' года назад';
+          break;
+        case 4:
+          date = n.toString() + ' года назад';
+          break;
+        default:
+          date = n.toString() + ' лет назад';
+      }
+    }
+    return date;
+  }
 
   Future<void> search(String st) async {
     setState(() {
@@ -141,7 +208,6 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                     ),
                     SizedBox(height: 10),
                     Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
                       child: Card(
                         elevation: 10,
                         child: Padding(
@@ -737,36 +803,32 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                             child: Container(
                                               width: size.width * 0.8,
                                               padding: EdgeInsets.all(15),
-                                              child: Card(
-                                                elevation: 0,
-                                                margin: EdgeInsets.all(15),
-                                                child: Column(
-                                                  children: [
-                                                    Icon(
-                                                      CupertinoIcons
-                                                          .person_crop_circle_fill_badge_plus,
-                                                      color: footyColor,
-                                                      size: 20,
+                                              child: Column(
+                                                children: [
+                                                  Icon(
+                                                    CupertinoIcons
+                                                        .person_crop_circle_fill_badge_plus,
+                                                    color: footyColor,
+                                                    size: 20,
+                                                  ),
+                                                  SizedBox(height: 5),
+                                                  Text(
+                                                    'Добавить',
+                                                    textScaleFactor: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      textStyle: TextStyle(
+                                                          color:
+                                                              darkPrimaryColor,
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight
+                                                                  .bold),
                                                     ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      'Добавить',
-                                                      textScaleFactor: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                darkPrimaryColor,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -806,7 +868,14 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                   Navigator.push(
                                       context,
                                       SlideRightRoute(
-                                        page: AddProjectScreen(),
+                                        page: BranchInfoScreen(
+                                          id: branch.id,
+                                          branches: project.data()['branches'],
+                                          project_name: project.data()['name'],
+                                          project_id: project.id,
+                                          project_owner:
+                                              project.data()['owner'],
+                                        ),
                                       ));
                                   setState(() {
                                     loading = false;
@@ -834,30 +903,34 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                           ),
                                           SizedBox(height: 5),
                                           Text(
-                                            'Update: ' +
-                                                DateTime.fromMicrosecondsSinceEpoch(
-                                                        branch
-                                                            .data()[
-                                                                'last_update']
-                                                            .microsecondsSinceEpoch)
-                                                    .day
-                                                    .toString() +
-                                                '.' +
-                                                DateTime.fromMicrosecondsSinceEpoch(
-                                                        branch
-                                                            .data()[
-                                                                'last_update']
-                                                            .microsecondsSinceEpoch)
-                                                    .month
-                                                    .toString() +
-                                                '.' +
-                                                DateTime.fromMicrosecondsSinceEpoch(
-                                                        branch
-                                                            .data()[
-                                                                'last_update']
-                                                            .microsecondsSinceEpoch)
-                                                    .year
-                                                    .toString(),
+                                            getDate(branch
+                                                .data()['last_update']
+                                                .millisecondsSinceEpoch)
+                                            // 'Update: ' +
+                                            //     DateTime.fromMicrosecondsSinceEpoch(
+                                            //             branch
+                                            //                 .data()[
+                                            //                     'last_update']
+                                            //                 .microsecondsSinceEpoch)
+                                            //         .day
+                                            //         .toString() +
+                                            //     '.' +
+                                            //     DateTime.fromMicrosecondsSinceEpoch(
+                                            //             branch
+                                            //                 .data()[
+                                            //                     'last_update']
+                                            //                 .microsecondsSinceEpoch)
+                                            //         .month
+                                            //         .toString() +
+                                            //     '.' +
+                                            //     DateTime.fromMicrosecondsSinceEpoch(
+                                            //             branch
+                                            //                 .data()[
+                                            //                     'last_update']
+                                            //                 .microsecondsSinceEpoch)
+                                            //         .year
+                                            //         .toString()
+                                            ,
                                             textScaleFactor: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.montserrat(
@@ -913,9 +986,10 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.montserrat(
                                     textStyle: TextStyle(
-                                        color: darkPrimaryColor,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                                      color: darkPrimaryColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],

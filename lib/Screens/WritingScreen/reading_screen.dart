@@ -952,16 +952,18 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                         .data()['parent']['id'])
                                                 .limit(1)
                                                 .get();
-                                        Navigator.push(
-                                          context,
-                                          SlideRightRoute(
-                                            page: ReadingScreen(
-                                              data: story.docs.first,
-                                              author: widget.data
-                                                  .data()['parent']['author'],
+                                        if (story.docs.first != null) {
+                                          Navigator.push(
+                                            context,
+                                            SlideRightRoute(
+                                              page: ReadingScreen(
+                                                data: story.docs.first,
+                                                author: widget.data
+                                                    .data()['parent']['author'],
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        }
                                         setState(() {
                                           loading = false;
                                         });

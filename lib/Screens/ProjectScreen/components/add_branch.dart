@@ -161,6 +161,8 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                                           'bio': bio,
                                           'project_id': widget.id,
                                           'subbranches': [],
+                                          'hidden_wrs': [],
+                                          'writings': [],
                                           'date': DateTime.now(),
                                           'last_update': DateTime.now(),
                                         }).catchError((error) {
@@ -177,6 +179,14 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                                             position: NotificationPosition.top,
                                             background: Colors.red,
                                           );
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('projects')
+                                            .doc(widget.id)
+                                            .update({
+                                          'branches':
+                                              FieldValue.arrayUnion([id]),
+                                          'last_update': DateTime.now(),
                                         });
                                         PushNotificationMessage notification =
                                             PushNotificationMessage(

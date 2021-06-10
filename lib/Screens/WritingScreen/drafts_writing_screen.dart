@@ -524,7 +524,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                           ),
                                           imageUrl: widget.data['images'][0],
                                         )
-                                      : Container()
+                                      : Icon(Icons.add)
                                   : Image.file(i1),
                             ),
                           ),

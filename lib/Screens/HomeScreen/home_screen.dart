@@ -48,15 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final prefs = await SharedPreferences.getInstance();
     final value1 = prefs.getBool('local_auth') ?? false;
     if (value1) {
-      // Navigator.push(
-      //   context,
-      //   SlideRightRoute(
-      //     page: ScreenLock(
-      //       correctString: prefs.getString('local_password'),
-      //       canCancel: false,
-      //     ),
-      //   ),
-      // );
       screenLock(
           context: context,
           correctString: prefs.getString('local_password'),
@@ -75,11 +66,6 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           can = false;
         }
-        // Navigator.push(
-        //     context,
-        //     SlideRightRoute(
-        //       page: LoginScreen1(),
-        //     ));
       }
     }
   }

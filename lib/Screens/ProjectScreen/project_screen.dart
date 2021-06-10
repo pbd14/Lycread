@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +21,73 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Size size;
   bool loading = true;
   List projects = [];
+
+  String getDate(int millisecondsSinceEpoch) {
+    String date = '';
+    DateTime d = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
+    if (d.year == DateTime.now().year) {
+      if (d.month == DateTime.now().month) {
+        if (d.day == DateTime.now().day) {
+          date = 'сегодня';
+        } else {
+          int n = DateTime.now().day - d.day;
+          switch (n) {
+            case 1:
+              date = 'вчера';
+              break;
+            case 2:
+              date = 'позавчера';
+              break;
+            case 3:
+              date = n.toString() + ' дня назад';
+              break;
+            case 4:
+              date = n.toString() + ' дня назад';
+              break;
+            default:
+              date = n.toString() + ' дней назад';
+          }
+        }
+      } else {
+        int n = DateTime.now().month - d.month;
+        switch (n) {
+          case 1:
+            date = 'месяц назад';
+            break;
+          case 2:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 3:
+            date = n.toString() + ' месяца назад';
+            break;
+          case 4:
+            date = n.toString() + ' месяца назад';
+            break;
+          default:
+            date = n.toString() + ' месяцев назад';
+        }
+      }
+    } else {
+      int n = DateTime.now().year - d.year;
+      switch (n) {
+        case 1:
+          date = 'год назад';
+          break;
+        case 2:
+          date = n.toString() + ' года назад';
+          break;
+        case 3:
+          date = n.toString() + ' года назад';
+          break;
+        case 4:
+          date = n.toString() + ' года назад';
+          break;
+        default:
+          date = n.toString() + ' лет назад';
+      }
+    }
+    return date;
+  }
 
   Future<void> prepare() async {
     QuerySnapshot projectsSnap = await FirebaseFirestore.instance
@@ -123,30 +189,33 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                                 ),
                                                 SizedBox(height: 5),
                                                 Text(
-                                                  'Update: ' +
-                                                      DateTime.fromMicrosecondsSinceEpoch(
-                                                              projects[index]
-                                                                  .data()[
-                                                                      'last_update']
-                                                                  .microsecondsSinceEpoch)
-                                                          .day
-                                                          .toString() +
-                                                      '.' +
-                                                      DateTime.fromMicrosecondsSinceEpoch(
-                                                              projects[index]
-                                                                  .data()[
-                                                                      'last_update']
-                                                                  .microsecondsSinceEpoch)
-                                                          .month
-                                                          .toString() +
-                                                      '.' +
-                                                      DateTime.fromMicrosecondsSinceEpoch(
-                                                              projects[index]
-                                                                  .data()[
-                                                                      'last_update']
-                                                                  .microsecondsSinceEpoch)
-                                                          .year
-                                                          .toString(),
+                                                  getDate(projects[index]
+                                                      .data()['last_update']
+                                                      .millisecondsSinceEpoch),
+                                                  // 'Update: ' +
+                                                  //     DateTime.fromMicrosecondsSinceEpoch(
+                                                  //             projects[index]
+                                                  //                 .data()[
+                                                  //                     'last_update']
+                                                  //                 .microsecondsSinceEpoch)
+                                                  //         .day
+                                                  //         .toString() +
+                                                  //     '.' +
+                                                  //     DateTime.fromMicrosecondsSinceEpoch(
+                                                  //             projects[index]
+                                                  //                 .data()[
+                                                  //                     'last_update']
+                                                  //                 .microsecondsSinceEpoch)
+                                                  //         .month
+                                                  //         .toString() +
+                                                  //     '.' +
+                                                  //     DateTime.fromMicrosecondsSinceEpoch(
+                                                  //             projects[index]
+                                                  //                 .data()[
+                                                  //                     'last_update']
+                                                  //                 .microsecondsSinceEpoch)
+                                                  //         .year
+                                                  //         .toString(),
                                                   textScaleFactor: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,
