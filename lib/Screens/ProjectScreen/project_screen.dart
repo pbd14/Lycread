@@ -136,107 +136,97 @@ class _ProjectScreenState extends State<ProjectScreen> {
             body: projects.length != 0
                 ? Container(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        projects.length != 0
-                            ? Expanded(
-                                child: ListView.builder(
-                                  itemCount: projects.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) =>
-                                          Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: CupertinoButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        setState(() {
-                                          loading = true;
-                                        });
-                                        Navigator.push(
-                                            context,
-                                            SlideRightRoute(
-                                              page: ProjectInfoScreen(
-                                                id: projects[index].id,
-                                              ),
-                                            ));
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                      },
-                                      child: Container(
-                                        width: size.width * 0.9,
-                                        child: Card(
-                                          elevation: 10,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                  projects[index]
-                                                      .data()['name'],
-                                                  textScaleFactor: 1,
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                        color: darkPrimaryColor,
-                                                        fontSize: 17,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 5),
-                                                Text(
-                                                  getDate(projects[index]
-                                                      .data()['last_update']
-                                                      .millisecondsSinceEpoch),
-                                                  // 'Update: ' +
-                                                  //     DateTime.fromMicrosecondsSinceEpoch(
-                                                  //             projects[index]
-                                                  //                 .data()[
-                                                  //                     'last_update']
-                                                  //                 .microsecondsSinceEpoch)
-                                                  //         .day
-                                                  //         .toString() +
-                                                  //     '.' +
-                                                  //     DateTime.fromMicrosecondsSinceEpoch(
-                                                  //             projects[index]
-                                                  //                 .data()[
-                                                  //                     'last_update']
-                                                  //                 .microsecondsSinceEpoch)
-                                                  //         .month
-                                                  //         .toString() +
-                                                  //     '.' +
-                                                  //     DateTime.fromMicrosecondsSinceEpoch(
-                                                  //             projects[index]
-                                                  //                 .data()[
-                                                  //                     'last_update']
-                                                  //                 .microsecondsSinceEpoch)
-                                                  //         .year
-                                                  //         .toString(),
-                                                  textScaleFactor: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                        color: darkPrimaryColor,
-                                                        fontSize: 15,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ],
+                        for (var project in projects)
+                          projects.length != 0
+                              ? Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ProjectInfoScreen(
+                                              id: project.id,
                                             ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: size.width * 0.9,
+                                      child: Card(
+                                        elevation: 10,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                project.data()['name'],
+                                                textScaleFactor: 1,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                      color: darkPrimaryColor,
+                                                      fontSize: 17,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                getDate(project
+                                                    .data()['last_update']
+                                                    .millisecondsSinceEpoch),
+                                                // 'Update: ' +
+                                                //     DateTime.fromMicrosecondsSinceEpoch(
+                                                //             projects[index]
+                                                //                 .data()[
+                                                //                     'last_update']
+                                                //                 .microsecondsSinceEpoch)
+                                                //         .day
+                                                //         .toString() +
+                                                //     '.' +
+                                                //     DateTime.fromMicrosecondsSinceEpoch(
+                                                //             projects[index]
+                                                //                 .data()[
+                                                //                     'last_update']
+                                                //                 .microsecondsSinceEpoch)
+                                                //         .month
+                                                //         .toString() +
+                                                //     '.' +
+                                                //     DateTime.fromMicrosecondsSinceEpoch(
+                                                //             projects[index]
+                                                //                 .data()[
+                                                //                     'last_update']
+                                                //                 .microsecondsSinceEpoch)
+                                                //         .year
+                                                //         .toString(),
+                                                textScaleFactor: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                      color: darkPrimaryColor,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              )
-                            : Container(),
+                                )
+                              : Container(),
                         Center(
                           child: CupertinoButton(
                             padding: EdgeInsets.zero,

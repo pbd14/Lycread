@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/ProjectScreen/branch_info_screen.dart';
+import 'package:lycread/Screens/ProjectScreen/components/edit_project.dart';
 import 'package:lycread/widgets/rounded_text_input.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -174,6 +175,25 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                   ),
                 ),
               ),
+              actions: [
+                project.data()['owner'] == FirebaseAuth.instance.currentUser.uid
+                    ? IconButton(
+                        color: whiteColor,
+                        icon: Icon(
+                          CupertinoIcons.pencil,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            SlideRightRoute(
+                              page: EditProjectScreen(
+                                  project: project.data(), id: project.id),
+                            ),
+                          );
+                        },
+                      )
+                    : Container(),
+              ],
             ),
             body: SingleChildScrollView(
               child: Container(

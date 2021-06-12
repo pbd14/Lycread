@@ -11,6 +11,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 import 'components/branch_writing_screen.dart';
+import 'components/edit_branch.dart';
 
 class BranchInfoScreen extends StatefulWidget {
   String id;
@@ -165,11 +166,58 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                   ),
                 ),
               ),
+              actions: [
+                widget.project_owner == FirebaseAuth.instance.currentUser.uid
+                    ? IconButton(
+                        color: whiteColor,
+                        icon: Icon(
+                          CupertinoIcons.pencil,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            SlideRightRoute(
+                              page: EditBranchScreen(
+                                  project_id: widget.project_id,
+                                  branch: branch.data(),
+                                  id: branch.id),
+                            ),
+                          );
+                        },
+                      )
+                    : Container(),
+              ],
             ),
             body: Container(
+              padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    branch.data()['name'],
+                    textScaleFactor: 1,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: darkPrimaryColor,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Text(
+                    branch.data()['bio'],
+                    textScaleFactor: 1,
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: darkPrimaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w300),
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   Container(
                     padding: EdgeInsets.fromLTRB(
                         size.width * 0.2, 0, size.width * 0.2, 0),
