@@ -227,8 +227,13 @@ class _SearchScreenGState extends State<SearchScreenG>
                                       SlideRightRoute(
                                         page: ReadingScreen(
                                           data: results[index],
-                                          author: names[
-                                              results[index].data()['author']],
+                                          author: results[index]
+                                                      .data()['project_name'] !=
+                                                  null
+                                              ? results[index]
+                                                  .data()['project_name']
+                                              : names[results[index]
+                                                  .data()['author']],
                                         ),
                                       ));
                                   setState(() {

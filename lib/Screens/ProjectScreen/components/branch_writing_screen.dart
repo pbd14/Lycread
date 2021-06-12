@@ -30,6 +30,7 @@ class BranchWritingScreen extends StatefulWidget {
   String id;
   String project_name;
   String project_id;
+  String project_owner;
   bool isEmpty;
   Map writing;
   String writingId;
@@ -38,6 +39,7 @@ class BranchWritingScreen extends StatefulWidget {
     @required this.id,
     @required this.project_name,
     @required this.project_id,
+    @required this.project_owner,
     this.isEmpty: true,
     this.writing,
     this.writingId,
@@ -107,25 +109,31 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
         .doc('LycRead')
         .get();
     List<Tag> preChosen = [];
-    for (var tag in widget.writing['tags']) {
-      preChosen.add(Tag(name: tag, number: tagsNum.data()['tags_num'][tag]));
+    if (widget.writing != null) {
+      for (var tag in widget.writing['tags']) {
+        preChosen.add(Tag(name: tag, number: tagsNum.data()['tags_num'][tag]));
+      }
     }
     if (this.mounted) {
       setState(() {
         user = dcuser;
         categs = dc.data()['genres'];
         tags = tempTags;
-        isMonetized = widget.writing['isMonetized'];
-        name = widget.writing['name'];
+        if (widget.writing != null) {
+          isMonetized = widget.writing['isMonetized'];
+          name = widget.writing['name'];
+        }
         chosenTags = preChosen;
       });
     } else {
       user = dcuser;
       categs = dc.data()['genres'];
       tags = tempTags;
-      isMonetized = widget.writing['isMonetized'];
+      if (widget.writing != null) {
+        isMonetized = widget.writing['isMonetized'];
+        name = widget.writing['name'];
+      }
       chosenTags = preChosen;
-      name = widget.writing['name'];
     }
   }
 
@@ -197,13 +205,13 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                               onChanged: (value) {
                                 name = value;
                               },
-                              initialValue: widget.writing['name'] != null
+                              initialValue: widget.writing != null
                                   ? widget.writing['name']
                                   : '',
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderSide: BorderSide.none),
-                                  hintText: widget.writing['name'] != null
+                                  hintText: widget.writing != null
                                       ? widget.writing['name']
                                       : "Название",
                                   hintStyle: TextStyle(fontSize: 20)),
@@ -444,23 +452,27 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                               width: size.width * 0.5,
                               height: size.width * 0.5,
                               child: i1 == null
-                                  ? widget.writing['images'] != 'No Image'
-                                      ? CachedNetworkImage(
-                                          filterQuality: FilterQuality.none,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              Transform.scale(
-                                            scale: 0.8,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2.0,
-                                              backgroundColor: footyColor,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      primaryColor),
-                                            ),
-                                          ),
-                                          imageUrl: widget.writing['images'][0],
-                                        )
+                                  ? widget.writing != null
+                                      ? widget.writing['images'] != 'No Image'
+                                          ? CachedNetworkImage(
+                                              filterQuality: FilterQuality.none,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  Transform.scale(
+                                                scale: 0.8,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  strokeWidth: 2.0,
+                                                  backgroundColor: footyColor,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(primaryColor),
+                                                ),
+                                              ),
+                                              imageUrl: widget.writing['images']
+                                                  [0],
+                                            )
+                                          : Icon(Icons.add)
                                       : Icon(Icons.add)
                                   : Image.file(i1),
                             ),
@@ -569,7 +581,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'id': timeId,
                                         'name': name,
                                         // 'text': text,
-                                        'author': widget.project_name,
+                                        'author': widget.project_owner,
                                         'images': [
                                           await a1.ref.getDownloadURL(),
                                         ],
@@ -587,6 +599,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'users_read': [],
                                         'comments': [],
                                         'project_id': widget.project_id,
+                                        'project_name': widget.project_name,
                                         'branch_id': widget.id,
                                       }).catchError((error) {
                                         print('MISTAKE HERE');
@@ -611,7 +624,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'id': widget.writingId,
                                         'name': name,
                                         // 'text': text,
-                                        'author': widget.project_name,
+                                        'author': widget.project_owner,
                                         'images': [
                                           await a1.ref.getDownloadURL(),
                                         ],
@@ -629,6 +642,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'users_read': [],
                                         'comments': [],
                                         'project_id': widget.project_id,
+                                        'project_name': widget.project_name,
                                         'branch_id': widget.id,
                                       }).catchError((error) {
                                         print('MISTAKE HERE');
@@ -654,7 +668,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                           .set({
                                         'id': timeId,
                                         'name': name,
-                                        'author': widget.project_name,
+                                        'author': widget.project_owner,
                                         'images': 'No Image',
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
@@ -670,6 +684,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'users_rated': [],
                                         'comments': [],
                                         'project_id': widget.project_id,
+                                        'project_name': widget.project_name,
                                         'branch_id': widget.id,
                                       }).catchError((error) {
                                         print('MISTAKE HERE');
@@ -694,7 +709,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'id': widget.writingId,
                                         'name': name,
                                         // 'text': text,
-                                        'author': widget.project_name,
+                                        'author': widget.project_owner,
                                         'images': widget.writing['images'],
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
@@ -710,6 +725,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'users_read': [],
                                         'comments': [],
                                         'project_id': widget.project_id,
+                                        'project_name': widget.project_name,
                                         'branch_id': widget.id,
                                       }).catchError((error) {
                                         print('MISTAKE HERE');

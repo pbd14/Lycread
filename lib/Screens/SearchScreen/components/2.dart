@@ -223,8 +223,13 @@ class _SecondScreenState extends State<SecondScreen>
                                       SlideRightRoute(
                                         page: ReadingScreen(
                                           data: results[index],
-                                          author: names[
-                                              results[index].data()['author']],
+                                          author: results[index]
+                                                      .data()['project_name'] !=
+                                                  null
+                                              ? results[index]
+                                                  .data()['project_name']
+                                              : names[results[index]
+                                                  .data()['author']],
                                         ),
                                       ));
                                   setState(() {
@@ -293,13 +298,21 @@ class _SecondScreenState extends State<SecondScreen>
                                                       height: 7,
                                                     ),
                                                     Text(
-                                                      names[results[index]
-                                                                      .data()[
-                                                                  'author']] !=
+                                                      results[index].data()[
+                                                                  'project_name'] !=
                                                               null
-                                                          ? names[results[index]
-                                                              .data()['author']]
-                                                          : 'Loading',
+                                                          ? results[index]
+                                                                  .data()[
+                                                              'project_name']
+                                                          : names[results[index]
+                                                                          .data()[
+                                                                      'author']] !=
+                                                                  null
+                                                              ? names[results[
+                                                                          index]
+                                                                      .data()[
+                                                                  'author']]
+                                                              : 'Loading',
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       textScaleFactor: 1,

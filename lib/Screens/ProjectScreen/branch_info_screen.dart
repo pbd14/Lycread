@@ -17,6 +17,7 @@ class BranchInfoScreen extends StatefulWidget {
   String project_name;
   String project_id;
   String project_owner;
+  List project_authors;
   List branches = [];
   BranchInfoScreen({
     Key key,
@@ -25,6 +26,7 @@ class BranchInfoScreen extends StatefulWidget {
     @required this.project_name,
     @required this.project_id,
     @required this.project_owner,
+    @required this.project_authors,
   }) : super(key: key);
   @override
   _BranchInfoScreenState createState() => _BranchInfoScreenState();
@@ -190,7 +192,7 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                               return new DropdownMenuItem<String>(
                                 value: value,
                                 child: new Text(
-                                  brNames[value].toString().toUpperCase(),
+                                  brNames[value].toString(),
                                   textScaleFactor: 1,
                                 ),
                               );
@@ -228,21 +230,27 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                 padding:
                                     MaterialStateProperty.all(EdgeInsets.zero),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 setState(() {
                                   loading = true;
                                 });
-                                Navigator.push(
+                                if (widget.project_authors.contains(
+                                    FirebaseAuth.instance.currentUser.uid)) {
+                                  Navigator.push(
                                     context,
                                     SlideRightRoute(
-                                        page: BranchWritingScreen(
-                                      id: widget.id,
-                                      project_id: widget.project_id,
-                                      project_name: widget.project_name,
-                                      isEmpty: false,
-                                      writing: hwriting.data(),
-                                      writingId: hwriting.id,
-                                    )));
+                                      page: BranchWritingScreen(
+                                        id: widget.id,
+                                        project_id: widget.project_id,
+                                        project_name: widget.project_name,
+                                        isEmpty: false,
+                                        writing: hwriting.data(),
+                                        writingId: hwriting.id,
+                                        project_owner: widget.project_owner,
+                                      ),
+                                    ),
+                                  );
+                                }
                                 setState(() {
                                   loading = false;
                                 });
@@ -660,58 +668,62 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                             ),
                           )
                         : Container(),
-                  Center(
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        setState(() {
-                          loading = true;
-                        });
-                        Navigator.push(
-                            context,
-                            SlideRightRoute(
-                              page: BranchWritingScreen(
-                                id: widget.id,
-                                project_id: widget.project_id,
-                                project_name: widget.project_name,
-                                isEmpty: true,
-                              ),
-                            ));
-                        setState(() {
-                          loading = false;
-                        });
-                      },
-                      child: Container(
-                        width: size.width * 0.8,
-                        padding: EdgeInsets.all(15),
-                        child: Card(
-                          elevation: 0,
-                          margin: EdgeInsets.all(15),
-                          child: Column(
-                            children: [
-                              Icon(
-                                CupertinoIcons.doc_on_doc_fill,
-                                color: footyColor,
-                                size: 15,
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                'Добавьте новую историю',
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
+                  widget.project_authors
+                          .contains(FirebaseAuth.instance.currentUser.uid)
+                      ? Center(
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              setState(() {
+                                loading = true;
+                              });
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                    page: BranchWritingScreen(
+                                      id: widget.id,
+                                      project_id: widget.project_id,
+                                      project_name: widget.project_name,
+                                      project_owner: widget.project_owner,
+                                      isEmpty: true,
+                                    ),
+                                  ));
+                              setState(() {
+                                loading = false;
+                              });
+                            },
+                            child: Container(
+                              width: size.width * 0.8,
+                              padding: EdgeInsets.all(15),
+                              child: Card(
+                                elevation: 0,
+                                margin: EdgeInsets.all(15),
+                                child: Column(
+                                  children: [
+                                    Icon(
+                                      CupertinoIcons.doc_on_doc_fill,
+                                      color: footyColor,
+                                      size: 15,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      'Добавьте новую историю',
+                                      textScaleFactor: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: darkPrimaryColor,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
+                        )
+                      : Container(),
                   SizedBox(
                     height: 10,
                   )

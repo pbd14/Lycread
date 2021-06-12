@@ -817,15 +817,14 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                                     textScaleFactor: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
-                                                    style: GoogleFonts
-                                                        .montserrat(
+                                                    style:
+                                                        GoogleFonts.montserrat(
                                                       textStyle: TextStyle(
                                                           color:
                                                               darkPrimaryColor,
                                                           fontSize: 15,
                                                           fontWeight:
-                                                              FontWeight
-                                                                  .bold),
+                                                              FontWeight.bold),
                                                     ),
                                                   ),
                                                 ],
@@ -875,6 +874,8 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                                           project_id: project.id,
                                           project_owner:
                                               project.data()['owner'],
+                                          project_authors:
+                                              project.data()['authors'],
                                         ),
                                       ));
                                   setState(() {
@@ -948,56 +949,60 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                               ),
                             )
                           : Container(),
-                    Center(
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          setState(() {
-                            loading = true;
-                          });
-                          Navigator.push(
-                              context,
-                              SlideRightRoute(
-                                page: AddBranchScreen(
-                                  id: widget.id,
-                                ),
-                              ));
-                          setState(() {
-                            loading = false;
-                          });
-                        },
-                        child: Container(
-                          width: size.width * 0.8,
-                          padding: EdgeInsets.all(15),
-                          child: Card(
-                            elevation: 0,
-                            margin: EdgeInsets.all(15),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  CupertinoIcons.plus_square_on_square,
-                                  color: footyColor,
-                                  size: 25,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                  'Добавьте новую ветку',
-                                  textScaleFactor: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                    project
+                            .data()['authors']
+                            .contains(FirebaseAuth.instance.currentUser.uid)
+                        ? Center(
+                            child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: () {
+                                setState(() {
+                                  loading = true;
+                                });
+                                Navigator.push(
+                                    context,
+                                    SlideRightRoute(
+                                      page: AddBranchScreen(
+                                        id: widget.id,
+                                      ),
+                                    ));
+                                setState(() {
+                                  loading = false;
+                                });
+                              },
+                              child: Container(
+                                width: size.width * 0.8,
+                                padding: EdgeInsets.all(15),
+                                child: Card(
+                                  elevation: 0,
+                                  margin: EdgeInsets.all(15),
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        CupertinoIcons.plus_square_on_square,
+                                        color: footyColor,
+                                        size: 25,
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Добавьте новую ветку',
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                            color: darkPrimaryColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          )
+                        : Container(),
                     SizedBox(
                       height: 10,
                     )

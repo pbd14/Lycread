@@ -530,8 +530,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                                           SlideRightRoute(
                                             page: ReadingScreen(
                                               data: element,
-                                              author: names[
-                                                  element.data()['author']],
+                                              author: element.data()[
+                                                          'project_name'] !=
+                                                      null
+                                                  ? element
+                                                      .data()['project_name']
+                                                  : names[
+                                                      element.data()['author']],
                                             ),
                                           ));
                                       setState(() {
@@ -597,7 +602,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                                           SizedBox(height: 10),
                                           Container(
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
@@ -629,12 +635,18 @@ class _DashboardScreenState extends State<DashboardScreen>
                                                       height: 5,
                                                     ),
                                                     Text(
-                                                      names[element.data()[
-                                                                  'author']] !=
+                                                      element.data()[
+                                                                  'project_name'] !=
                                                               null
-                                                          ? names[element
-                                                              .data()['author']]
-                                                          : 'Loading',
+                                                          ? element.data()[
+                                                              'project_name']
+                                                          : names[element.data()[
+                                                                      'author']] !=
+                                                                  null
+                                                              ? names[element
+                                                                      .data()[
+                                                                  'author']]
+                                                              : 'Loading',
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       textScaleFactor: 1,

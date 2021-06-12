@@ -13,6 +13,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
+import 'package:lycread/Screens/ProjectScreen/project_info_screen.dart';
+import 'package:lycread/Screens/ProjectScreen/project_screen.dart';
 import 'package:lycread/Screens/WritingScreen/comment_reply_screen.dart';
 import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:lycread/Services/ad_service.dart';
@@ -415,19 +417,14 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '1',
-                                        textScaleFactor: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: TextStyle(
-                                              color: primaryColor,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                      Icon(
+                                        CupertinoIcons.doc,
+                                        color: primaryColor,
+                                        size: 30,
                                       ),
+                                      SizedBox(height: 5),
                                       Text(
-                                        'Пусто',
+                                        'Без текста',
                                         textScaleFactor: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: GoogleFonts.montserrat(
@@ -467,17 +464,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        '2',
-                                        textScaleFactor: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: TextStyle(
-                                              color: primaryColor,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                      Icon(
+                                        CupertinoIcons.doc_richtext,
+                                        color: primaryColor,
+                                        size: 30,
                                       ),
+                                      SizedBox(height: 5),
                                       Text(
                                         'Скопировать',
                                         textScaleFactor: 1,
@@ -661,14 +653,26 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       //     isEqualTo: widget.data.data()['author'])
                                       .doc(widget.data.data()['author'])
                                       .get();
-                                  Navigator.push(
-                                    context,
-                                    SlideRightRoute(
-                                      page: VProfileScreen(
-                                        data: data,
+                                  if (widget.data.data()['project_id'] !=
+                                      null) {
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: ProjectInfoScreen(
+                                            id: widget.data
+                                                .data()['project_id']),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      SlideRightRoute(
+                                        page: VProfileScreen(
+                                          data: data,
+                                        ),
+                                      ),
+                                    );
+                                  }
                                   setState(() {
                                     loading = false;
                                   });
