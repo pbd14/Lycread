@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -66,6 +67,10 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
   TaskSnapshot a1;
   QuillController _controller = QuillController.basic();
   DocumentSnapshot user;
+  QuerySnapshot live_editors;
+  List le_list = [];
+  StreamSubscription<QuerySnapshot> subscription;
+  StreamSubscription<DocumentSnapshot> writingSubscription;
 
   Future<void> prepare() async {
     DocumentSnapshot dcuser = await FirebaseFirestore.instance
@@ -168,8 +173,45 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
     });
   }
 
+  void activateSubs(List le) {
+    subscription = FirebaseFirestore.instance
+        .collection('users')
+        .where('id', whereIn: le.isNotEmpty ? le : ['1'])
+        .snapshots()
+        .listen((snap) {
+      if (this.mounted) {
+        setState(() {
+          live_editors = snap;
+        });
+      } else {
+        live_editors = snap;
+      }
+    });
+  }
+
   @override
   void initState() {
+    if (!widget.isEmpty) {
+      writingSubscription = FirebaseFirestore.instance
+          .collection('hidden_writings')
+          .doc(widget.writingId)
+          .snapshots()
+          .listen((snap) {
+        if (this.mounted) {
+          setState(() {
+            if (snap.data()['live_editors_id'] != null) {
+              le_list = snap.data()['live_editors_id'];
+              activateSubs(le_list);
+            }
+          });
+        } else {
+          if (snap.data()['live_editors_id'] != null) {
+            le_list = snap.data()['live_editors_id'];
+            activateSubs(le_list);
+          }
+        }
+      });
+    }
     prepare();
     super.initState();
   }
@@ -192,6 +234,321 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                         SizedBox(
                           height: size.height * 0.1,
                         ),
+                        live_editors != null
+                            ? live_editors.docs.length != 0
+                                ? live_editors.docs.length < 5
+                                    ? Container(
+                                        margin: EdgeInsets.all(10),
+                                        child: Row(
+                                          children: [
+                                            for (QueryDocumentSnapshot editor
+                                                in live_editors.docs)
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          25.0),
+                                                  child: editor.data()[
+                                                              'photo'] !=
+                                                          null
+                                                      ? CachedNetworkImage(
+                                                          filterQuality:
+                                                              FilterQuality
+                                                                  .none,
+                                                          fit: BoxFit.cover,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Transform.scale(
+                                                            scale: 0.8,
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              strokeWidth: 2.0,
+                                                              backgroundColor:
+                                                                  footyColor,
+                                                              valueColor:
+                                                                  AlwaysStoppedAnimation<
+                                                                          Color>(
+                                                                      primaryColor),
+                                                            ),
+                                                          ),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Icon(
+                                                            Icons.error,
+                                                            color: footyColor,
+                                                          ),
+                                                          imageUrl: editor
+                                                              .data()['photo'],
+                                                        )
+                                                      : Image.asset(
+                                                          'assets/images/User.png',
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                ),
+                                              )
+                                          ],
+                                        ),
+                                      )
+                                    : Container(
+                                        margin: EdgeInsets.all(10),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 30,
+                                              height: 30,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                child: live_editors.docs[0]
+                                                            .data()['photo'] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        filterQuality:
+                                                            FilterQuality.none,
+                                                        fit: BoxFit.cover,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Transform.scale(
+                                                          scale: 0.8,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2.0,
+                                                            backgroundColor:
+                                                                footyColor,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor),
+                                                          ),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(
+                                                          Icons.error,
+                                                          color: footyColor,
+                                                        ),
+                                                        imageUrl: live_editors
+                                                            .docs[0]
+                                                            .data()['photo'],
+                                                      )
+                                                    : Image.asset(
+                                                        'assets/images/User.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 30,
+                                              height: 30,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                child: live_editors.docs[1]
+                                                            .data()['photo'] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        filterQuality:
+                                                            FilterQuality.none,
+                                                        fit: BoxFit.cover,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Transform.scale(
+                                                          scale: 0.8,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2.0,
+                                                            backgroundColor:
+                                                                footyColor,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor),
+                                                          ),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(
+                                                          Icons.error,
+                                                          color: footyColor,
+                                                        ),
+                                                        imageUrl: live_editors
+                                                            .docs[1]
+                                                            .data()['photo'],
+                                                      )
+                                                    : Image.asset(
+                                                        'assets/images/User.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 30,
+                                              height: 30,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                child: live_editors.docs[2]
+                                                            .data()['photo'] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        filterQuality:
+                                                            FilterQuality.none,
+                                                        fit: BoxFit.cover,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Transform.scale(
+                                                          scale: 0.8,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2.0,
+                                                            backgroundColor:
+                                                                footyColor,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor),
+                                                          ),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(
+                                                          Icons.error,
+                                                          color: footyColor,
+                                                        ),
+                                                        imageUrl: live_editors
+                                                            .docs[2]
+                                                            .data()['photo'],
+                                                      )
+                                                    : Image.asset(
+                                                        'assets/images/User.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              ),
+                                            ),
+                                            Container(
+                                              width: 30,
+                                              height: 30,
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                child: live_editors.docs[3]
+                                                            .data()['photo'] !=
+                                                        null
+                                                    ? CachedNetworkImage(
+                                                        filterQuality:
+                                                            FilterQuality.none,
+                                                        fit: BoxFit.cover,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Transform.scale(
+                                                          scale: 0.8,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2.0,
+                                                            backgroundColor:
+                                                                footyColor,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor),
+                                                          ),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(
+                                                          Icons.error,
+                                                          color: footyColor,
+                                                        ),
+                                                        imageUrl: live_editors
+                                                            .docs[3]
+                                                            .data()['photo'],
+                                                      )
+                                                    : Image.asset(
+                                                        'assets/images/User.png',
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Text(
+                                              '+ ' +
+                                                  (live_editors.docs.length - 4)
+                                                      .toString(),
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                  color: darkPrimaryColor,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w400,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                : Container()
+                            : Container(),
+                        // live_editors != null
+                        //     ? live_editors.docs.length != 0
+                        //         ? live_editors.docs.length > 2
+                        //             ? Padding(
+                        //                 padding: const EdgeInsets.all(10.0),
+                        //                 child: Text(
+                        //                   live_editors.docs.first
+                        //                           .data()['name'] +
+                        //                       ' ' +
+                        //                       live_editors.docs.last
+                        //                           .data()['name'] +
+                        //                       ' и ' +
+                        //                       (live_editors.docs.length - 2)
+                        //                           .toString() +
+                        //                       ' пользователей вносят изменения',
+                        //                   textScaleFactor: 1,
+                        //                   overflow: TextOverflow.ellipsis,
+                        //                   maxLines: 3,
+                        //                   style: GoogleFonts.montserrat(
+                        //                     textStyle: TextStyle(
+                        //                       color: footyColor,
+                        //                       fontSize: 15,
+                        //                       fontWeight: FontWeight.w400,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               )
+                        //             : Padding(
+                        //                 padding: EdgeInsets.all(10.0),
+                        //                 child: Text(
+                        //                   live_editors.docs.last
+                        //                               .data()['name'] !=
+                        //                           live_editors.docs.first
+                        //                               .data()['name']
+                        //                       ? live_editors.docs.first
+                        //                               .data()['name'] +
+                        //                           ' и ' +
+                        //                           live_editors.docs.last
+                        //                               .data()['name'] +
+                        //                           ' вносят изменения'
+                        //                       : live_editors.docs.first
+                        //                               .data()['name'] +
+                        //                           ' вносит изменения',
+                        //                   textScaleFactor: 1,
+                        //                   overflow: TextOverflow.ellipsis,
+                        //                   maxLines: 3,
+                        //                   style: GoogleFonts.montserrat(
+                        //                     textStyle: TextStyle(
+                        //                       color: footyColor,
+                        //                       fontSize: 15,
+                        //                       fontWeight: FontWeight.w400,
+                        //                     ),
+                        //                   ),
+                        //                 ),
+                        //               )
+                        //         : Container()
+                        //     : Container(),
+
                         Container(
                           height: 110,
                           child: TextFieldContainer(
@@ -585,6 +942,8 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'images': [
                                           await a1.ref.getDownloadURL(),
                                         ],
+                                        'status': 'stable',
+                                        'live_editors_id': [],
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
                                         'rich_text': jsonEncode(_controller
@@ -628,6 +987,13 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'images': [
                                           await a1.ref.getDownloadURL(),
                                         ],
+                                        'status': live_editors.docs.length < 2
+                                            ? 'stable'
+                                            : 'isEdited',
+                                        'live_editors_id':
+                                            FieldValue.arrayRemove([
+                                          FirebaseAuth.instance.currentUser.uid
+                                        ]),
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
                                         'rich_text': jsonEncode(_controller
@@ -670,6 +1036,8 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'name': name,
                                         'author': widget.project_owner,
                                         'images': 'No Image',
+                                        'status': 'stable',
+                                        'live_editors_id': [],
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
                                         'rich_text': jsonEncode(_controller
@@ -713,6 +1081,13 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'images': widget.writing['images'],
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
+                                        'status': live_editors.docs.length < 2
+                                            ? 'stable'
+                                            : 'isEdited',
+                                        'live_editors_id':
+                                            FieldValue.arrayRemove([
+                                          FirebaseAuth.instance.currentUser.uid
+                                        ]),
                                         'rich_text': jsonEncode(_controller
                                             .document
                                             .toDelta()
@@ -746,7 +1121,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                   }
                                   String authorName = FirebaseAuth
                                       .instance.currentUser.displayName;
-                                  String prName = widget.project_name;
+                                  String _name = name;
                                   FirebaseFirestore.instance
                                       .collection('projects')
                                       .doc(widget.project_id)
@@ -754,8 +1129,8 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                     'logs': FieldValue.arrayUnion([
                                       {
                                         'text': widget.isEmpty
-                                            ? '$authorName добавил новую историю: $prName'
-                                            : '$authorName изменил $prName',
+                                            ? '$authorName добавил новую историю: $_name'
+                                            : '$authorName изменил $_name',
                                         'date': DateTime.now(),
                                         'branch_id': widget.id,
                                         'author_id': FirebaseAuth

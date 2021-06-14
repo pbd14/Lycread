@@ -1025,7 +1025,152 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                         : Container(),
                     SizedBox(
                       height: 10,
-                    )
+                    ),
+                    Text(
+                      'Логи',
+                      textScaleFactor: 1,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.montserrat(
+                        textStyle: TextStyle(
+                            color: darkPrimaryColor,
+                            fontSize: 25,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    if (project.data()['logs'].length < 20)
+                      for (int i = 0;
+                          i < project.data()['logs'].length - 1;
+                          i++)
+                        CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            setState(() {
+                              loading = true;
+                            });
+                            Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                  page: BranchInfoScreen(
+                                    id: project.data()['logs'][
+                                        project.data()['logs'].length -
+                                            1 -
+                                            i]['branch_id'],
+                                    branches: project.data()['branches'],
+                                    project_name: project.data()['name'],
+                                    project_id: project.id,
+                                    project_owner: project.data()['owner'],
+                                    project_authors: project.data()['authors'],
+                                  ),
+                                ));
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  project.data()['logs'][
+                                          project.data()['logs'].length - 1 - i]
+                                      ['text'],
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  getDate(project
+                                      .data()['logs'][
+                                          project.data()['logs'].length - 1 - i]
+                                          ['date']
+                                      .millisecondsSinceEpoch),
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    if (project.data()['logs'].length >= 20)
+                      for (int i = 0; i < 20; i++)
+                        CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            setState(() {
+                              loading = true;
+                            });
+                            Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                  page: BranchInfoScreen(
+                                    id: project.data()['logs'][
+                                        project.data()['logs'].length -
+                                            1 -
+                                            i]['branch_id'],
+                                    branches: project.data()['branches'],
+                                    project_name: project.data()['name'],
+                                    project_id: project.id,
+                                    project_owner: project.data()['owner'],
+                                    project_authors: project.data()['authors'],
+                                  ),
+                                ));
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  project.data()['logs'][
+                                          project.data()['logs'].length - 1 - i]
+                                      ['text'],
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  getDate(project
+                                      .data()['logs'][
+                                          project.data()['logs'].length - 1 - i]
+                                          ['date']
+                                      .millisecondsSinceEpoch),
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                   ],
                 ),
               ),
