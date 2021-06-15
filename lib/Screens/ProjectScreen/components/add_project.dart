@@ -160,6 +160,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                           'owner': FirebaseAuth
                                               .instance.currentUser.uid,
                                           'branches': [],
+                                          'logs': [],
                                           'date': DateTime.now(),
                                           'last_update': DateTime.now(),
                                         }).catchError((error) {

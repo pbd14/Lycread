@@ -500,6 +500,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             //   ),
             // ),
             body: RefreshIndicator(
+              color: footyColor,
               onRefresh: _refresh,
               child: CustomScrollView(
                 scrollDirection: Axis.vertical,

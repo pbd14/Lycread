@@ -134,8 +134,9 @@ class _HomeScreenState extends State<HomeScreen> {
         : !can
             ? LoginScreen1()
             : Scaffold(
-                body: Center(
-                  child: _widgetOptions.elementAt(_selectedIndex),
+                body: IndexedStack(
+                  index: _selectedIndex,
+                  children: _widgetOptions,
                 ),
                 bottomNavigationBar: BottomNavigationBar(
                   items: <BottomNavigationBarItem>[

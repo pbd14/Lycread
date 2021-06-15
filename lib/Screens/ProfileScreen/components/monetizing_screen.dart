@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -197,379 +198,405 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
     super.initState();
   }
 
+  Future<void> _refresh() {
+    setState(() {
+      loading = true;
+    });
+    results = [];
+    isMem = false;
+    author = '';
+    writings = [];
+    wrData = {};
+    colorWrData = {};
+    middleChartData = {};
+    chartData = [];
+    doughnutData = [];
+    prepare();
+    Completer<Null> completer = new Completer<Null>();
+    completer.complete();
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
-        : Scaffold(
-            appBar: AppBar(
-              backgroundColor: primaryColor,
-              centerTitle: true,
-              title: Text(
-                'Финансы',
-                overflow: TextOverflow.ellipsis,
-                textScaleFactor: 1,
-                style: GoogleFonts.montserrat(
-                  textStyle: TextStyle(
-                    color: whiteColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w300,
+        : RefreshIndicator(
+            color: footyColor,
+            onRefresh: _refresh,
+            child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: primaryColor,
+                centerTitle: true,
+                title: Text(
+                  'Финансы',
+                  overflow: TextOverflow.ellipsis,
+                  textScaleFactor: 1,
+                  style: GoogleFonts.montserrat(
+                    textStyle: TextStyle(
+                      color: whiteColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w300,
+                    ),
                   ),
                 ),
               ),
-            ),
-            backgroundColor: isMem ? whiteColor : Colors.transparent,
-            body: isMem
-                ? SingleChildScrollView(
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Баланс',
-                            overflow: TextOverflow.ellipsis,
-                            textScaleFactor: 1,
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 25,
-                                fontWeight: FontWeight.w400,
+              backgroundColor: isMem ? whiteColor : Colors.transparent,
+              body: isMem
+                  ? SingleChildScrollView(
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Баланс',
+                              overflow: TextOverflow.ellipsis,
+                              textScaleFactor: 1,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
-                          ),
-                          Text(
-                            getFnum1(user.data()['balance']),
-                            overflow: TextOverflow.ellipsis,
-                            textScaleFactor: 1,
-                            maxLines: 1,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
+                            Text(
+                              getFnum1(user.data()['balance']),
+                              overflow: TextOverflow.ellipsis,
+                              textScaleFactor: 1,
+                              maxLines: 1,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          RoundedButton(
-                            width: 0.4,
-                            ph: 45,
-                            text: 'Вывод',
-                            press: () async {},
-                            color: darkPrimaryColor,
-                            textColor: whiteColor,
-                          ),
-                          SizedBox(height: 50),
-                          Text(
-                            'Монетизация',
-                            overflow: TextOverflow.ellipsis,
-                            textScaleFactor: 1,
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                color: primaryColor,
-                                fontSize: 25,
-                                fontWeight: FontWeight.w400,
+                            SizedBox(
+                              height: 10,
+                            ),
+                            RoundedButton(
+                              width: 0.4,
+                              ph: 45,
+                              text: 'Вывод',
+                              press: () async {},
+                              color: darkPrimaryColor,
+                              textColor: whiteColor,
+                            ),
+                            SizedBox(height: 50),
+                            Text(
+                              'Монетизация',
+                              overflow: TextOverflow.ellipsis,
+                              textScaleFactor: 1,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            width: size.width * 0.9,
-                            height: 200,
-                            child: SfCartesianChart(
-                              primaryXAxis: DateTimeAxis(
-                                dateFormat: DateFormat.d(),
-                                maximumLabels: 5,
-                              ),
-                              series: <ChartSeries>[
-                                // Renders line chart
-                                LineSeries<Map, DateTime>(
-                                  dataSource: chartData,
-                                  pointColorMapper: (Map log, _) =>
-                                      primaryColor,
-                                  xValueMapper: (Map log, _) => log['date'],
-                                  yValueMapper: (Map log, _) => log['sum'],
-                                )
-                              ],
+                            SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            height: 200,
-                            width: size.width * 0.9,
-                            child: SfCircularChart(series: <CircularSeries>[
-                              // Renders doughnut chart
-                              DoughnutSeries<Map, String>(
-                                  dataSource: doughnutData,
-                                  pointColorMapper: (Map data, _) =>
-                                      data['color'],
-                                  xValueMapper: (Map data, _) => data['id'],
-                                  yValueMapper: (Map data, _) => data['value'],
-                                  radius: '100%')
-                            ]),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          for (QueryDocumentSnapshot wr in writings)
                             Container(
-                              width: size.width * 0.95,
-                              height: 100,
-                              padding: EdgeInsets.all(10),
-                              child: TextButton(
-                                style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        EdgeInsets.zero)),
-                                onPressed: () {
-                                  setState(() {
-                                    loading = true;
-                                  });
-                                  Navigator.push(
-                                      context,
-                                      SlideRightRoute(
-                                        page: ReadingScreen(
-                                          data: wr,
-                                          author: FirebaseAuth
-                                              .instance.currentUser.displayName,
-                                        ),
-                                      ));
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                },
-                                child: Card(
-                                  color: colorWrData[wr.id],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                  elevation: 11,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Center(
-                                              child: Container(
-                                                width: size.width * 0.6,
-                                                child: Text(
-                                                  wr.data()['name'],
-                                                  textScaleFactor: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.montserrat(
-                                                    textStyle: TextStyle(
-                                                      color: primaryColor,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                              width: size.width * 0.9,
+                              height: 200,
+                              child: SfCartesianChart(
+                                primaryXAxis: DateTimeAxis(
+                                  dateFormat: DateFormat.d(),
+                                  maximumLabels: 5,
+                                ),
+                                series: <ChartSeries>[
+                                  // Renders line chart
+                                  LineSeries<Map, DateTime>(
+                                    dataSource: chartData,
+                                    pointColorMapper: (Map log, _) =>
+                                        primaryColor,
+                                    xValueMapper: (Map log, _) => log['date'],
+                                    yValueMapper: (Map log, _) => log['sum'],
+                                  )
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              height: 200,
+                              width: size.width * 0.9,
+                              child: SfCircularChart(series: <CircularSeries>[
+                                // Renders doughnut chart
+                                DoughnutSeries<Map, String>(
+                                    dataSource: doughnutData,
+                                    pointColorMapper: (Map data, _) =>
+                                        data['color'],
+                                    xValueMapper: (Map data, _) => data['id'],
+                                    yValueMapper: (Map data, _) =>
+                                        data['value'],
+                                    radius: '100%')
+                              ]),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            for (QueryDocumentSnapshot wr in writings)
+                              Container(
+                                width: size.width * 0.95,
+                                height: 100,
+                                padding: EdgeInsets.all(10),
+                                child: TextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.zero)),
+                                  onPressed: () {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                          page: ReadingScreen(
+                                            data: wr,
+                                            author: FirebaseAuth.instance
+                                                .currentUser.displayName,
+                                          ),
+                                        ));
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Card(
+                                    color: colorWrData[wr.id],
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    elevation: 11,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: Container(
+                                                  width: size.width * 0.6,
+                                                  child: Text(
+                                                    wr.data()['name'],
+                                                    textScaleFactor: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle: TextStyle(
+                                                        color: primaryColor,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: 10),
-                                            Align(
-                                              alignment: Alignment.centerRight,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Text(
-                                                    getFnum1(wrData[wr.id]
-                                                        .toDouble()),
-                                                    textScaleFactor: 1,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                              SizedBox(width: 10),
+                                              Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    Text(
+                                                      getFnum1(wrData[wr.id]
+                                                          .toDouble()),
+                                                      textScaleFactor: 1,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    getDate(wr
-                                                        .data()['date']
-                                                        .seconds),
-                                                    textScaleFactor: 1,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      getDate(wr
+                                                          .data()['date']
+                                                          .seconds),
+                                                      textScaleFactor: 1,
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                : Background(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        color: Color.fromRGBO(0, 0, 0, 0.01),
-                        margin: EdgeInsets.fromLTRB(0, size.width, 0, 0),
-                        padding: EdgeInsets.all(20),
-                        child: ClipRRect(
-                          child: BackdropFilter(
-                            filter: ui.ImageFilter.blur(
-                              sigmaX: 6.0,
-                              sigmaY: 6.0,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Монетизурйте творчество',
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                  textScaleFactor: 1,
-                                  maxLines: 10,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: TextStyle(
-                                      color: whiteColor,
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                Text(
-                                  'Показываейте рекламу в ваших историях и получайте деньги. Подробнее здесь',
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                  textScaleFactor: 1,
-                                  maxLines: 10,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: TextStyle(
-                                      color: whiteColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 30,
-                                ),
-                                RoundedButton(
-                                  width: 0.3,
-                                  ph: 45,
-                                  text: 'ОК',
-                                  press: () async {
-                                    bool can = true;
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    FirebaseFirestore.instance
-                                        .collection('users')
-                                        .doc(FirebaseAuth
-                                            .instance.currentUser.uid)
-                                        .update({
-                                      'isMember': true,
-                                      'balance': 0.0,
-                                    }).catchError((error) {
-                                      can = false;
-                                      PushNotificationMessage notification =
-                                          PushNotificationMessage(
-                                        title: 'Ошибка',
-                                        body: 'Неудалось зайти',
-                                      );
-                                      showSimpleNotification(
-                                        Container(
-                                            child: Text(notification.body)),
-                                        position: NotificationPosition.top,
-                                        background: Colors.red,
-                                      );
-                                      setState(() {
-                                        loading = false;
-                                      });
-                                    });
-                                    if (can) {
-                                      DocumentSnapshot doc =
-                                          await FirebaseFirestore
-                                              .instance
-                                              .collection('users')
-                                              .doc(FirebaseAuth
-                                                  .instance.currentUser.uid)
-                                              .get();
-                                      setState(() {
-                                        user = doc;
-                                        isMem = true;
-                                        loading = false;
-                                      });
-                                    }
-                                  },
-                                  color: whiteColor,
-                                  textColor: darkPrimaryColor,
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      size.width * 0.05,
-                                      0,
-                                      size.width * 0.05,
-                                      0),
-                                  child: Text(
-                                    'Продолжая вы принимаете все правила монетизации и нашу Политику Конфиденциальности',
+                    )
+                  : Background(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          color: Color.fromRGBO(0, 0, 0, 0.01),
+                          margin: EdgeInsets.fromLTRB(0, size.width, 0, 0),
+                          padding: EdgeInsets.all(20),
+                          child: ClipRRect(
+                            child: BackdropFilter(
+                              filter: ui.ImageFilter.blur(
+                                sigmaX: 6.0,
+                                sigmaY: 6.0,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Монетизурйте творчество',
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
                                     textScaleFactor: 1,
+                                    maxLines: 10,
                                     style: GoogleFonts.montserrat(
                                       textStyle: TextStyle(
                                         color: whiteColor,
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w100,
+                                        fontSize: 35,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  Text(
+                                    'Показываейте рекламу в ваших историях и получайте деньги. Подробнее здесь',
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    textScaleFactor: 1,
+                                    maxLines: 10,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: whiteColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                  ),
+                                  RoundedButton(
+                                    width: 0.3,
+                                    ph: 45,
+                                    text: 'ОК',
+                                    press: () async {
+                                      bool can = true;
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('users')
+                                          .doc(FirebaseAuth
+                                              .instance.currentUser.uid)
+                                          .update({
+                                        'isMember': true,
+                                        'balance': 0.0,
+                                      }).catchError((error) {
+                                        can = false;
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось зайти',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                      });
+                                      if (can) {
+                                        DocumentSnapshot doc =
+                                            await FirebaseFirestore.instance
+                                                .collection('users')
+                                                .doc(FirebaseAuth
+                                                    .instance.currentUser.uid)
+                                                .get();
+                                        setState(() {
+                                          user = doc;
+                                          isMem = true;
+                                          loading = false;
+                                        });
+                                      }
+                                    },
+                                    color: whiteColor,
+                                    textColor: darkPrimaryColor,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.fromLTRB(
+                                        size.width * 0.05,
+                                        0,
+                                        size.width * 0.05,
+                                        0),
+                                    child: Text(
+                                      'Продолжая вы принимаете все правила монетизации и нашу Политику Конфиденциальности',
+                                      textScaleFactor: 1,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w100,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
+            ),
           );
   }
 }
