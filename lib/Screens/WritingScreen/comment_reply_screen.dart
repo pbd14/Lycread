@@ -39,8 +39,8 @@ class _CommentReplyScreenState extends State<CommentReplyScreen> {
       });
     } else {
       if (widget.data['replies'] != null) {
-          replies = widget.data['replies'];
-        }
+        replies = widget.data['replies'];
+      }
       loading = false;
     }
   }
@@ -349,12 +349,9 @@ class _CommentReplyScreenState extends State<CommentReplyScreen> {
                               text: 'Ok',
                               press: () async {
                                 if (_formKey.currentState.validate()) {
-                                  setState(() {
-                                    loading = true;
-                                  });
                                   replies.add({
                                     'date': DateTime.now(),
-                                    'text': commentText,
+                                    'text': commentText.trim(),
                                     'author': FirebaseAuth
                                         .instance.currentUser.displayName,
                                     'photo': FirebaseAuth
@@ -414,7 +411,6 @@ class _CommentReplyScreenState extends State<CommentReplyScreen> {
                                     background: footyColor,
                                   );
                                   setState(() {
-                                    loading = false;
                                     commentText = '';
                                   });
                                 }

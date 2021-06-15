@@ -1221,9 +1221,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                         EdgeInsets.zero),
                                   ),
                                   onPressed: () async {
-                                    setState(() {
-                                      loading = true;
-                                    });
                                     QuerySnapshot middleChildLnks =
                                         await FirebaseFirestore.instance
                                             .collection('writings')
@@ -1233,7 +1230,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                     setState(() {
                                       allLinksShown = true;
                                       childLinks = middleChildLnks;
-                                      loading = false;
                                     });
                                   },
                                   child: Text(
@@ -1270,7 +1266,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 TextStyle(color: secondColor),
                                             validator: (val) => val.length > 1
                                                 ? null
-                                                : 'Минимум 2 символов',
+                                                : 'Минимум 2 символа',
                                             keyboardType:
                                                 TextInputType.multiline,
                                             maxLength: 500,
@@ -1298,9 +1294,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                           press: () async {
                                             if (_formKey.currentState
                                                 .validate()) {
-                                              setState(() {
-                                                loading = true;
-                                              });
                                               await FirebaseFirestore.instance
                                                   .collection('writings')
                                                   .doc(widget.data.id)
@@ -1309,7 +1302,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                     FieldValue.arrayUnion([
                                                   {
                                                     'date': DateTime.now(),
-                                                    'text': commentText,
+                                                    'text': commentText.trim(),
                                                     'author': FirebaseAuth
                                                         .instance
                                                         .currentUser
@@ -1385,7 +1378,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 background: footyColor,
                                               );
                                               setState(() {
-                                                loading = false;
                                                 commentText = '';
                                               });
                                             }
