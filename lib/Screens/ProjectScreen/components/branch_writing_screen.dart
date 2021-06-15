@@ -190,6 +190,23 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
   }
 
   @override
+  void dispose() {
+    if (!widget.isEmpty) {
+      FirebaseFirestore.instance
+          .collection('hidden_writings')
+          .doc(widget.writingId)
+          .update({
+        'status': live_editors.docs.length < 2 ? 'stable' : 'isEdited',
+        'live_editors_id':
+            FieldValue.arrayRemove([FirebaseAuth.instance.currentUser.uid]),
+      });
+    }
+    subscription.cancel();
+    writingSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     if (!widget.isEmpty) {
       writingSubscription = FirebaseFirestore.instance
@@ -987,13 +1004,6 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'images': [
                                           await a1.ref.getDownloadURL(),
                                         ],
-                                        'status': live_editors.docs.length < 2
-                                            ? 'stable'
-                                            : 'isEdited',
-                                        'live_editors_id':
-                                            FieldValue.arrayRemove([
-                                          FirebaseAuth.instance.currentUser.uid
-                                        ]),
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
                                         'rich_text': jsonEncode(_controller
@@ -1081,13 +1091,6 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                                         'images': widget.writing['images'],
                                         'genre': category.toLowerCase(),
                                         'date': DateTime.now(),
-                                        'status': live_editors.docs.length < 2
-                                            ? 'stable'
-                                            : 'isEdited',
-                                        'live_editors_id':
-                                            FieldValue.arrayRemove([
-                                          FirebaseAuth.instance.currentUser.uid
-                                        ]),
                                         'rich_text': jsonEncode(_controller
                                             .document
                                             .toDelta()
