@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart' as cupertino;
@@ -105,7 +106,7 @@ class _SearchScreen1State extends State<SearchScreen1>
     return loading
         ? LoadingScreen()
         : RefreshIndicator(
-          color: footyColor,
+            color: footyColor,
             onRefresh: _refresh,
             child: Scaffold(
               body: Column(
@@ -134,174 +135,180 @@ class _SearchScreen1State extends State<SearchScreen1>
                         : ListView.builder(
                             itemCount: results.length,
                             itemBuilder: (BuildContext context, int index) =>
-                                Container(
-                              height: 80,
-                              margin: EdgeInsets.symmetric(horizontal: 20.0),
-                              child: cupertino.CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  setState(() {
-                                    loading = true;
-                                  });
-                                  Navigator.push(
-                                      context,
-                                      SlideRightRoute(
-                                        page: VProfileScreen(
-                                          data: results[index],
-                                        ),
-                                      ));
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                },
-                                child: Card(
-                                  elevation: 10,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 8,
-                                          child: Column(
-                                            children: [
-                                              results[index].data()[
-                                                          'isVerified'] !=
-                                                      null
-                                                  ? results[index]
-                                                          .data()['isVerified']
-                                                      ? Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Text(
-                                                              results[index]
-                                                                      .data()[
-                                                                  'name'],
-                                                              textScaleFactor:
-                                                                  1,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: GoogleFonts
-                                                                  .montserrat(
-                                                                textStyle: TextStyle(
-                                                                    color:
-                                                                        darkPrimaryColor,
-                                                                    fontSize:
-                                                                        17,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
+                                FadeInLeft(
+                              child: Container(
+                                height: 80,
+                                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                                child: cupertino.CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                          page: VProfileScreen(
+                                            data: results[index],
+                                          ),
+                                        ));
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Card(
+                                    elevation: 10,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 8,
+                                            child: Column(
+                                              children: [
+                                                results[index].data()[
+                                                            'isVerified'] !=
+                                                        null
+                                                    ? results[index].data()[
+                                                            'isVerified']
+                                                        ? Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                results[index]
+                                                                        .data()[
+                                                                    'name'],
+                                                                textScaleFactor:
+                                                                    1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: GoogleFonts
+                                                                    .montserrat(
+                                                                  textStyle: TextStyle(
+                                                                      color:
+                                                                          darkPrimaryColor,
+                                                                      fontSize:
+                                                                          17,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 5),
+                                                              Icon(
+                                                                CupertinoIcons
+                                                                    .checkmark_seal_fill,
+                                                                color:
+                                                                    footyColor,
+                                                                size: 17,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        : Text(
+                                                            results[index]
+                                                                .data()['name'],
+                                                            textScaleFactor: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    primaryColor,
+                                                                fontSize: 17,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
                                                               ),
                                                             ),
-                                                            SizedBox(width: 5),
-                                                            Icon(
-                                                              CupertinoIcons
-                                                                  .checkmark_seal_fill,
-                                                              color: footyColor,
-                                                              size: 17,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      : Text(
-                                                          results[index]
-                                                              .data()['name'],
-                                                          textScaleFactor: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: GoogleFonts
-                                                              .montserrat(
-                                                            textStyle:
-                                                                TextStyle(
-                                                              color:
-                                                                  primaryColor,
-                                                              fontSize: 17,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                          )
+                                                    : Text(
+                                                        results[index]
+                                                            .data()['name'],
+                                                        textScaleFactor: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                           ),
-                                                        )
-                                                  : Text(
-                                                      results[index]
-                                                          .data()['name'],
-                                                      textScaleFactor: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.bold,
                                                         ),
                                                       ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  getFnum(results[index]
+                                                      .data()['followers_num']),
+                                                  textScaleFactor: 1,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: TextStyle(
+                                                      color: primaryColor,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w300,
                                                     ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                getFnum(results[index]
-                                                    .data()['followers_num']),
-                                                textScaleFactor: 1,
-                                                style: GoogleFonts.montserrat(
-                                                  textStyle: TextStyle(
-                                                    color: primaryColor,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w300,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Container(
-                                          width: 40,
-                                          height: 40,
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                            child: results[index]
-                                                        .data()['photo'] !=
-                                                    null
-                                                ? CachedNetworkImage(
-                                                    filterQuality:
-                                                        FilterQuality.none,
-                                                    fit: BoxFit.cover,
-                                                    placeholder:
-                                                        (context, url) =>
-                                                            Transform.scale(
-                                                      scale: 0.8,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        strokeWidth: 2.0,
-                                                        backgroundColor:
-                                                            footyColor,
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation<
-                                                                    Color>(
-                                                                primaryColor),
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.0),
+                                              child: results[index]
+                                                          .data()['photo'] !=
+                                                      null
+                                                  ? CachedNetworkImage(
+                                                      filterQuality:
+                                                          FilterQuality.none,
+                                                      fit: BoxFit.cover,
+                                                      placeholder:
+                                                          (context, url) =>
+                                                              Transform.scale(
+                                                        scale: 0.8,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          strokeWidth: 2.0,
+                                                          backgroundColor:
+                                                              footyColor,
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation<
+                                                                      Color>(
+                                                                  primaryColor),
+                                                        ),
                                                       ),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Icon(
+                                                        Icons.error,
+                                                        color: footyColor,
+                                                      ),
+                                                      imageUrl: results[index]
+                                                          .data()['photo'],
+                                                    )
+                                                  : Image.asset(
+                                                      'assets/images/User.png',
+                                                      fit: BoxFit.cover,
                                                     ),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(
-                                                      Icons.error,
-                                                      color: footyColor,
-                                                    ),
-                                                    imageUrl: results[index]
-                                                        .data()['photo'],
-                                                  )
-                                                : Image.asset(
-                                                    'assets/images/User.png',
-                                                    fit: BoxFit.cover,
-                                                  ),
+                                            ),
                                           ),
-                                        ),
-                                        SizedBox(width: 15),
-                                      ],
+                                          SizedBox(width: 15),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),

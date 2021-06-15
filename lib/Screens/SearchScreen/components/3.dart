@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -195,82 +196,91 @@ class _ThirdScreenState extends State<ThirdScreen>
                         : ListView.builder(
                             itemCount: results.length,
                             itemBuilder: (BuildContext context, int index) =>
-                                Container(
-                              child: Card(
-                                margin: EdgeInsets.fromLTRB(10, 3, 10, 3),
-                                elevation: 10,
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ProjectInfoScreen(
-                                            id: results[index].id,
-                                          ),
-                                        ));
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        results[index]
-                                                            .data()['name'],
-                                                        textScaleFactor: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle: TextStyle(
-                                                            color: primaryColor,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.bold,
+                                FadeInLeft(
+                              child: Container(
+                                child: Card(
+                                  margin: EdgeInsets.fromLTRB(10, 3, 10, 3),
+                                  elevation: 10,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ProjectInfoScreen(
+                                              id: results[index].id,
+                                            ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          results[index]
+                                                              .data()['name'],
+                                                          textScaleFactor: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 7,
-                                                      ),
-                                                      Text(
-                                                        getDate(results[index]
-                                                            .data()['date']
-                                                            .seconds),
-                                                        textScaleFactor: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle: TextStyle(
-                                                            color: primaryColor,
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.w400,
+                                                        SizedBox(
+                                                          height: 7,
+                                                        ),
+                                                        Text(
+                                                          getDate(results[index]
+                                                              .data()['date']
+                                                              .seconds),
+                                                          textScaleFactor: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

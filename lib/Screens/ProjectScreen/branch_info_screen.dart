@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -262,141 +263,679 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        branch.data()['name'],
-                        textScaleFactor: 1,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              color: darkPrimaryColor,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
+                      FadeInDown(
+                        child: Text(
+                          branch.data()['name'],
+                          textScaleFactor: 1,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: darkPrimaryColor,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                      Text(
-                        branch.data()['bio'],
-                        textScaleFactor: 1,
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              color: darkPrimaryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w300),
+                      FadeInDown(
+                        child: Text(
+                          branch.data()['bio'],
+                          textScaleFactor: 1,
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: darkPrimaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w300),
+                          ),
                         ),
                       ),
                       SizedBox(height: 10),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                            size.width * 0.2, 0, size.width * 0.2, 0),
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          hint: Text(
-                            branch.data()['name'] != null
-                                ? branch.data()['name']
-                                : 'no name',
-                            textScaleFactor: 1,
-                            style: GoogleFonts.montserrat(
-                              textStyle: TextStyle(
-                                color: darkPrimaryColor,
-                                fontWeight: FontWeight.bold,
+                      FadeInDown(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(
+                              size.width * 0.2, 0, size.width * 0.2, 0),
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            hint: Text(
+                              branch.data()['name'] != null
+                                  ? branch.data()['name']
+                                  : 'no name',
+                              textScaleFactor: 1,
+                              style: GoogleFonts.montserrat(
+                                textStyle: TextStyle(
+                                  color: darkPrimaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
+                            items: widget.branches != null
+                                ? widget.branches.map((dynamic value) {
+                                    return new DropdownMenuItem<String>(
+                                      value: value,
+                                      child: new Text(
+                                        brNames[value].toString(),
+                                        textScaleFactor: 1,
+                                      ),
+                                    );
+                                  }).toList()
+                                : [
+                                    new DropdownMenuItem<String>(
+                                      value: '-',
+                                      child: new Text(
+                                        '-',
+                                        textScaleFactor: 1,
+                                      ),
+                                    )
+                                  ],
+                            onChanged: (value) {
+                              setState(() {
+                                loading = true;
+                              });
+                              widget.id = value;
+                              prepare();
+                            },
                           ),
-                          items: widget.branches != null
-                              ? widget.branches.map((dynamic value) {
-                                  return new DropdownMenuItem<String>(
-                                    value: value,
-                                    child: new Text(
-                                      brNames[value].toString(),
-                                      textScaleFactor: 1,
-                                    ),
-                                  );
-                                }).toList()
-                              : [
-                                  new DropdownMenuItem<String>(
-                                    value: '-',
-                                    child: new Text(
-                                      '-',
-                                      textScaleFactor: 1,
-                                    ),
-                                  )
-                                ],
-                          onChanged: (value) {
-                            setState(() {
-                              loading = true;
-                            });
-                            widget.id = value;
-                            prepare();
-                          },
                         ),
                       ),
                       for (QueryDocumentSnapshot hwriting in hiddenwrs)
                         hiddenwrs.isNotEmpty
-                            ? Container(
-                                width: size.width * 0.95,
-                                // height: hwriting.data()['images'] != null
-                                //     ? hwriting.data()['images'] != 'No Image'
-                                //         ? 200
-                                //         : 90
-                                //     : 90,
-                                padding: EdgeInsets.all(10),
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        EdgeInsets.zero),
+                            ? SlideInLeft(
+                                child: Container(
+                                  width: size.width * 0.95,
+                                  // height: hwriting.data()['images'] != null
+                                  //     ? hwriting.data()['images'] != 'No Image'
+                                  //         ? 200
+                                  //         : 90
+                                  //     : 90,
+                                  padding: EdgeInsets.all(10),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.zero),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      if (widget.project_authors.contains(
+                                          FirebaseAuth
+                                              .instance.currentUser.uid)) {
+                                        FirebaseFirestore.instance
+                                            .collection('hidden_writings')
+                                            .doc(hwriting.id)
+                                            .update({
+                                          'status': 'isEdited',
+                                          'live_editors_id':
+                                              FieldValue.arrayUnion([
+                                            FirebaseAuth
+                                                .instance.currentUser.uid
+                                          ]),
+                                        });
+                                        Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: BranchWritingScreen(
+                                              id: widget.id,
+                                              project_id: widget.project_id,
+                                              project_name: widget.project_name,
+                                              isEmpty: false,
+                                              writing: hwriting.data(),
+                                              writingId: hwriting.id,
+                                              project_owner:
+                                                  widget.project_owner,
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 11,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(5.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            hwriting.data()['images'] != null
+                                                ? hwriting.data()['images'] !=
+                                                        'No Image'
+                                                    ? Container(
+                                                        height: 110,
+                                                        width: size.width,
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          fit: BoxFit.cover,
+                                                          filterQuality:
+                                                              FilterQuality
+                                                                  .none,
+                                                          height: 110,
+                                                          width: 100,
+                                                          placeholder:
+                                                              (context, url) =>
+                                                                  Container(
+                                                            height: 50,
+                                                            width: 50,
+                                                            child:
+                                                                Transform.scale(
+                                                              scale: 0.1,
+                                                              child:
+                                                                  CircularProgressIndicator(
+                                                                strokeWidth:
+                                                                    2.0,
+                                                                backgroundColor:
+                                                                    footyColor,
+                                                                valueColor:
+                                                                    AlwaysStoppedAnimation<
+                                                                            Color>(
+                                                                        primaryColor),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Icon(
+                                                            Icons.error,
+                                                            color: footyColor,
+                                                          ),
+                                                          imageUrl:
+                                                              hwriting.data()[
+                                                                  'images'][0],
+                                                        ),
+                                                      )
+                                                    : Container()
+                                                : Container(),
+                                            SizedBox(height: 10),
+                                            Container(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        width: size.width * 0.6,
+                                                        child: Text(
+                                                          hwriting
+                                                              .data()['name'],
+                                                          textScaleFactor: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text(
+                                                        getDate(hwriting
+                                                            .data()['date']
+                                                            .seconds),
+                                                        textScaleFactor: 1,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      widget.project_owner ==
+                                                              FirebaseAuth
+                                                                  .instance
+                                                                  .currentUser
+                                                                  .uid
+                                                          ? IconButton(
+                                                              icon: Icon(
+                                                                CupertinoIcons
+                                                                    .rectangle_stack_fill_badge_plus,
+                                                                color:
+                                                                    footyColor,
+                                                              ),
+                                                              onPressed: () {
+                                                                showDialog(
+                                                                  barrierDismissible:
+                                                                      false,
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return AlertDialog(
+                                                                      title: const Text(
+                                                                          'Опубликовать?'),
+                                                                      content:
+                                                                          const Text(
+                                                                              'Хотите ли вы опубликовать эту историю?'),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        TextButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            FirebaseFirestore.instance.collection('writings').doc(hwriting.id).set(hwriting.data()).catchError((error) {
+                                                                              print('MISTAKE HERE');
+                                                                              print(error);
+                                                                              PushNotificationMessage notification = PushNotificationMessage(
+                                                                                title: 'Ошибка',
+                                                                                body: 'Неудалось опубликовать историю',
+                                                                              );
+                                                                              showSimpleNotification(
+                                                                                Container(child: Text(notification.body)),
+                                                                                position: NotificationPosition.top,
+                                                                                background: Colors.red,
+                                                                              );
+                                                                            });
+                                                                            FirebaseFirestore.instance.collection('hidden_writings').doc(hwriting.id).delete().catchError((error) {
+                                                                              print('MISTAKE HERE');
+                                                                              print(error);
+                                                                              PushNotificationMessage notification = PushNotificationMessage(
+                                                                                title: 'Ошибка',
+                                                                                body: 'Неудалось опубликовать историю',
+                                                                              );
+                                                                              showSimpleNotification(
+                                                                                Container(child: Text(notification.body)),
+                                                                                position: NotificationPosition.top,
+                                                                                background: Colors.red,
+                                                                              );
+                                                                            });
+                                                                            setState(() {
+                                                                              writings.add(hwriting);
+                                                                              hiddenwrs.remove(hwriting);
+                                                                            });
+                                                                            PushNotificationMessage
+                                                                                notification =
+                                                                                PushNotificationMessage(
+                                                                              title: 'Успех',
+                                                                              body: 'История опубликована',
+                                                                            );
+                                                                            showSimpleNotification(
+                                                                              Container(child: Text(notification.body)),
+                                                                              position: NotificationPosition.top,
+                                                                              background: footyColor,
+                                                                            );
+                                                                          },
+                                                                          child:
+                                                                              const Text(
+                                                                            'Yes',
+                                                                            style:
+                                                                                TextStyle(color: footyColor),
+                                                                          ),
+                                                                        ),
+                                                                        TextButton(
+                                                                          onPressed: () =>
+                                                                              Navigator.of(context).pop(false),
+                                                                          child:
+                                                                              const Text(
+                                                                            'No',
+                                                                            style:
+                                                                                TextStyle(color: Colors.red),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                );
+                                                              },
+                                                            )
+                                                          : Container(),
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            live_editors[hwriting.id] != null
+                                                ? live_editors[hwriting.id]
+                                                            .docs
+                                                            .length !=
+                                                        0
+                                                    ? live_editors[hwriting.id]
+                                                                .docs
+                                                                .length <
+                                                            5
+                                                        ? Container(
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    10),
+                                                            child: Row(
+                                                              children: [
+                                                                for (QueryDocumentSnapshot editor
+                                                                    in live_editors[
+                                                                            hwriting.id]
+                                                                        .docs)
+                                                                  Container(
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    child:
+                                                                        ClipRRect(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              25.0),
+                                                                      child: editor.data()['photo'] !=
+                                                                              null
+                                                                          ? CachedNetworkImage(
+                                                                              filterQuality: FilterQuality.none,
+                                                                              fit: BoxFit.cover,
+                                                                              placeholder: (context, url) => Transform.scale(
+                                                                                scale: 0.8,
+                                                                                child: CircularProgressIndicator(
+                                                                                  strokeWidth: 2.0,
+                                                                                  backgroundColor: footyColor,
+                                                                                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                                ),
+                                                                              ),
+                                                                              errorWidget: (context, url, error) => Icon(
+                                                                                Icons.error,
+                                                                                color: footyColor,
+                                                                              ),
+                                                                              imageUrl: editor.data()['photo'],
+                                                                            )
+                                                                          : Image
+                                                                              .asset(
+                                                                              'assets/images/User.png',
+                                                                              fit: BoxFit.cover,
+                                                                            ),
+                                                                    ),
+                                                                  )
+                                                              ],
+                                                            ),
+                                                          )
+                                                        : Container(
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    10),
+                                                            child: Row(
+                                                              children: [
+                                                                Container(
+                                                                  width: 30,
+                                                                  height: 30,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: live_editors[hwriting.id].docs[0].data()['photo'] !=
+                                                                            null
+                                                                        ? CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl:
+                                                                                live_editors[hwriting.id].docs[0].data()['photo'],
+                                                                          )
+                                                                        : Image
+                                                                            .asset(
+                                                                            'assets/images/User.png',
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  width: 30,
+                                                                  height: 30,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: live_editors[hwriting.id].docs[1].data()['photo'] !=
+                                                                            null
+                                                                        ? CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl:
+                                                                                live_editors[hwriting.id].docs[1].data()['photo'],
+                                                                          )
+                                                                        : Image
+                                                                            .asset(
+                                                                            'assets/images/User.png',
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  width: 30,
+                                                                  height: 30,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: live_editors[hwriting.id].docs[2].data()['photo'] !=
+                                                                            null
+                                                                        ? CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl:
+                                                                                live_editors[hwriting.id].docs[2].data()['photo'],
+                                                                          )
+                                                                        : Image
+                                                                            .asset(
+                                                                            'assets/images/User.png',
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                  width: 30,
+                                                                  height: 30,
+                                                                  child:
+                                                                      ClipRRect(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            25.0),
+                                                                    child: live_editors[hwriting.id].docs[3].data()['photo'] !=
+                                                                            null
+                                                                        ? CachedNetworkImage(
+                                                                            filterQuality:
+                                                                                FilterQuality.none,
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                            placeholder: (context, url) =>
+                                                                                Transform.scale(
+                                                                              scale: 0.8,
+                                                                              child: CircularProgressIndicator(
+                                                                                strokeWidth: 2.0,
+                                                                                backgroundColor: footyColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                                                                              ),
+                                                                            ),
+                                                                            errorWidget: (context, url, error) =>
+                                                                                Icon(
+                                                                              Icons.error,
+                                                                              color: footyColor,
+                                                                            ),
+                                                                            imageUrl:
+                                                                                live_editors[hwriting.id].docs[3].data()['photo'],
+                                                                          )
+                                                                        : Image
+                                                                            .asset(
+                                                                            'assets/images/User.png',
+                                                                            fit:
+                                                                                BoxFit.cover,
+                                                                          ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                    width: 5),
+                                                                Text(
+                                                                  '+ ' +
+                                                                      (live_editors[hwriting.id].docs.length -
+                                                                              4)
+                                                                          .toString(),
+                                                                  textScaleFactor:
+                                                                      1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style: GoogleFonts
+                                                                      .montserrat(
+                                                                    textStyle:
+                                                                        TextStyle(
+                                                                      color:
+                                                                          darkPrimaryColor,
+                                                                      fontSize:
+                                                                          10,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          )
+                                                    : Container()
+                                                : Container(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    if (widget.project_authors.contains(
-                                        FirebaseAuth
-                                            .instance.currentUser.uid)) {
-                                      FirebaseFirestore.instance
-                                          .collection('hidden_writings')
-                                          .doc(hwriting.id)
-                                          .update({
-                                        'status': 'isEdited',
-                                        'live_editors_id':
-                                            FieldValue.arrayUnion([
-                                          FirebaseAuth.instance.currentUser.uid
-                                        ]),
+                                ),
+                              )
+                            : Container(),
+                      Divider(
+                        thickness: 1,
+                        color: darkPrimaryColor,
+                      ),
+                      for (QueryDocumentSnapshot writing in writings)
+                        writings.isNotEmpty
+                            ? SlideInLeft(
+                                child: Container(
+                                  width: size.width * 0.95,
+                                  height: writing.data()['images'] != null
+                                      ? writing.data()['images'] != 'No Image'
+                                          ? 200
+                                          : 90
+                                      : 90,
+                                  padding: EdgeInsets.all(10),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          EdgeInsets.zero),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
                                       });
                                       Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: BranchWritingScreen(
-                                            id: widget.id,
-                                            project_id: widget.project_id,
-                                            project_name: widget.project_name,
-                                            isEmpty: false,
-                                            writing: hwriting.data(),
-                                            writingId: hwriting.id,
-                                            project_owner: widget.project_owner,
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 11,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(5.0),
+                                          context,
+                                          SlideRightRoute(
+                                            page: ReadingScreen(
+                                              data: writing,
+                                              author: widget.project_name,
+                                            ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(30.0),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      elevation: 11,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          hwriting.data()['images'] != null
-                                              ? hwriting.data()['images'] !=
+                                          writing.data()['images'] != null
+                                              ? writing.data()['images'] !=
                                                       'No Image'
                                                   ? Container(
                                                       height: 110,
@@ -434,7 +973,7 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                                           color: footyColor,
                                                         ),
                                                         imageUrl:
-                                                            hwriting.data()[
+                                                            writing.data()[
                                                                 'images'][0],
                                                       ),
                                                     )
@@ -457,7 +996,7 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                                     Container(
                                                       width: size.width * 0.6,
                                                       child: Text(
-                                                        hwriting.data()['name'],
+                                                        writing.data()['name'],
                                                         textScaleFactor: 1,
                                                         overflow: TextOverflow
                                                             .ellipsis,
@@ -472,11 +1011,15 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(width: 10),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
                                                     Text(
-                                                      getDate(hwriting
+                                                      getDate(writing
                                                           .data()['date']
                                                           .seconds),
                                                       textScaleFactor: 1,
@@ -494,578 +1037,12 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                                       ),
                                                     ),
                                                   ],
-                                                ),
-                                                SizedBox(width: 10),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    widget.project_owner ==
-                                                            FirebaseAuth
-                                                                .instance
-                                                                .currentUser
-                                                                .uid
-                                                        ? IconButton(
-                                                            icon: Icon(
-                                                              CupertinoIcons
-                                                                  .rectangle_stack_fill_badge_plus,
-                                                              color: footyColor,
-                                                            ),
-                                                            onPressed: () {
-                                                              showDialog(
-                                                                barrierDismissible:
-                                                                    false,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return AlertDialog(
-                                                                    title: const Text(
-                                                                        'Опубликовать?'),
-                                                                    content:
-                                                                        const Text(
-                                                                            'Хотите ли вы опубликовать эту историю?'),
-                                                                    actions: <
-                                                                        Widget>[
-                                                                      TextButton(
-                                                                        onPressed:
-                                                                            () {
-                                                                          FirebaseFirestore
-                                                                              .instance
-                                                                              .collection('writings')
-                                                                              .doc(hwriting.id)
-                                                                              .set(hwriting.data())
-                                                                              .catchError((error) {
-                                                                            print('MISTAKE HERE');
-                                                                            print(error);
-                                                                            PushNotificationMessage
-                                                                                notification =
-                                                                                PushNotificationMessage(
-                                                                              title: 'Ошибка',
-                                                                              body: 'Неудалось опубликовать историю',
-                                                                            );
-                                                                            showSimpleNotification(
-                                                                              Container(child: Text(notification.body)),
-                                                                              position: NotificationPosition.top,
-                                                                              background: Colors.red,
-                                                                            );
-                                                                          });
-                                                                          FirebaseFirestore
-                                                                              .instance
-                                                                              .collection('hidden_writings')
-                                                                              .doc(hwriting.id)
-                                                                              .delete()
-                                                                              .catchError((error) {
-                                                                            print('MISTAKE HERE');
-                                                                            print(error);
-                                                                            PushNotificationMessage
-                                                                                notification =
-                                                                                PushNotificationMessage(
-                                                                              title: 'Ошибка',
-                                                                              body: 'Неудалось опубликовать историю',
-                                                                            );
-                                                                            showSimpleNotification(
-                                                                              Container(child: Text(notification.body)),
-                                                                              position: NotificationPosition.top,
-                                                                              background: Colors.red,
-                                                                            );
-                                                                          });
-                                                                          setState(
-                                                                              () {
-                                                                            writings.add(hwriting);
-                                                                            hiddenwrs.remove(hwriting);
-                                                                          });
-                                                                          PushNotificationMessage
-                                                                              notification =
-                                                                              PushNotificationMessage(
-                                                                            title:
-                                                                                'Успех',
-                                                                            body:
-                                                                                'История опубликована',
-                                                                          );
-                                                                          showSimpleNotification(
-                                                                            Container(child: Text(notification.body)),
-                                                                            position:
-                                                                                NotificationPosition.top,
-                                                                            background:
-                                                                                footyColor,
-                                                                          );
-                                                                        },
-                                                                        child:
-                                                                            const Text(
-                                                                          'Yes',
-                                                                          style:
-                                                                              TextStyle(color: footyColor),
-                                                                        ),
-                                                                      ),
-                                                                      TextButton(
-                                                                        onPressed:
-                                                                            () =>
-                                                                                Navigator.of(context).pop(false),
-                                                                        child:
-                                                                            const Text(
-                                                                          'No',
-                                                                          style:
-                                                                              TextStyle(color: Colors.red),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
-                                                          )
-                                                        : Container(),
-                                                  ],
                                                 )
                                               ],
                                             ),
                                           ),
-                                          live_editors[hwriting.id] != null
-                                              ? live_editors[hwriting.id]
-                                                          .docs
-                                                          .length !=
-                                                      0
-                                                  ? live_editors[hwriting.id]
-                                                              .docs
-                                                              .length <
-                                                          5
-                                                      ? Container(
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  10),
-                                                          child: Row(
-                                                            children: [
-                                                              for (QueryDocumentSnapshot editor
-                                                                  in live_editors[
-                                                                          hwriting
-                                                                              .id]
-                                                                      .docs)
-                                                                Container(
-                                                                  width: 30,
-                                                                  height: 30,
-                                                                  child:
-                                                                      ClipRRect(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            25.0),
-                                                                    child: editor.data()['photo'] !=
-                                                                            null
-                                                                        ? CachedNetworkImage(
-                                                                            filterQuality:
-                                                                                FilterQuality.none,
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                            placeholder: (context, url) =>
-                                                                                Transform.scale(
-                                                                              scale: 0.8,
-                                                                              child: CircularProgressIndicator(
-                                                                                strokeWidth: 2.0,
-                                                                                backgroundColor: footyColor,
-                                                                                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                              ),
-                                                                            ),
-                                                                            errorWidget: (context, url, error) =>
-                                                                                Icon(
-                                                                              Icons.error,
-                                                                              color: footyColor,
-                                                                            ),
-                                                                            imageUrl:
-                                                                                editor.data()['photo'],
-                                                                          )
-                                                                        : Image
-                                                                            .asset(
-                                                                            'assets/images/User.png',
-                                                                            fit:
-                                                                                BoxFit.cover,
-                                                                          ),
-                                                                  ),
-                                                                )
-                                                            ],
-                                                          ),
-                                                        )
-                                                      : Container(
-                                                          margin:
-                                                              EdgeInsets.all(
-                                                                  10),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                width: 30,
-                                                                height: 30,
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              25.0),
-                                                                  child: live_editors[hwriting.id].docs[0].data()[
-                                                                              'photo'] !=
-                                                                          null
-                                                                      ? CachedNetworkImage(
-                                                                          filterQuality:
-                                                                              FilterQuality.none,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          placeholder: (context, url) =>
-                                                                              Transform.scale(
-                                                                            scale:
-                                                                                0.8,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                              strokeWidth: 2.0,
-                                                                              backgroundColor: footyColor,
-                                                                              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                            ),
-                                                                          ),
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(
-                                                                            Icons.error,
-                                                                            color:
-                                                                                footyColor,
-                                                                          ),
-                                                                          imageUrl: live_editors[hwriting.id]
-                                                                              .docs[0]
-                                                                              .data()['photo'],
-                                                                        )
-                                                                      : Image
-                                                                          .asset(
-                                                                          'assets/images/User.png',
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                width: 30,
-                                                                height: 30,
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              25.0),
-                                                                  child: live_editors[hwriting.id].docs[1].data()[
-                                                                              'photo'] !=
-                                                                          null
-                                                                      ? CachedNetworkImage(
-                                                                          filterQuality:
-                                                                              FilterQuality.none,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          placeholder: (context, url) =>
-                                                                              Transform.scale(
-                                                                            scale:
-                                                                                0.8,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                              strokeWidth: 2.0,
-                                                                              backgroundColor: footyColor,
-                                                                              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                            ),
-                                                                          ),
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(
-                                                                            Icons.error,
-                                                                            color:
-                                                                                footyColor,
-                                                                          ),
-                                                                          imageUrl: live_editors[hwriting.id]
-                                                                              .docs[1]
-                                                                              .data()['photo'],
-                                                                        )
-                                                                      : Image
-                                                                          .asset(
-                                                                          'assets/images/User.png',
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                width: 30,
-                                                                height: 30,
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              25.0),
-                                                                  child: live_editors[hwriting.id].docs[2].data()[
-                                                                              'photo'] !=
-                                                                          null
-                                                                      ? CachedNetworkImage(
-                                                                          filterQuality:
-                                                                              FilterQuality.none,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          placeholder: (context, url) =>
-                                                                              Transform.scale(
-                                                                            scale:
-                                                                                0.8,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                              strokeWidth: 2.0,
-                                                                              backgroundColor: footyColor,
-                                                                              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                            ),
-                                                                          ),
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(
-                                                                            Icons.error,
-                                                                            color:
-                                                                                footyColor,
-                                                                          ),
-                                                                          imageUrl: live_editors[hwriting.id]
-                                                                              .docs[2]
-                                                                              .data()['photo'],
-                                                                        )
-                                                                      : Image
-                                                                          .asset(
-                                                                          'assets/images/User.png',
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                ),
-                                                              ),
-                                                              Container(
-                                                                width: 30,
-                                                                height: 30,
-                                                                child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              25.0),
-                                                                  child: live_editors[hwriting.id].docs[3].data()[
-                                                                              'photo'] !=
-                                                                          null
-                                                                      ? CachedNetworkImage(
-                                                                          filterQuality:
-                                                                              FilterQuality.none,
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                          placeholder: (context, url) =>
-                                                                              Transform.scale(
-                                                                            scale:
-                                                                                0.8,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                              strokeWidth: 2.0,
-                                                                              backgroundColor: footyColor,
-                                                                              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                                                                            ),
-                                                                          ),
-                                                                          errorWidget: (context, url, error) =>
-                                                                              Icon(
-                                                                            Icons.error,
-                                                                            color:
-                                                                                footyColor,
-                                                                          ),
-                                                                          imageUrl: live_editors[hwriting.id]
-                                                                              .docs[3]
-                                                                              .data()['photo'],
-                                                                        )
-                                                                      : Image
-                                                                          .asset(
-                                                                          'assets/images/User.png',
-                                                                          fit: BoxFit
-                                                                              .cover,
-                                                                        ),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                  width: 5),
-                                                              Text(
-                                                                '+ ' +
-                                                                    (live_editors[hwriting.id].docs.length -
-                                                                            4)
-                                                                        .toString(),
-                                                                textScaleFactor:
-                                                                    1,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style: GoogleFonts
-                                                                    .montserrat(
-                                                                  textStyle:
-                                                                      TextStyle(
-                                                                    color:
-                                                                        darkPrimaryColor,
-                                                                    fontSize:
-                                                                        10,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        )
-                                                  : Container()
-                                              : Container(),
                                         ],
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Container(),
-                      Divider(
-                        thickness: 1,
-                        color: darkPrimaryColor,
-                      ),
-                      for (QueryDocumentSnapshot writing in writings)
-                        writings.isNotEmpty
-                            ? Container(
-                                width: size.width * 0.95,
-                                height: writing.data()['images'] != null
-                                    ? writing.data()['images'] != 'No Image'
-                                        ? 200
-                                        : 90
-                                    : 90,
-                                padding: EdgeInsets.all(10),
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                    padding: MaterialStateProperty.all(
-                                        EdgeInsets.zero),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ReadingScreen(
-                                            data: writing,
-                                            author: widget.project_name,
-                                          ),
-                                        ));
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    elevation: 11,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        writing.data()['images'] != null
-                                            ? writing.data()['images'] !=
-                                                    'No Image'
-                                                ? Container(
-                                                    height: 110,
-                                                    width: size.width,
-                                                    child: CachedNetworkImage(
-                                                      fit: BoxFit.cover,
-                                                      filterQuality:
-                                                          FilterQuality.none,
-                                                      height: 110,
-                                                      width: 100,
-                                                      placeholder:
-                                                          (context, url) =>
-                                                              Container(
-                                                        height: 50,
-                                                        width: 50,
-                                                        child: Transform.scale(
-                                                          scale: 0.1,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                            strokeWidth: 2.0,
-                                                            backgroundColor:
-                                                                footyColor,
-                                                            valueColor:
-                                                                AlwaysStoppedAnimation<
-                                                                        Color>(
-                                                                    primaryColor),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      errorWidget: (context,
-                                                              url, error) =>
-                                                          Icon(
-                                                        Icons.error,
-                                                        color: footyColor,
-                                                      ),
-                                                      imageUrl: writing
-                                                          .data()['images'][0],
-                                                    ),
-                                                  )
-                                                : Container()
-                                            : Container(),
-                                        SizedBox(height: 10),
-                                        Container(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Container(
-                                                    width: size.width * 0.6,
-                                                    child: Text(
-                                                      writing.data()['name'],
-                                                      textScaleFactor: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(width: 10),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Text(
-                                                    getDate(writing
-                                                        .data()['date']
-                                                        .seconds),
-                                                    textScaleFactor: 1,
-                                                    maxLines: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
                                     ),
                                   ),
                                 ),

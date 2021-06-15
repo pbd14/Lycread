@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:animate_do/animate_do.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -168,93 +169,97 @@ class _ProjectScreenState extends State<ProjectScreen> {
                           children: [
                             for (var project in projects)
                               projects.length != 0
-                                  ? Container(
-                                      margin: EdgeInsets.all(3),
-                                      child: CupertinoButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {
-                                          setState(() {
-                                            loading = true;
-                                          });
-                                          Navigator.push(
-                                              context,
-                                              SlideRightRoute(
-                                                page: ProjectInfoScreen(
-                                                  id: project.id,
+                                  ? SlideInLeft(
+                                      child: Container(
+                                        margin: EdgeInsets.all(3),
+                                        child: CupertinoButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                            Navigator.push(
+                                                context,
+                                                SlideRightRoute(
+                                                  page: ProjectInfoScreen(
+                                                    id: project.id,
+                                                  ),
+                                                ));
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          },
+                                          child: Container(
+                                            width: size.width * 0.9,
+                                            child: Card(
+                                              elevation: 10,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      project.data()['name'],
+                                                      textScaleFactor: 1,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                            color:
+                                                                darkPrimaryColor,
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      getDate(project
+                                                          .data()['last_update']
+                                                          .millisecondsSinceEpoch),
+                                                      // 'Update: ' +
+                                                      //     DateTime.fromMicrosecondsSinceEpoch(
+                                                      //             projects[index]
+                                                      //                 .data()[
+                                                      //                     'last_update']
+                                                      //                 .microsecondsSinceEpoch)
+                                                      //         .day
+                                                      //         .toString() +
+                                                      //     '.' +
+                                                      //     DateTime.fromMicrosecondsSinceEpoch(
+                                                      //             projects[index]
+                                                      //                 .data()[
+                                                      //                     'last_update']
+                                                      //                 .microsecondsSinceEpoch)
+                                                      //         .month
+                                                      //         .toString() +
+                                                      //     '.' +
+                                                      //     DateTime.fromMicrosecondsSinceEpoch(
+                                                      //             projects[index]
+                                                      //                 .data()[
+                                                      //                     'last_update']
+                                                      //                 .microsecondsSinceEpoch)
+                                                      //         .year
+                                                      //         .toString(),
+                                                      textScaleFactor: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: GoogleFonts
+                                                          .montserrat(
+                                                        textStyle: TextStyle(
+                                                            color:
+                                                                darkPrimaryColor,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ));
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                        },
-                                        child: Container(
-                                          width: size.width * 0.9,
-                                          child: Card(
-                                            elevation: 10,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    project.data()['name'],
-                                                    textScaleFactor: 1,
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                          color:
-                                                              darkPrimaryColor,
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 5),
-                                                  Text(
-                                                    getDate(project
-                                                        .data()['last_update']
-                                                        .millisecondsSinceEpoch),
-                                                    // 'Update: ' +
-                                                    //     DateTime.fromMicrosecondsSinceEpoch(
-                                                    //             projects[index]
-                                                    //                 .data()[
-                                                    //                     'last_update']
-                                                    //                 .microsecondsSinceEpoch)
-                                                    //         .day
-                                                    //         .toString() +
-                                                    //     '.' +
-                                                    //     DateTime.fromMicrosecondsSinceEpoch(
-                                                    //             projects[index]
-                                                    //                 .data()[
-                                                    //                     'last_update']
-                                                    //                 .microsecondsSinceEpoch)
-                                                    //         .month
-                                                    //         .toString() +
-                                                    //     '.' +
-                                                    //     DateTime.fromMicrosecondsSinceEpoch(
-                                                    //             projects[index]
-                                                    //                 .data()[
-                                                    //                     'last_update']
-                                                    //                 .microsecondsSinceEpoch)
-                                                    //         .year
-                                                    //         .toString(),
-                                                    textScaleFactor: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                          color:
-                                                              darkPrimaryColor,
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                  ),
-                                                ],
                                               ),
                                             ),
                                           ),
@@ -318,124 +323,131 @@ class _ProjectScreenState extends State<ProjectScreen> {
                     )
                   : Background(
                       child: SingleChildScrollView(
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(0, size.height * 0.5, 0, 0),
-                          color: Color.fromRGBO(0, 0, 0, 0.01),
-                          padding: EdgeInsets.all(20),
-                          child: ClipRRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(
-                                sigmaX: 6.0,
-                                sigmaY: 6.0,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Откройте океан возможностей',
-                                      textScaleFactor: 1,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                            color: whiteColor,
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      'Попробуйте командное авторство с LycTree',
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      textScaleFactor: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                            color: whiteColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ),
-                                    SizedBox(height: 20),
-                                    Container(
-                                      height: 30,
-                                      child: DefaultTextStyle(
-                                        style: const TextStyle(
-                                          color: primaryColor,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        child: AnimatedTextKit(
-                                          repeatForever: true,
-                                          animatedTexts: [
-                                            RotateAnimatedText(
-                                              'Создавайте проекты',
-                                              textAlign: TextAlign.center,
-                                              textStyle: GoogleFonts.montserrat(
-                                                textStyle: TextStyle(
-                                                    color: whiteColor,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                            RotateAnimatedText(
-                                              'Приглашайте авторов',
-                                              textAlign: TextAlign.center,
-                                              textStyle: GoogleFonts.montserrat(
-                                                textStyle: TextStyle(
-                                                    color: whiteColor,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                            RotateAnimatedText(
-                                              'Развивайте ветки',
-                                              textAlign: TextAlign.center,
-                                              textStyle: GoogleFonts.montserrat(
-                                                textStyle: TextStyle(
-                                                    color: whiteColor,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ],
+                        child: SlideInUp(
+                          child: Container(
+                            margin:
+                                EdgeInsets.fromLTRB(0, size.height * 0.5, 0, 0),
+                            color: Color.fromRGBO(0, 0, 0, 0.01),
+                            padding: EdgeInsets.all(20),
+                            child: ClipRRect(
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 6.0,
+                                  sigmaY: 6.0,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Откройте океан возможностей',
+                                        textScaleFactor: 1,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: whiteColor,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(height: 10),
-                                    Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: RoundedButton(
-                                        width: 0.5,
-                                        ph: 45,
-                                        text: 'Начать',
-                                        press: () {
-                                          setState(() {
-                                            loading = true;
-                                          });
-                                          Navigator.push(
-                                              context,
-                                              SlideRightRoute(
-                                                page: AddProjectScreen(),
-                                              ));
-                                          setState(() {
-                                            loading = false;
-                                          });
-                                        },
-                                        color: footyColor,
-                                        textColor: whiteColor,
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Попробуйте командное авторство с LycTree',
+                                        textAlign: TextAlign.center,
+                                        maxLines: 2,
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: whiteColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w300),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: 50),
-                                  ],
+                                      SizedBox(height: 20),
+                                      Container(
+                                        height: 30,
+                                        child: DefaultTextStyle(
+                                          style: const TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          child: AnimatedTextKit(
+                                            repeatForever: true,
+                                            animatedTexts: [
+                                              RotateAnimatedText(
+                                                'Создавайте проекты',
+                                                textAlign: TextAlign.center,
+                                                textStyle:
+                                                    GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                      color: whiteColor,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                              RotateAnimatedText(
+                                                'Приглашайте авторов',
+                                                textAlign: TextAlign.center,
+                                                textStyle:
+                                                    GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                      color: whiteColor,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                              RotateAnimatedText(
+                                                'Развивайте ветки',
+                                                textAlign: TextAlign.center,
+                                                textStyle:
+                                                    GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                      color: whiteColor,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: RoundedButton(
+                                          width: 0.5,
+                                          ph: 45,
+                                          text: 'Начать',
+                                          press: () {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                            Navigator.push(
+                                                context,
+                                                SlideRightRoute(
+                                                  page: AddProjectScreen(),
+                                                ));
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          },
+                                          color: footyColor,
+                                          textColor: whiteColor,
+                                        ),
+                                      ),
+                                      SizedBox(height: 50),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:animate_do/animate_do.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -471,125 +472,127 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
                     )
                   : Background(
                       child: SingleChildScrollView(
-                        child: Container(
-                          color: Color.fromRGBO(0, 0, 0, 0.01),
-                          margin: EdgeInsets.fromLTRB(0, size.width, 0, 0),
-                          padding: EdgeInsets.all(20),
-                          child: ClipRRect(
-                            child: BackdropFilter(
-                              filter: ui.ImageFilter.blur(
-                                sigmaX: 6.0,
-                                sigmaY: 6.0,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Монетизурйте творчество',
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    textScaleFactor: 1,
-                                    maxLines: 10,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                        color: whiteColor,
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  Text(
-                                    'Показываейте рекламу в ваших историях и получайте деньги. Подробнее здесь',
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    textScaleFactor: 1,
-                                    maxLines: 10,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                        color: whiteColor,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 30,
-                                  ),
-                                  RoundedButton(
-                                    width: 0.3,
-                                    ph: 45,
-                                    text: 'ОК',
-                                    press: () async {
-                                      bool can = true;
-                                      setState(() {
-                                        loading = true;
-                                      });
-                                      FirebaseFirestore.instance
-                                          .collection('users')
-                                          .doc(FirebaseAuth
-                                              .instance.currentUser.uid)
-                                          .update({
-                                        'isMember': true,
-                                        'balance': 0.0,
-                                      }).catchError((error) {
-                                        can = false;
-                                        PushNotificationMessage notification =
-                                            PushNotificationMessage(
-                                          title: 'Ошибка',
-                                          body: 'Неудалось зайти',
-                                        );
-                                        showSimpleNotification(
-                                          Container(
-                                              child: Text(notification.body)),
-                                          position: NotificationPosition.top,
-                                          background: Colors.red,
-                                        );
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                      });
-                                      if (can) {
-                                        DocumentSnapshot doc =
-                                            await FirebaseFirestore.instance
-                                                .collection('users')
-                                                .doc(FirebaseAuth
-                                                    .instance.currentUser.uid)
-                                                .get();
-                                        setState(() {
-                                          user = doc;
-                                          isMem = true;
-                                          loading = false;
-                                        });
-                                      }
-                                    },
-                                    color: whiteColor,
-                                    textColor: darkPrimaryColor,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(
-                                        size.width * 0.05,
-                                        0,
-                                        size.width * 0.05,
-                                        0),
-                                    child: Text(
-                                      'Продолжая вы принимаете все правила монетизации и нашу Политику Конфиденциальности',
+                        child: SlideInUp(
+                          child: Container(
+                            color: Color.fromRGBO(0, 0, 0, 0.01),
+                            margin: EdgeInsets.fromLTRB(0, size.width, 0, 0),
+                            padding: EdgeInsets.all(20),
+                            child: ClipRRect(
+                              child: BackdropFilter(
+                                filter: ui.ImageFilter.blur(
+                                  sigmaX: 6.0,
+                                  sigmaY: 6.0,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Монетизурйте творчество',
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
                                       textScaleFactor: 1,
+                                      maxLines: 10,
                                       style: GoogleFonts.montserrat(
                                         textStyle: TextStyle(
                                           color: whiteColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w100,
+                                          fontSize: 35,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    Text(
+                                      'Показываейте рекламу в ваших историях и получайте деньги. Подробнее здесь',
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      textScaleFactor: 1,
+                                      maxLines: 10,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                          color: whiteColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 30,
+                                    ),
+                                    RoundedButton(
+                                      width: 0.3,
+                                      ph: 45,
+                                      text: 'ОК',
+                                      press: () async {
+                                        bool can = true;
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(FirebaseAuth
+                                                .instance.currentUser.uid)
+                                            .update({
+                                          'isMember': true,
+                                          'balance': 0.0,
+                                        }).catchError((error) {
+                                          can = false;
+                                          PushNotificationMessage notification =
+                                              PushNotificationMessage(
+                                            title: 'Ошибка',
+                                            body: 'Неудалось зайти',
+                                          );
+                                          showSimpleNotification(
+                                            Container(
+                                                child: Text(notification.body)),
+                                            position: NotificationPosition.top,
+                                            background: Colors.red,
+                                          );
+                                          setState(() {
+                                            loading = false;
+                                          });
+                                        });
+                                        if (can) {
+                                          DocumentSnapshot doc =
+                                              await FirebaseFirestore.instance
+                                                  .collection('users')
+                                                  .doc(FirebaseAuth
+                                                      .instance.currentUser.uid)
+                                                  .get();
+                                          setState(() {
+                                            user = doc;
+                                            isMem = true;
+                                            loading = false;
+                                          });
+                                        }
+                                      },
+                                      color: whiteColor,
+                                      textColor: darkPrimaryColor,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(
+                                          size.width * 0.05,
+                                          0,
+                                          size.width * 0.05,
+                                          0),
+                                      child: Text(
+                                        'Продолжая вы принимаете все правила монетизации и нашу Политику Конфиденциальности',
+                                        textScaleFactor: 1,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                            color: whiteColor,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w100,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

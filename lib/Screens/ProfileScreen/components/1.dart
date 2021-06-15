@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -286,108 +287,121 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                 child: Column(
                   children: [
                     SizedBox(height: 55),
-                    Container(
-                      width: size.width * 0.4,
-                      height: size.width * 0.4,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(25.0),
-                        child: FirebaseAuth.instance.currentUser.photoURL !=
-                                null
-                            ? CachedNetworkImage(
-                                filterQuality: FilterQuality.none,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => Transform.scale(
-                                  scale: 0.8,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
-                                    backgroundColor: footyColor,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        primaryColor),
+                    SlideInDown(
+                      child: Container(
+                        width: size.width * 0.4,
+                        height: size.width * 0.4,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(25.0),
+                          child: FirebaseAuth.instance.currentUser.photoURL !=
+                                  null
+                              ? CachedNetworkImage(
+                                  filterQuality: FilterQuality.none,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      Transform.scale(
+                                    scale: 0.8,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.0,
+                                      backgroundColor: footyColor,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          primaryColor),
+                                    ),
                                   ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    Icons.error,
+                                    color: footyColor,
+                                  ),
+                                  imageUrl: FirebaseAuth
+                                      .instance.currentUser.photoURL,
+                                )
+                              : Image.asset(
+                                  'assets/images/User.png',
+                                  fit: BoxFit.cover,
                                 ),
-                                errorWidget: (context, url, error) => Icon(
-                                  Icons.error,
-                                  color: footyColor,
-                                ),
-                                imageUrl:
-                                    FirebaseAuth.instance.currentUser.photoURL,
-                              )
-                            : Image.asset(
-                                'assets/images/User.png',
-                                fit: BoxFit.cover,
-                              ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 50),
                     data.data()['isVerified'] != null
                         ? data.data()['isVerified']
-                            ? Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      data.data()['name'],
-                                      textScaleFactor: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                            color: darkPrimaryColor,
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold),
+                            ? SlideInDown(
+                                child: Center(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        data.data()['name'],
+                                        textScaleFactor: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                              color: darkPrimaryColor,
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Icon(
-                                      CupertinoIcons.checkmark_seal_fill,
-                                      color: footyColor,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : Center(
-                                child: Text(
-                                  FirebaseAuth.instance.currentUser.displayName,
-                                  textScaleFactor: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: TextStyle(
-                                        color: darkPrimaryColor,
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold),
+                                      SizedBox(width: 5),
+                                      Icon(
+                                        CupertinoIcons.checkmark_seal_fill,
+                                        color: footyColor,
+                                      ),
+                                    ],
                                   ),
                                 ),
                               )
-                        : Center(
-                            child: Text(
-                              FirebaseAuth.instance.currentUser.displayName,
-                              textScaleFactor: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                    color: darkPrimaryColor,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold),
+                            : SlideInDown(
+                                child: Center(
+                                  child: Text(
+                                    FirebaseAuth
+                                        .instance.currentUser.displayName,
+                                    textScaleFactor: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                          color: darkPrimaryColor,
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              )
+                        : SlideInDown(
+                            child: Center(
+                              child: Text(
+                                FirebaseAuth.instance.currentUser.displayName,
+                                textScaleFactor: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                      color: darkPrimaryColor,
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
                           ),
                     SizedBox(height: 25),
-                    Center(
-                      child: Text(
-                        data.data()['bio'] != null
-                            ? data.data()['bio']
-                            : 'No Bio',
-                        maxLines: 1000,
-                        textScaleFactor: 1,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              color: darkPrimaryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400),
+                    SlideInDown(
+                      child: Center(
+                        child: Text(
+                          data.data()['bio'] != null
+                              ? data.data()['bio']
+                              : 'No Bio',
+                          maxLines: 1000,
+                          textScaleFactor: 1,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: darkPrimaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400),
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: 25),
-                    Container(
+                    SlideInDown(
+                      child: Container(
                         height: 130,
                         child: GridView.count(
                           physics: new NeverScrollableScrollPhysics(),
@@ -495,17 +509,21 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                               ),
                             ),
                           ],
-                        )),
-                    Center(
-                      child: Text(
-                        writings.length.toString() + ' историй',
-                        textScaleFactor: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
-                              color: primaryColor,
-                              fontSize: 25,
-                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    SlideInDown(
+                      child: Center(
+                        child: Text(
+                          writings.length.toString() + ' историй',
+                          textScaleFactor: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                                color: primaryColor,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ),
@@ -520,205 +538,212 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                             padding: EdgeInsets.only(bottom: 10),
                             itemCount: writings.length,
                             itemBuilder: (BuildContext context, int index) =>
-                                Dismissible(
-                              key: Key(writings[index].id),
-                              background: Container(
-                                child: Icon(
-                                  CupertinoIcons.trash_circle_fill,
-                                  color: whiteColor,
+                                SlideInLeft(
+                              child: Dismissible(
+                                key: Key(writings[index].id),
+                                background: Container(
+                                  child: Icon(
+                                    CupertinoIcons.trash_circle_fill,
+                                    color: whiteColor,
+                                  ),
+                                  color: Colors.red,
                                 ),
-                                color: Colors.red,
-                              ),
-                              onDismissed: (direction) {
-                                setState(() {
-                                  writings.removeAt(index);
-                                });
-                              },
-                              confirmDismiss:
-                                  (DismissDirection direction) async {
-                                return await showDialog(
-                                  barrierDismissible: false,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Удалить?'),
-                                      content: const Text(
-                                          'Хотите ли вы удалить историю'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              FirebaseFirestore.instance
-                                                  .collection('writings')
-                                                  .doc(writings[index].id)
-                                                  .delete()
-                                                  .catchError((error) {
-                                                print('MISTAKE HERE');
-                                                print(error);
-                                                Navigator.of(context)
-                                                    .pop(false);
-                                                PushNotificationMessage
-                                                    notification =
-                                                    PushNotificationMessage(
-                                                  title: 'Ошибка',
-                                                  body:
-                                                      'Неудалось удалить историю',
-                                                );
-                                                showSimpleNotification(
-                                                  Container(
-                                                      child: Text(
-                                                          notification.body)),
-                                                  position:
-                                                      NotificationPosition.top,
-                                                  background: Colors.red,
-                                                );
-                                              });
-                                            });
-                                            Navigator.of(context).pop(true);
-                                          },
-                                          child: const Text(
-                                            'Yes',
-                                            style: TextStyle(color: footyColor),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: const Text(
-                                            'No',
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              child: TextButton(
-                                onPressed: () {
+                                onDismissed: (direction) {
                                   setState(() {
-                                    loading = true;
-                                  });
-                                  Navigator.push(
-                                      context,
-                                      SlideRightRoute(
-                                        page: ReadingScreen(
-                                          data: writings[index],
-                                          author: data.data()['name'],
-                                        ),
-                                      ));
-                                  setState(() {
-                                    loading = false;
+                                    writings.removeAt(index);
                                   });
                                 },
-                                child: Row(
-                                  children: [
-                                    writings[index].data()['images'] !=
-                                            'No Image'
-                                        ? Container(
-                                            width: size.width * 0.2,
-                                            height: size.width * 0.2,
-                                            child: CachedNetworkImage(
-                                              filterQuality: FilterQuality.none,
-                                              height: 100,
-                                              width: 100,
-                                              placeholder: (context, url) =>
-                                                  Transform.scale(
-                                                scale: 0.8,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2.0,
-                                                  backgroundColor: footyColor,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(primaryColor),
-                                                ),
-                                              ),
-                                              imageUrl: writings[index]
-                                                  .data()['images'][0],
+                                confirmDismiss:
+                                    (DismissDirection direction) async {
+                                  return await showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Удалить?'),
+                                        content: const Text(
+                                            'Хотите ли вы удалить историю'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                FirebaseFirestore.instance
+                                                    .collection('writings')
+                                                    .doc(writings[index].id)
+                                                    .delete()
+                                                    .catchError((error) {
+                                                  print('MISTAKE HERE');
+                                                  print(error);
+                                                  Navigator.of(context)
+                                                      .pop(false);
+                                                  PushNotificationMessage
+                                                      notification =
+                                                      PushNotificationMessage(
+                                                    title: 'Ошибка',
+                                                    body:
+                                                        'Неудалось удалить историю',
+                                                  );
+                                                  showSimpleNotification(
+                                                    Container(
+                                                        child: Text(
+                                                            notification.body)),
+                                                    position:
+                                                        NotificationPosition
+                                                            .top,
+                                                    background: Colors.red,
+                                                  );
+                                                });
+                                              });
+                                              Navigator.of(context).pop(true);
+                                            },
+                                            child: const Text(
+                                              'Yes',
+                                              style:
+                                                  TextStyle(color: footyColor),
                                             ),
-                                          )
-                                        : Container(),
-                                    Expanded(
-                                      child: Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      writings[index]
-                                                          .data()['name'],
-                                                      textScaleFactor: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 25,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Text(
-                                                      writings[index].data()[
-                                                                  'reads'] !=
-                                                              null
-                                                          ? 
-                                                              getFnum1(writings[
-                                                                          index]
-                                                                      .data()[
-                                                                  'reads'])
-                                                          : writings[index]
-                                                              .data()['genre'],
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      textScaleFactor: 1,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: const Text(
+                                              'No',
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      loading = true;
+                                    });
+                                    Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                          page: ReadingScreen(
+                                            data: writings[index],
+                                            author: data.data()['name'],
+                                          ),
+                                        ));
+                                    setState(() {
+                                      loading = false;
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      writings[index].data()['images'] !=
+                                              'No Image'
+                                          ? Container(
+                                              width: size.width * 0.2,
+                                              height: size.width * 0.2,
+                                              child: CachedNetworkImage(
+                                                filterQuality:
+                                                    FilterQuality.none,
+                                                height: 100,
+                                                width: 100,
+                                                placeholder: (context, url) =>
+                                                    Transform.scale(
+                                                  scale: 0.8,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    strokeWidth: 2.0,
+                                                    backgroundColor: footyColor,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            primaryColor),
+                                                  ),
                                                 ),
+                                                imageUrl: writings[index]
+                                                    .data()['images'][0],
                                               ),
-                                            ],
+                                            )
+                                          : Container(),
+                                      Expanded(
+                                        child: Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        writings[index]
+                                                            .data()['name'],
+                                                        textScaleFactor: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 25,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      Text(
+                                                        writings[index].data()[
+                                                                    'reads'] !=
+                                                                null
+                                                            ? getFnum1(
+                                                                writings[index]
+                                                                        .data()[
+                                                                    'reads'])
+                                                            : writings[index]
+                                                                    .data()[
+                                                                'genre'],
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        textScaleFactor: 1,
+                                                        style: GoogleFonts
+                                                            .montserrat(
+                                                          textStyle: TextStyle(
+                                                            color: primaryColor,
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                        getDate(writings[index]
-                                            .data()['date']
-                                            .seconds),
-                                        textScaleFactor: 1,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: TextStyle(
-                                            color: primaryColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
+                                      Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                          getDate(writings[index]
+                                              .data()['date']
+                                              .seconds),
+                                          textScaleFactor: 1,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                              color: primaryColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

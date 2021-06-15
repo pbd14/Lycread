@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -175,333 +176,344 @@ class _ActivityScreenState extends State<ActivityScreen> {
                       padding: EdgeInsets.only(bottom: 10),
                       itemCount: results.length,
                       itemBuilder: (BuildContext context, int index) =>
-                          TextButton(
-                        style: ButtonStyle(
-                            padding:
-                                MaterialStateProperty.all(EdgeInsets.zero)),
-                        onPressed: () async {
-                          setState(() {
-                            loading = true;
-                          });
-                          if (results[results.length - 1 - index]['type'] ==
-                              'New follower') {
-                            Navigator.push(
-                              context,
-                              SlideRightRoute(
-                                page: VProfileScreen(
-                                  id: results[results.length - 1 - index]
-                                      ['author'],
-                                ),
-                              ),
-                            );
-                          }
-                          // if (results[results.length - 1 - index]['type'] ==
-                          //     'New comment') {
-                          //   if (results[results.length - 1 - index]['post_id'] !=
-                          //       null) {
-                          //     DocumentSnapshot story = await FirebaseFirestore.instance
-                          //         .collection('writings')
-                          //         .doc(results[results.length - 1 - index]
-                          //             ['post_id'])
-                          //         .get();
-                          //     Navigator.push(
-                          //       context,
-                          //       SlideRightRoute(
-                          //         page: ReadingScreen(
-                          //           data: story,
-                          //           author: story.data()['author'],
-                          //         ),
-                          //       ),
-                          //     );
-                          //   }
-                          // }
-                          // Navigator.push(
-                          //   context,
-                          //   SlideRightRoute(
-                          //     page: ServiceScreen(
-                          //       data: service,
-                          //       serviceId: widget.data['services']
-                          //           .indexOf(service),
-                          //       placeId: widget.data['id'],
-                          //     ),
-                          //   ),
-                          // );
-                          setState(() {
-                            loading = false;
-                          });
-                        },
-                        child: Container(
-                          child: CardW(
-                            bgColor: results[results.length - 1 - index]['seen']
-                                ? whiteColor
-                                : primaryColor,
-                            shadow: !results[results.length - 1 - index]['seen']
-                                ? whiteColor
-                                : primaryColor,
-                            ph: results[results.length - 1 - index]['type'] ==
-                                    'Invitation'
-                                ? 130
-                                : 105,
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 8,
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          results[results.length - 1 - index]
-                                              ['type'],
-                                          textScaleFactor: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: results[results.length -
-                                                      1 -
-                                                      index]['seen']
-                                                  ? primaryColor
-                                                  : whiteColor,
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5,
-                                        ),
-                                        Text(
-                                          results[results.length - 1 - index]
-                                              ['text'],
-                                          textScaleFactor: 1,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: results[results.length -
-                                                      1 -
-                                                      index]['seen']
-                                                  ? primaryColor
-                                                  : whiteColor,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                        ),
-                                        results[results.length - 1 - index]
-                                                    ['type'] ==
-                                                'Invitation'
-                                            ? Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        loading = true;
-                                                      });
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'projects')
-                                                          .doc(results[results
-                                                                          .length -
-                                                                      1 -
-                                                                      index]
-                                                                  ['metadata']
-                                                              ['project_id'])
-                                                          .update({
-                                                        'authors': FieldValue
-                                                            .arrayUnion([
-                                                          FirebaseAuth.instance
-                                                              .currentUser.uid
-                                                        ]),
-                                                      }).catchError((error) {
-                                                        print('MISTAKE HERE');
-                                                        print(error);
-                                                        Navigator.of(context)
-                                                            .pop(false);
-                                                        PushNotificationMessage
-                                                            notification =
-                                                            PushNotificationMessage(
-                                                          title: 'Ошибка',
-                                                          body:
-                                                              'Возникла ошибка',
-                                                        );
-                                                        showSimpleNotification(
-                                                          Container(
-                                                              child: Text(
-                                                                  notification
-                                                                      .body)),
-                                                          position:
-                                                              NotificationPosition
-                                                                  .top,
-                                                          background:
-                                                              Colors.red,
-                                                        );
-                                                      });
-                                                      PushNotificationMessage
-                                                          notification =
-                                                          PushNotificationMessage(
-                                                        title: 'Успех',
-                                                        body:
-                                                            'Вы присоединились',
-                                                      );
-                                                      showSimpleNotification(
-                                                        Container(
-                                                            child: Text(
-                                                                notification
-                                                                    .body)),
-                                                        position:
-                                                            NotificationPosition
-                                                                .top,
-                                                        background: footyColor,
-                                                      );
-                                                      results.remove(results[
-                                                          results.length -
-                                                              1 -
-                                                              index]);
-                                                      FirebaseFirestore.instance
-                                                          .collection('users')
-                                                          .doc(FirebaseAuth
-                                                              .instance
-                                                              .currentUser
-                                                              .uid)
-                                                          .update({
-                                                        'actions': results
-                                                      }).catchError((error) {
-                                                        print('MISTAKE HERE');
-                                                        print(error);
-                                                        Navigator.of(context)
-                                                            .pop(false);
-                                                        PushNotificationMessage
-                                                            notification =
-                                                            PushNotificationMessage(
-                                                          title: 'Ошибка',
-                                                          body:
-                                                              'Возникла ошибка',
-                                                        );
-                                                        showSimpleNotification(
-                                                          Container(
-                                                              child: Text(
-                                                                  notification
-                                                                      .body)),
-                                                          position:
-                                                              NotificationPosition
-                                                                  .top,
-                                                          background:
-                                                              Colors.red,
-                                                        );
-                                                      });
-                                                      setState(() {
-                                                        loading = false;
-                                                      });
-                                                    },
-                                                    child: const Text(
-                                                      'Yes',
-                                                      style: TextStyle(
-                                                          color: footyColor),
-                                                    ),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        loading = true;
-                                                      });
-                                                      results.remove(results[
-                                                          results.length -
-                                                              1 -
-                                                              index]);
-                                                      FirebaseFirestore.instance
-                                                          .collection('users')
-                                                          .doc(FirebaseAuth
-                                                              .instance
-                                                              .currentUser
-                                                              .uid)
-                                                          .update({
-                                                        'actions': results
-                                                      }).catchError((error) {
-                                                        print('MISTAKE HERE');
-                                                        print(error);
-                                                        Navigator.of(context)
-                                                            .pop(false);
-                                                        PushNotificationMessage
-                                                            notification =
-                                                            PushNotificationMessage(
-                                                          title: 'Ошибка',
-                                                          body:
-                                                              'Возникла ошибка',
-                                                        );
-                                                        showSimpleNotification(
-                                                          Container(
-                                                              child: Text(
-                                                                  notification
-                                                                      .body)),
-                                                          position:
-                                                              NotificationPosition
-                                                                  .top,
-                                                          background:
-                                                              Colors.red,
-                                                        );
-                                                      });
-                                                      setState(() {
-                                                        loading = false;
-                                                      });
-                                                    },
-                                                    child: const Text(
-                                                      'No',
-                                                      style: TextStyle(
-                                                          color: Colors.red),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            : Container(),
-                                      ],
-                                    ),
+                          FadeInLeft(
+                        child: TextButton(
+                          style: ButtonStyle(
+                              padding:
+                                  MaterialStateProperty.all(EdgeInsets.zero)),
+                          onPressed: () async {
+                            setState(() {
+                              loading = true;
+                            });
+                            if (results[results.length - 1 - index]['type'] ==
+                                'New follower') {
+                              Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                  page: VProfileScreen(
+                                    id: results[results.length - 1 - index]
+                                        ['author'],
                                   ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                        child: names[results[results.length -
-                                                    1 -
-                                                    index]['author']] !=
-                                                null
-                                            ? CachedNetworkImage(
-                                                filterQuality:
-                                                    FilterQuality.none,
-                                                fit: BoxFit.cover,
-                                                placeholder: (context, url) =>
-                                                    Transform.scale(
-                                                  scale: 0.8,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    strokeWidth: 2.0,
-                                                    backgroundColor: footyColor,
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            primaryColor),
-                                                  ),
-                                                ),
-                                                imageUrl: names[results[
-                                                    results.length -
+                                ),
+                              );
+                            }
+                            // if (results[results.length - 1 - index]['type'] ==
+                            //     'New comment') {
+                            //   if (results[results.length - 1 - index]['post_id'] !=
+                            //       null) {
+                            //     DocumentSnapshot story = await FirebaseFirestore.instance
+                            //         .collection('writings')
+                            //         .doc(results[results.length - 1 - index]
+                            //             ['post_id'])
+                            //         .get();
+                            //     Navigator.push(
+                            //       context,
+                            //       SlideRightRoute(
+                            //         page: ReadingScreen(
+                            //           data: story,
+                            //           author: story.data()['author'],
+                            //         ),
+                            //       ),
+                            //     );
+                            //   }
+                            // }
+                            // Navigator.push(
+                            //   context,
+                            //   SlideRightRoute(
+                            //     page: ServiceScreen(
+                            //       data: service,
+                            //       serviceId: widget.data['services']
+                            //           .indexOf(service),
+                            //       placeId: widget.data['id'],
+                            //     ),
+                            //   ),
+                            // );
+                            setState(() {
+                              loading = false;
+                            });
+                          },
+                          child: Container(
+                            child: CardW(
+                              bgColor: results[results.length - 1 - index]
+                                      ['seen']
+                                  ? whiteColor
+                                  : primaryColor,
+                              shadow: !results[results.length - 1 - index]
+                                      ['seen']
+                                  ? whiteColor
+                                  : primaryColor,
+                              ph: results[results.length - 1 - index]['type'] ==
+                                      'Invitation'
+                                  ? 130
+                                  : 105,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 8,
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            results[results.length - 1 - index]
+                                                ['type'],
+                                            textScaleFactor: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                color: results[results.length -
                                                         1 -
-                                                        index]['author']],
-                                              )
-                                            : Image.asset(
-                                                'assets/images/User.png',
-                                                fit: BoxFit.cover,
+                                                        index]['seen']
+                                                    ? primaryColor
+                                                    : whiteColor,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
                                               ),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 5,
+                                          ),
+                                          Text(
+                                            results[results.length - 1 - index]
+                                                ['text'],
+                                            textScaleFactor: 1,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                color: results[results.length -
+                                                        1 -
+                                                        index]['seen']
+                                                    ? primaryColor
+                                                    : whiteColor,
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            ),
+                                          ),
+                                          results[results.length - 1 - index]
+                                                      ['type'] ==
+                                                  'Invitation'
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          loading = true;
+                                                        });
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'projects')
+                                                            .doc(results[results
+                                                                            .length -
+                                                                        1 -
+                                                                        index]
+                                                                    ['metadata']
+                                                                ['project_id'])
+                                                            .update({
+                                                          'authors': FieldValue
+                                                              .arrayUnion([
+                                                            FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                .uid
+                                                          ]),
+                                                        }).catchError((error) {
+                                                          print('MISTAKE HERE');
+                                                          print(error);
+                                                          Navigator.of(context)
+                                                              .pop(false);
+                                                          PushNotificationMessage
+                                                              notification =
+                                                              PushNotificationMessage(
+                                                            title: 'Ошибка',
+                                                            body:
+                                                                'Возникла ошибка',
+                                                          );
+                                                          showSimpleNotification(
+                                                            Container(
+                                                                child: Text(
+                                                                    notification
+                                                                        .body)),
+                                                            position:
+                                                                NotificationPosition
+                                                                    .top,
+                                                            background:
+                                                                Colors.red,
+                                                          );
+                                                        });
+                                                        PushNotificationMessage
+                                                            notification =
+                                                            PushNotificationMessage(
+                                                          title: 'Успех',
+                                                          body:
+                                                              'Вы присоединились',
+                                                        );
+                                                        showSimpleNotification(
+                                                          Container(
+                                                              child: Text(
+                                                                  notification
+                                                                      .body)),
+                                                          position:
+                                                              NotificationPosition
+                                                                  .top,
+                                                          background:
+                                                              footyColor,
+                                                        );
+                                                        results.remove(results[
+                                                            results.length -
+                                                                1 -
+                                                                index]);
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection('users')
+                                                            .doc(FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                .uid)
+                                                            .update({
+                                                          'actions': results
+                                                        }).catchError((error) {
+                                                          print('MISTAKE HERE');
+                                                          print(error);
+                                                          Navigator.of(context)
+                                                              .pop(false);
+                                                          PushNotificationMessage
+                                                              notification =
+                                                              PushNotificationMessage(
+                                                            title: 'Ошибка',
+                                                            body:
+                                                                'Возникла ошибка',
+                                                          );
+                                                          showSimpleNotification(
+                                                            Container(
+                                                                child: Text(
+                                                                    notification
+                                                                        .body)),
+                                                            position:
+                                                                NotificationPosition
+                                                                    .top,
+                                                            background:
+                                                                Colors.red,
+                                                          );
+                                                        });
+                                                        setState(() {
+                                                          loading = false;
+                                                        });
+                                                      },
+                                                      child: const Text(
+                                                        'Yes',
+                                                        style: TextStyle(
+                                                            color: footyColor),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          loading = true;
+                                                        });
+                                                        results.remove(results[
+                                                            results.length -
+                                                                1 -
+                                                                index]);
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection('users')
+                                                            .doc(FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                .uid)
+                                                            .update({
+                                                          'actions': results
+                                                        }).catchError((error) {
+                                                          print('MISTAKE HERE');
+                                                          print(error);
+                                                          Navigator.of(context)
+                                                              .pop(false);
+                                                          PushNotificationMessage
+                                                              notification =
+                                                              PushNotificationMessage(
+                                                            title: 'Ошибка',
+                                                            body:
+                                                                'Возникла ошибка',
+                                                          );
+                                                          showSimpleNotification(
+                                                            Container(
+                                                                child: Text(
+                                                                    notification
+                                                                        .body)),
+                                                            position:
+                                                                NotificationPosition
+                                                                    .top,
+                                                            background:
+                                                                Colors.red,
+                                                          );
+                                                        });
+                                                        setState(() {
+                                                          loading = false;
+                                                        });
+                                                      },
+                                                      child: const Text(
+                                                        'No',
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              : Container(),
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(width: 15),
-                                ],
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          child: names[results[results.length -
+                                                      1 -
+                                                      index]['author']] !=
+                                                  null
+                                              ? CachedNetworkImage(
+                                                  filterQuality:
+                                                      FilterQuality.none,
+                                                  fit: BoxFit.cover,
+                                                  placeholder: (context, url) =>
+                                                      Transform.scale(
+                                                    scale: 0.8,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      strokeWidth: 2.0,
+                                                      backgroundColor:
+                                                          footyColor,
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              primaryColor),
+                                                    ),
+                                                  ),
+                                                  imageUrl: names[results[
+                                                      results.length -
+                                                          1 -
+                                                          index]['author']],
+                                                )
+                                              : Image.asset(
+                                                  'assets/images/User.png',
+                                                  fit: BoxFit.cover,
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 15),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
