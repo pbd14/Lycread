@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,6 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool codeSent = false;
   bool loading = false;
+  List<Color> colorizeColors = [
+    footyColor,
+    Color.fromRGBO(87, 245, 66, 1.0),
+    Colors.greenAccent,
+    Colors.blue,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -75,14 +82,41 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text(
-                                    'Добро пожаловать',
-                                    textScaleFactor: 1,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
+                                  AnimatedTextKit(
+                                    totalRepeatCount: 1,
+                                    animatedTexts: [
+                                      TyperAnimatedText(
+                                        'Добро пожаловать',
+                                        textStyle: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                            color: primaryColor,
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Container(
+                                    height: 30,
+                                    child: DefaultTextStyle(
+                                      style: const TextStyle(
                                         color: primaryColor,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      child: AnimatedTextKit(
+                                        repeatForever: true,
+                                        animatedTexts: [
+                                          RotateAnimatedText('Станьте автором'),
+                                          RotateAnimatedText(
+                                              'Станьте читателем'),
+                                          RotateAnimatedText(
+                                              'Станьте журналистом'),
+                                          RotateAnimatedText(
+                                              'Станьте блогером'),
+                                        ],
                                       ),
                                     ),
                                   ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -318,7 +319,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                   : Background(
                       child: SingleChildScrollView(
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(0, size.width, 0, 0),
+                          margin: EdgeInsets.fromLTRB(0, size.height * 0.5, 0, 0),
                           color: Color.fromRGBO(0, 0, 0, 0.01),
                           padding: EdgeInsets.all(20),
                           child: ClipRRect(
@@ -337,6 +338,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                       'Откройте океан возможностей',
                                       textScaleFactor: 1,
                                       maxLines: 2,
+                                      textAlign: TextAlign.center,
                                       overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.montserrat(
                                         textStyle: TextStyle(
@@ -347,7 +349,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                     ),
                                     SizedBox(height: 5),
                                     Text(
-                                      'Попробуйте командное авторство с LycHub',
+                                      'Попробуйте командное авторство с LycTree',
+                                      textAlign: TextAlign.center,
                                       maxLines: 2,
                                       textScaleFactor: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -359,39 +362,52 @@ class _ProjectScreenState extends State<ProjectScreen> {
                                       ),
                                     ),
                                     SizedBox(height: 20),
-                                    Text(
-                                      '• Создавайте проекты',
-                                      textScaleFactor: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                            color: whiteColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      '• Приглашайте авторов',
-                                      textScaleFactor: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                            color: whiteColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      '• Развивайте ветки',
-                                      textScaleFactor: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                            color: whiteColor,
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w300),
+                                    Container(
+                                      height: 30,
+                                      child: DefaultTextStyle(
+                                        style: const TextStyle(
+                                          color: primaryColor,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        child: AnimatedTextKit(
+                                          repeatForever: true,
+                                          animatedTexts: [
+                                            RotateAnimatedText(
+                                              'Создавайте проекты',
+                                              textAlign: TextAlign.center,
+                                              textStyle: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                    color: whiteColor,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                            RotateAnimatedText(
+                                              'Приглашайте авторов',
+                                              textAlign: TextAlign.center,
+                                              textStyle: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                    color: whiteColor,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                            RotateAnimatedText(
+                                              'Развивайте ветки',
+                                              textAlign: TextAlign.center,
+                                              textStyle: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                    color: whiteColor,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     SizedBox(height: 10),
