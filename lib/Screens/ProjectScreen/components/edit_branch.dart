@@ -12,6 +12,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../../constants.dart';
 import '../../loading_screen.dart';
 
+// ignore: must_be_immutable
 class EditBranchScreen extends StatefulWidget {
   Map branch;
   String id;
@@ -36,6 +37,12 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
   List names = [];
   final _formKey = GlobalKey<FormState>();
   StreamSubscription<QuerySnapshot> subscription;
+
+  @override
+  void dispose(){
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {

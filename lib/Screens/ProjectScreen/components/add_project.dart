@@ -32,6 +32,12 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   Future<void> prepare() async {}
 
   @override
+  void dispose(){
+    subscription.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     prepare();
     super.initState();
@@ -96,7 +102,6 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                   SizedBox(height: 30),
                                   RoundedTextInput(
                                     validator: (val) {
-                                      String a = 'dcd';
                                       if (names.contains(val.trim())) {
                                         return "Имя уже занято";
                                       }

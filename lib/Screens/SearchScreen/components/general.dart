@@ -9,6 +9,7 @@ import 'package:lycread/widgets/slide_right_route_animation.dart';
 
 import '../../../constants.dart';
 
+// ignore: must_be_immutable
 class SearchScreenG extends StatefulWidget {
   String data;
   SearchScreenG({Key key, this.data}) : super(key: key);

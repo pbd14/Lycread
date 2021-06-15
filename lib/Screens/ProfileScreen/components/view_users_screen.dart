@@ -9,6 +9,7 @@ import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import '../../../constants.dart';
 
+// ignore: must_be_immutable
 class ViewUsersScreen extends StatefulWidget {
   List<dynamic> data;
   String text;

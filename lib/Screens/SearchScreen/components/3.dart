@@ -163,7 +163,6 @@ class _ThirdScreenState extends State<ThirdScreen>
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return loading
         ? LoadingScreen()
         : RefreshIndicator(

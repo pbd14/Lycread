@@ -16,8 +16,10 @@ import '../loading_screen.dart';
 import 'components/branch_writing_screen.dart';
 import 'components/edit_branch.dart';
 
+// ignore: must_be_immutable
 class BranchInfoScreen extends StatefulWidget {
   String id;
+  // ignore: non_constant_identifier_names
   String project_name;
   String project_id;
   String project_owner;

@@ -10,6 +10,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../../constants.dart';
 import '../../loading_screen.dart';
 
+// ignore: must_be_immutable
 class EditProjectScreen extends StatefulWidget {
   String id;
   Map project;
@@ -32,6 +33,12 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
   List names = [];
   final _formKey = GlobalKey<FormState>();
   StreamSubscription<QuerySnapshot> subscription;
+
+  @override
+  void dispose(){
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {

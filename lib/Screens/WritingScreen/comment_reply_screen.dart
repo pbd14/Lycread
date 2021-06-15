@@ -9,6 +9,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
+// ignore: must_be_immutable
 class CommentReplyScreen extends StatefulWidget {
   Map data;
   List all;

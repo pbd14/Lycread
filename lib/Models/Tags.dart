@@ -1,5 +1,6 @@
 import 'package:flutter_tagging/flutter_tagging.dart';
 
+// ignore: must_be_immutable
 class Tag extends Taggable {
   ///
   String name;

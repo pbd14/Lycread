@@ -44,6 +44,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
   }
 
   Future _getImage() async {
+    // ignore: invalid_use_of_visible_for_testing_member
     var picker = await ImagePicker.platform.pickImage(
       source: ImageSource.gallery,
       imageQuality: 0,

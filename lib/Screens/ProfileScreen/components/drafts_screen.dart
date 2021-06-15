@@ -12,6 +12,7 @@ import 'package:overlay_support/overlay_support.dart';
 
 import '../../../constants.dart';
 
+// ignore: must_be_immutable
 class DraftsScreen extends StatefulWidget {
   List<dynamic> data;
   DraftsScreen({Key key, this.data}) : super(key: key);

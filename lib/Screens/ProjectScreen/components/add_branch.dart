@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +12,7 @@ import 'package:overlay_support/overlay_support.dart';
 import '../../../constants.dart';
 import '../../loading_screen.dart';
 
+// ignore: must_be_immutable
 class AddBranchScreen extends StatefulWidget {
   String id;
   AddBranchScreen({
@@ -35,6 +35,12 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
   StreamSubscription<QuerySnapshot> subscription;
 
   Future<void> prepare() async {}
+  
+  @override
+  void dispose(){
+    subscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -102,7 +108,6 @@ class _AddBranchScreenState extends State<AddBranchScreen> {
                                   SizedBox(height: 30),
                                   RoundedTextInput(
                                     validator: (val) {
-                                      String a = 'dcd';
                                       if (names.contains(val.trim())) {
                                         return "Имя уже занято";
                                       }

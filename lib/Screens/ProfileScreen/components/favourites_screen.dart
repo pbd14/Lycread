@@ -8,6 +8,7 @@ import 'package:lycread/widgets/slide_right_route_animation.dart';
 
 import '../../../constants.dart';
 
+// ignore: must_be_immutable
 class FavouritesScreen extends StatefulWidget {
   List<dynamic> data;
   FavouritesScreen({Key key, this.data}) : super(key: key);

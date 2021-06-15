@@ -18,6 +18,7 @@ import '../../constants.dart';
 import '../loading_screen.dart';
 import 'components/add_branch.dart';
 
+// ignore: must_be_immutable
 class ProjectInfoScreen extends StatefulWidget {
   String id;
   ProjectInfoScreen({

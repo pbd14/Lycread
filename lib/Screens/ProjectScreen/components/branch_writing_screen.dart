@@ -25,6 +25,7 @@ import 'package:tuple/tuple.dart';
 
 import '../../loading_screen.dart';
 
+// ignore: must_be_immutable
 class BranchWritingScreen extends StatefulWidget {
   String parentId;
   String parentAuthor;

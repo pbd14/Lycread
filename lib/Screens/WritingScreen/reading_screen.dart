@@ -14,7 +14,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
 import 'package:lycread/Screens/ProjectScreen/project_info_screen.dart';
-import 'package:lycread/Screens/ProjectScreen/project_screen.dart';
 import 'package:lycread/Screens/WritingScreen/comment_reply_screen.dart';
 import 'package:lycread/Screens/WritingScreen/writing_screen.dart';
 import 'package:lycread/Services/ad_service.dart';
