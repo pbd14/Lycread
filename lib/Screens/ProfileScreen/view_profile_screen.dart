@@ -797,10 +797,7 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                                       writings[index].data()[
                                                                   'reads'] !=
                                                               null
-                                                          ? writings[index]
-                                                                      .data()[
-                                                                  'genre'] +
-                                                              ' | ' +
+                                                          ? ' | ' +
                                                               getFnum(writings[
                                                                           index]
                                                                       .data()[

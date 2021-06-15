@@ -302,10 +302,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                                           results[index].data()[
                                                                       'reads'] !=
                                                                   null
-                                                              ? results[index]
-                                                                          .data()[
-                                                                      'genre'] +
-                                                                  ' | ' +
+                                                              ? ' | ' +
                                                                   getFnum1(results[
                                                                               index]
                                                                           .data()[

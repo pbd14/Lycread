@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/SearchScreen/components/1.dart';
 import 'package:lycread/Screens/SearchScreen/components/2.dart';
-import 'package:lycread/Screens/SearchScreen/components/general.dart';
-
+import 'package:lycread/Screens/SearchScreen/components/3.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -14,11 +12,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  bool loading = true;
-  List categs;
+  bool loading = false;
   List<Widget> tbvList = [
     SearchScreen1(),
     SecondScreen(),
+    ThirdScreen(),
   ];
   List<Widget> tabs = [
     Tab(
@@ -41,83 +39,80 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     ),
+    Tab(
+      child: Text(
+        'Проекты',
+        textScaleFactor: 1,
+        style: GoogleFonts.montserrat(
+          textStyle: TextStyle(
+              color: whiteColor, fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+      ),
+    ),
   ];
 
-  Future<void> prepare() async {
-    await FirebaseFirestore.instance
-        .collection('appData')
-        .doc('LycRead')
-        .get()
-        .then((dc) {
-      if (this.mounted) {
-        setState(() {
-          categs = dc.data()['genres'];
-          for (String cat in categs) {
-            tabs.add(
-              Tab(
-                child: Text(
-                  cat,
-                  textScaleFactor: 1,
-                  style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20),
-                  ),
-                ),
-              ),
-            );
-            tbvList.add(
-              SearchScreenG(
-                data: cat,
-              ),
-            );
-          }
-          loading = false;
-        });
-      } else {
-        categs = dc.data()['genres'];
-        for (String cat in categs) {
-          tabs.add(
-            Tab(
-              child: Text(
-                cat,
-                textScaleFactor: 1,
-                style: GoogleFonts.montserrat(
-                  textStyle: TextStyle(
-                      color: whiteColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20),
-                ),
-              ),
-            ),
-          );
-          tbvList.add(
-            SearchScreenG(
-              data: cat,
-            ),
-          );
-        }
-        loading = false;
-      }
-    });
-
-    // DocumentSnapshot dc1 = await FirebaseFirestore.instance
-    //     .collection('users')
-    //     .doc(FirebaseAuth.instance.currentUser.uid)
-    //     .get();
-    // if (this.mounted) {
-    //   setState(() {
-    //     categs = dc.data()['genres'];
-    //   });
-    // } else {
-    //   categs = dc.data()['genres'];
-    // }
-  }
+  // Future<void> prepare() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('appData')
+  //       .doc('LycRead')
+  //       .get()
+  //       .then((dc) {
+  //     if (this.mounted) {
+  //       setState(() {
+  //         categs = dc.data()['genres'];
+  //         for (String cat in categs) {
+  //           tabs.add(
+  //             Tab(
+  //               child: Text(
+  //                 cat,
+  //                 textScaleFactor: 1,
+  //                 style: GoogleFonts.montserrat(
+  //                   textStyle: TextStyle(
+  //                       color: whiteColor,
+  //                       fontWeight: FontWeight.bold,
+  //                       fontSize: 20),
+  //                 ),
+  //               ),
+  //             ),
+  //           );
+  //           tbvList.add(
+  //             SearchScreenG(
+  //               data: cat,
+  //             ),
+  //           );
+  //         }
+  //         loading = false;
+  //       });
+  //     } else {
+  //       categs = dc.data()['genres'];
+  //       for (String cat in categs) {
+  //         tabs.add(
+  //           Tab(
+  //             child: Text(
+  //               cat,
+  //               textScaleFactor: 1,
+  //               style: GoogleFonts.montserrat(
+  //                 textStyle: TextStyle(
+  //                     color: whiteColor,
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 20),
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //         tbvList.add(
+  //           SearchScreenG(
+  //             data: cat,
+  //           ),
+  //         );
+  //       }
+  //       loading = false;
+  //     }
+  //   });
+  // }
 
   @override
   void initState() {
-    prepare();
     super.initState();
   }
 
@@ -127,7 +122,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return loading
         ? LoadingScreen()
         : DefaultTabController(
-            length: categs.length + 2,
+            length: 3,
             child: Scaffold(
               backgroundColor: whiteColor,
               appBar: AppBar(

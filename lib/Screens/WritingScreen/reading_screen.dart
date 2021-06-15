@@ -692,9 +692,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                               ),
                               Text(
                                 widget.data.data()['reads'] != null
-                                    ? widget.data.data()['genre'] +
-                                        ' | ' +
-                                        getFnum(widget.data.data()['reads']) +
+                                    ? getFnum(widget.data.data()['reads']) +
                                         ' | ' +
                                         getDate(
                                             widget.data.data()['date'].seconds)

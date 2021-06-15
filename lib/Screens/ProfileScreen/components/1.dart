@@ -672,10 +672,7 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                                                       writings[index].data()[
                                                                   'reads'] !=
                                                               null
-                                                          ? writings[index]
-                                                                      .data()[
-                                                                  'genre'] +
-                                                              ' | ' +
+                                                          ? 
                                                               getFnum1(writings[
                                                                           index]
                                                                       .data()[

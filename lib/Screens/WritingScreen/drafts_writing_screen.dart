@@ -438,50 +438,6 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                         SizedBox(
                           height: 30,
                         ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(
-                              size.width * 0.2, 0, size.width * 0.2, 0),
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            hint: Text(
-                              category != null ? category : 'Жанры',
-                              textScaleFactor: 1,
-                              style: GoogleFonts.montserrat(
-                                textStyle: TextStyle(
-                                  color: darkPrimaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            items: categs != null
-                                ? categs.map((dynamic value) {
-                                    return new DropdownMenuItem<String>(
-                                      value: value.toString().toUpperCase(),
-                                      child: new Text(
-                                        value,
-                                        textScaleFactor: 1,
-                                      ),
-                                    );
-                                  }).toList()
-                                : [
-                                    new DropdownMenuItem<String>(
-                                      value: '-',
-                                      child: new Text(
-                                        '-',
-                                        textScaleFactor: 1,
-                                      ),
-                                    )
-                                  ],
-                            onChanged: (value) {
-                              setState(() {
-                                category = value;
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
                         // Text(
                         //   'Фотография',
                         //   textScaleFactor: 1,

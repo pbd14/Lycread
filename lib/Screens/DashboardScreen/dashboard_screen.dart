@@ -669,22 +669,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                                                       CrossAxisAlignment.end,
                                                   children: [
                                                     Text(
-                                                      element.data()['genre'],
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      textScaleFactor: 1,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
                                                       getDate(element
                                                           .data()['date']
                                                           .seconds),
