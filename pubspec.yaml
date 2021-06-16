@@ -46,6 +46,9 @@ dependencies:
   animated_text_kit: ^4.2.1
   animate_do: ^2.0.0
   firebase_in_app_messaging: ^0.5.0+6
+  docx_template: ^0.3.1
+  path_provider: ^2.0.2
+  open_file: ^3.2.1
 
 
   # The following adds the Cupertino Icons font to your application.

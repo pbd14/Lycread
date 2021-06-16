@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:docx_template/docx_template.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/models/documents/document.dart';
@@ -21,11 +25,14 @@ import 'package:lycread/widgets/label_button.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/up_button.dart';
+import 'package:open_file/open_file.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class ReadingScreen extends StatefulWidget {
   QueryDocumentSnapshot data;
@@ -1242,6 +1249,82 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                   ),
                                 ),
                               ),
+                            Center(
+                              child: CupertinoButton(
+                                onPressed: () async {
+                                  // Uint8List tempBytes = await FirebaseStorage
+                                  //     .instance
+                                  //     .ref()
+                                  //     .child('template.docx')
+                                  //     .getData();
+                                  // final template = File.fromRawPath(tempBytes);
+
+                                  // final docx = await DocxTemplate.fromBytes(
+                                  //     await template.readAsBytes());
+                                  final data = await rootBundle
+                                      .load('assets/images/template.docx');
+                                  final bytes = data.buffer.asUint8List();
+
+                                  final docx =
+                                      await DocxTemplate.fromBytes(bytes);
+                                  Content content = Content();
+                                  content
+                                    ..add(TextContent(
+                                        "docname", widget.data.data()['name']))
+                                    ..add(
+                                      TextContent(
+                                        "multilineText",
+                                        Document.fromJson(jsonDecode(widget.data
+                                                .data()['rich_text']))
+                                            .toPlainText(),
+                                      ),
+                                    );
+                                  Directory appDocDir =
+                                      await getApplicationDocumentsDirectory();
+                                  String appDocPath = appDocDir.path;
+                                  final file = File(
+                                      appDocPath + widget.data.id + ".docx");
+                                  final d = await docx.generate(content);
+                                  if (d != null) await file.writeAsBytes(d);
+                                  print('YEEAAAAAH');
+                                  print(file.path);
+                                  OpenFile.open(file.path);
+                                },
+                                padding: EdgeInsets.zero,
+                                child: Container(
+                                  width: size.width * 0.5,
+                                  child: Card(
+                                    color: Colors.blue,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            CupertinoIcons.tray_arrow_down,
+                                            size: 23,
+                                            color: whiteColor,
+                                          ),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            'Word file',
+                                            textScaleFactor: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                  color: whiteColor,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w300),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             SizedBox(height: 10),
                             Divider(
                               color: secondColor,
