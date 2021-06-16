@@ -511,7 +511,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           delegate: SliverChildListDelegate(
                             [
                               for (QueryDocumentSnapshot element in results)
-                                JelloIn(
+                                FadeInLeft(
                                   child: Container(
                                     width: size.width * 0.95,
                                     height: element.data()['images'] != null

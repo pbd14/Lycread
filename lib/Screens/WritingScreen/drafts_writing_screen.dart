@@ -556,7 +556,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                         RoundedButton(
                           width: 0.5,
                           ph: 45,
-                          text: 'Добавить',
+                          text: 'Опубликовать',
                           press: () async {
                             for (Tag tt in chosenTags) {
                               writingTags.add(tt.name);

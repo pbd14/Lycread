@@ -15,7 +15,7 @@ import '../../../constants.dart';
 // ignore: must_be_immutable
 class DraftsScreen extends StatefulWidget {
   List<dynamic> data;
-  DraftsScreen({Key key, this.data}) : super(key: key);
+  DraftsScreen({Key key, @required this.data}) : super(key: key);
   @override
   _DraftsScreenState createState() => _DraftsScreenState();
 }
@@ -143,233 +143,265 @@ class _DraftsScreenState extends State<DraftsScreen> {
                 Expanded(
                   child: loading1
                       ? LoadingScreen()
-                      : widget.data.length != 0
-                          ? ListView.builder(
-                              padding: EdgeInsets.only(bottom: 10),
-                              itemCount: widget.data.length,
-                              itemBuilder: (BuildContext context, int index) =>
-                                  Dismissible(
-                                confirmDismiss:
-                                    (DismissDirection direction) async {
-                                  return await showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Удалить?'),
-                                        content: const Text(
-                                            'Хотите ли вы удалить черновик'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                widget.data.remove(widget.data[
-                                                    widget.data.length -
-                                                        1 -
-                                                        index]);
-                                                FirebaseFirestore.instance
-                                                    .collection('users')
-                                                    .doc(FirebaseAuth.instance
-                                                        .currentUser.uid)
-                                                    .update({
-                                                  'drafts': widget.data,
-                                                }).catchError((error) {
-                                                  print('MISTAKE HERE');
-                                                  print(error);
+                      : widget.data != null
+                          ? widget.data.length != 0
+                              ? ListView.builder(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  itemCount: widget.data.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          Dismissible(
+                                    confirmDismiss:
+                                        (DismissDirection direction) async {
+                                      return await showDialog(
+                                        barrierDismissible: false,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Удалить?'),
+                                            content: const Text(
+                                                'Хотите ли вы удалить черновик'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    widget.data.remove(
+                                                        widget.data[
+                                                            widget.data.length -
+                                                                1 -
+                                                                index]);
+                                                    FirebaseFirestore.instance
+                                                        .collection('users')
+                                                        .doc(FirebaseAuth
+                                                            .instance
+                                                            .currentUser
+                                                            .uid)
+                                                        .update({
+                                                      'drafts': widget.data,
+                                                    }).catchError((error) {
+                                                      print('MISTAKE HERE');
+                                                      print(error);
+                                                      Navigator.of(context)
+                                                          .pop(false);
+                                                      PushNotificationMessage
+                                                          notification =
+                                                          PushNotificationMessage(
+                                                        title: 'Ошибка',
+                                                        body:
+                                                            'Неудалось удалить черновик',
+                                                      );
+                                                      showSimpleNotification(
+                                                        Container(
+                                                            child: Text(
+                                                                notification
+                                                                    .body)),
+                                                        position:
+                                                            NotificationPosition
+                                                                .top,
+                                                        background: Colors.red,
+                                                      );
+                                                    });
+                                                  });
                                                   Navigator.of(context)
-                                                      .pop(false);
-                                                  PushNotificationMessage
-                                                      notification =
-                                                      PushNotificationMessage(
-                                                    title: 'Ошибка',
-                                                    body:
-                                                        'Неудалось удалить черновик',
-                                                  );
-                                                  showSimpleNotification(
-                                                    Container(
-                                                        child: Text(
-                                                            notification.body)),
-                                                    position:
-                                                        NotificationPosition
-                                                            .top,
-                                                    background: Colors.red,
-                                                  );
-                                                });
-                                              });
-                                              Navigator.of(context).pop(true);
-                                            },
-                                            child: const Text(
-                                              'Yes',
-                                              style:
-                                                  TextStyle(color: footyColor),
-                                            ),
-                                          ),
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(false);
-                                              },
-                                              child: const Text(
-                                                'No',
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              )),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                key: UniqueKey(),
-                                background: Container(
-                                  child: Icon(
-                                    CupertinoIcons.trash_circle_fill,
-                                    color: whiteColor,
-                                  ),
-                                  color: Colors.red,
-                                ),
-                                child: Container(
-                                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                  child: Card(
-                                    elevation: 10,
-                                    child: TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          loading = true;
-                                        });
-                                        Navigator.push(
-                                            context,
-                                            SlideRightRoute(
-                                              page: DraftsWritingScreen(
-                                                data: widget.data[
-                                                    widget.data.length -
-                                                        1 -
-                                                        index],
-                                              ),
-                                            ));
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                      },
-                                      child: Row(
-                                        children: [
-                                          widget.data[widget.data.length -
-                                                      1 -
-                                                      index]['images'] !=
-                                                  'No Image'
-                                              ? Container(
-                                                  width: size.width * 0.2,
-                                                  height: size.width * 0.2,
-                                                  child: CachedNetworkImage(
-                                                    filterQuality:
-                                                        FilterQuality.none,
-                                                    height: 100,
-                                                    width: 100,
-                                                    placeholder:
-                                                        (context, url) =>
-                                                            Transform.scale(
-                                                      scale: 0.8,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        strokeWidth: 2.0,
-                                                        backgroundColor:
-                                                            footyColor,
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation<
-                                                                    Color>(
-                                                                primaryColor),
-                                                      ),
-                                                    ),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(Icons.error),
-                                                    imageUrl: widget.data[
-                                                        widget.data.length -
-                                                            1 -
-                                                            index]['images'][0],
-                                                  ),
-                                                )
-                                              : Container(),
-                                          Expanded(
-                                            child: Container(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(12.0),
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Column(
-                                                        children: [
-                                                          Text(
-                                                            widget.data[widget
-                                                                    .data
-                                                                    .length -
-                                                                1 -
-                                                                index]['name'] != null ? widget.data[widget
-                                                                    .data
-                                                                    .length -
-                                                                1 -
-                                                                index]['name'] : 'No Name',
-                                                            textScaleFactor: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: GoogleFonts
-                                                                .montserrat(
-                                                              textStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    primaryColor,
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          Text(
-                                                            getDate(widget
-                                                                .data[widget
-                                                                        .data
-                                                                        .length -
-                                                                    1 -
-                                                                    index]['date']
-                                                                .seconds),
-                                                            textScaleFactor: 1,
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            style: GoogleFonts
-                                                                .montserrat(
-                                                              textStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    primaryColor,
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
+                                                      .pop(true);
+                                                },
+                                                child: const Text(
+                                                  'Yes',
+                                                  style: TextStyle(
+                                                      color: footyColor),
                                                 ),
                                               ),
-                                            ),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(false);
+                                                  },
+                                                  child: const Text(
+                                                    'No',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  )),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    key: UniqueKey(),
+                                    background: Container(
+                                      child: Icon(
+                                        CupertinoIcons.trash_circle_fill,
+                                        color: whiteColor,
+                                      ),
+                                      color: Colors.red,
+                                    ),
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                      child: Card(
+                                        elevation: 10,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              loading = true;
+                                            });
+                                            Navigator.push(
+                                                context,
+                                                SlideRightRoute(
+                                                  page: DraftsWritingScreen(
+                                                    data: widget.data[
+                                                        widget.data.length -
+                                                            1 -
+                                                            index],
+                                                  ),
+                                                ));
+                                            setState(() {
+                                              loading = false;
+                                            });
+                                          },
+                                          child: Row(
+                                            children: [
+                                              widget.data[widget.data.length -
+                                                          1 -
+                                                          index]['images'] !=
+                                                      'No Image'
+                                                  ? Container(
+                                                      width: size.width * 0.2,
+                                                      height: size.width * 0.2,
+                                                      child: CachedNetworkImage(
+                                                        filterQuality:
+                                                            FilterQuality.none,
+                                                        height: 100,
+                                                        width: 100,
+                                                        placeholder:
+                                                            (context, url) =>
+                                                                Transform.scale(
+                                                          scale: 0.8,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            strokeWidth: 2.0,
+                                                            backgroundColor:
+                                                                footyColor,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    primaryColor),
+                                                          ),
+                                                        ),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Icon(Icons.error),
+                                                        imageUrl: widget
+                                                            .data[widget
+                                                                .data.length -
+                                                            1 -
+                                                            index]['images'][0],
+                                                      ),
+                                                    )
+                                                  : Container(),
+                                              Expanded(
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            12.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: [
+                                                              Text(
+                                                                widget.data[widget.data.length -
+                                                                                1 -
+                                                                                index]
+                                                                            [
+                                                                            'name'] !=
+                                                                        null
+                                                                    ? widget
+                                                                        .data[widget
+                                                                            .data
+                                                                            .length -
+                                                                        1 -
+                                                                        index]['name']
+                                                                    : 'No Name',
+                                                                textScaleFactor:
+                                                                    1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: GoogleFonts
+                                                                    .montserrat(
+                                                                  textStyle:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        primaryColor,
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Text(
+                                                                getDate(widget
+                                                                    .data[widget
+                                                                            .data
+                                                                            .length -
+                                                                        1 -
+                                                                        index]['date']
+                                                                    .seconds),
+                                                                textScaleFactor:
+                                                                    1,
+                                                                maxLines: 1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style: GoogleFonts
+                                                                    .montserrat(
+                                                                  textStyle:
+                                                                      TextStyle(
+                                                                    color:
+                                                                        primaryColor,
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            )
+                                )
+                              : Center(
+                                  child: Text(
+                                    'Нет черновиков',
+                                    overflow: TextOverflow.ellipsis,
+                                    textScaleFactor: 1,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: lightPrimaryColor,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                  ),
+                                )
                           : Center(
                               child: Text(
                                 'Нет черновиков',

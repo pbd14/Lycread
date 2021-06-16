@@ -259,6 +259,7 @@ class _LoginScreen1State extends State<LoginScreen1> {
                                             'bio': bio,
                                             'actions': [],
                                             'reads': [],
+                                            'drafts': [],
                                             'stats': {},
                                             'recommendations': ['lycread'],
                                             'isMember': false,

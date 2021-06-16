@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {

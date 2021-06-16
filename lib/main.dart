@@ -6,6 +6,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'Services/auth_service.dart';
 import 'constants.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
 // com.example.lycread
 // MD5: 14:D7:85:8C:18:E9:78:89:2E:28:FB:2A:B6:11:35:5D
