@@ -3,11 +3,13 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -27,6 +29,75 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool loading = true;
   int i = 0;
   int j = 0;
+  SharedPreferences prefs;
+  bool needInstr = false;
+
+  void manageInstr() async {
+    prefs = await SharedPreferences.getInstance();
+    needInstr = prefs.getBool('ni_dashboard_screen') ?? true;
+
+    if (needInstr) {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Инструкция'),
+            content: Container(
+              height: 200,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.home,
+                    color: primaryColor,
+                    size: 30,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Лента',
+                    textScaleFactor: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Здесь вы сможете просматривать различные публикации. Просто нажмите на одну из них',
+                    textScaleFactor: 1,
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.montserrat(
+                      textStyle: TextStyle(
+                          color: primaryColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  prefs.setBool('ni_dashboard_screen', false);
+                  return Navigator.of(context).pop(false);
+                },
+                child: const Text(
+                  'Ok',
+                  style: TextStyle(color: footyColor),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   String getFnum(int fnum) {
     String fnum1 = '';
@@ -474,6 +545,7 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void initState() {
     prepare();
+    manageInstr();
     super.initState();
   }
 

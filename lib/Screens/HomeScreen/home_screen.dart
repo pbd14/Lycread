@@ -58,21 +58,26 @@ class _HomeScreenState extends State<HomeScreen> {
       DocumentSnapshot dc = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser.uid)
-          .get();
-      if (!dc.exists) {
-        if (this.mounted) {
-          setState(() {
+          .get()
+          .then((dc) {
+        if (!dc.exists) {
+          print('DONE');
+          if (this.mounted) {
+            setState(() {
+              can = false;
+            });
+          } else {
             can = false;
-          });
-        } else {
-          can = false;
+          }
         }
-      }
+        return dc;
+      });
     }
   }
 
   @override
   void initState() {
+    prepare();
     subscription = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser.uid)
@@ -117,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
-    prepare();
     super.initState();
   }
 

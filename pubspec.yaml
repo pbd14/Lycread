@@ -49,6 +49,7 @@ dependencies:
   docx_template: ^0.3.1
   path_provider: ^2.0.2
   open_file: ^3.2.1
+  intro_slider: ^2.4.3
 
 
   # The following adds the Cupertino Icons font to your application.
