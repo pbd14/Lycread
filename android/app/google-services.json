@@ -1,24 +1,36 @@
 {
   "project_info": {
     "project_number": "131662116631",
+    "firebase_url": "https://lycread-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "lycread",
     "storage_bucket": "lycread.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:131662116631:android:22d16b6ceaaade7f47e952",
+        "mobilesdk_app_id": "1:131662116631:android:c7525daa22bd3b8c47e952",
         "android_client_info": {
-          "package_name": "com.example.lycread"
+          "package_name": "com.app.lycread"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "131662116631-af5tstb4ua4nj72smhqg6cog348i3080.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.lycread",
+            "certificate_hash": "191592fa6dee798988637a595c45758330267433"
+          }
+        },
         {
           "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
+        {
+          "current_key": "AIzaSyC342xS6kRkj9ie8PnQShRlK1zCNDkugR8"
+        },
         {
           "current_key": "AIzaSyA3pNI-g2xjTDfIfwHtpT_NtfHaGcQLihM"
         }
@@ -29,12 +41,120 @@
             {
               "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "131662116631-1ej3ea9gfvm0488fok5k1oos8rv308ds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lycread"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131662116631:android:e91b2ebb89ea168247e952",
+        "android_client_info": {
+          "package_name": "com.example.lycread"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131662116631-dn6o7vakeucj9a951jh0us393nirf7fg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lycread",
+            "certificate_hash": "ec582b172307b0ca759ff8dfc5cdbaa7fbc75544"
+          }
+        },
+        {
+          "client_id": "131662116631-inphiq43rrasjvdaa9jf2rtl749b51tp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lycread",
+            "certificate_hash": "191592fa6dee798988637a595c45758330267433"
+          }
+        },
+        {
+          "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC342xS6kRkj9ie8PnQShRlK1zCNDkugR8"
+        },
+        {
+          "current_key": "AIzaSyA3pNI-g2xjTDfIfwHtpT_NtfHaGcQLihM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "131662116631-1ej3ea9gfvm0488fok5k1oos8rv308ds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lycread"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131662116631:android:134cb488f6839f5047e952",
+        "android_client_info": {
+          "package_name": "com.lycread"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "131662116631-855ncqvn7fb1v1r3cahs7vmfto35uvt9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lycread",
+            "certificate_hash": "ec582b172307b0ca759ff8dfc5cdbaa7fbc75544"
+          }
+        },
+        {
+          "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC342xS6kRkj9ie8PnQShRlK1zCNDkugR8"
+        },
+        {
+          "current_key": "AIzaSyA3pNI-g2xjTDfIfwHtpT_NtfHaGcQLihM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "131662116631-1ej3ea9gfvm0488fok5k1oos8rv308ds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lycread"
+              }
             }
           ]
         }
       }
     }
   ],
-  "admob_app_id": "ca-app-pub-1051793823103334~9693086568",
   "configuration_version": "1"
 }
