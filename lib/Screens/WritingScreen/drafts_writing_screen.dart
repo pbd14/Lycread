@@ -644,18 +644,20 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                           .millisecondsSinceEpoch
                                           .toString();
                                       if (widget.data != null) {
-                                        FirebaseFirestore.instance
-                                            .collection('writings')
-                                            .doc(widget.data['parent']['id'])
-                                            .update({
-                                          'children': FieldValue.arrayUnion([
-                                            {
-                                              'author': FirebaseAuth.instance
-                                                  .currentUser.displayName,
-                                              'id': id,
-                                            }
-                                          ])
-                                        });
+                                        if (widget.data['parent'] != null) {
+                                          FirebaseFirestore.instance
+                                              .collection('writings')
+                                              .doc(widget.data['parent']['id'])
+                                              .update({
+                                            'children': FieldValue.arrayUnion([
+                                              {
+                                                'author': FirebaseAuth.instance
+                                                    .currentUser.displayName,
+                                                'id': id,
+                                              }
+                                            ])
+                                          });
+                                        }
                                       }
                                       FirebaseFirestore.instance
                                           .collection('writings')
