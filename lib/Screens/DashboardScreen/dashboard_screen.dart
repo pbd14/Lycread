@@ -187,13 +187,35 @@ class _DashboardScreenState extends State<DashboardScreen>
         .get();
     if (user.data()['following'] != null &&
         user.data()['following'].length != 0) {
-      QuerySnapshot data = await FirebaseFirestore.instance
-          .collection('writings')
-          .orderBy('date', descending: true)
-          .where('author', whereIn: user.data()['following'])
-          .limit(25)
-          .get();
-      for (QueryDocumentSnapshot wr in data.docs) {
+      List<QueryDocumentSnapshot> writings = [];
+      if (user.data()['following'].length < 10) {
+        QuerySnapshot posts = await FirebaseFirestore.instance
+            .collection('writings')
+            .orderBy('date', descending: true)
+            .where('author', whereIn: user.data()['following'])
+            .limit(25)
+            .get();
+        writings = posts.docs;
+      } else {
+        int max = (25 / user.data()['following'].length).round();
+        for (String userId in user.data()['following']) {
+          QuerySnapshot posts = await FirebaseFirestore.instance
+              .collection('writings')
+              .orderBy('date', descending: true)
+              .where('author', isEqualTo: userId)
+              .get();
+          if (posts.docs.length > max) {
+            for (int i = 0; i <= max; i++) {
+              writings.add(posts.docs[i]);
+            }
+          } else {
+            for (int i = 0; i < posts.docs.length; i++) {
+              writings.add(posts.docs[i]);
+            }
+          }
+        }
+      }
+      for (QueryDocumentSnapshot wr in writings) {
         if (wr.data()['users_read'] != null) {
           if (!wr
               .data()['users_read']
