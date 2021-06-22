@@ -225,7 +225,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                   : primaryColor,
                               ph: results[results.length - 1 - index]['type'] ==
                                       'Invitation'
-                                  ? 130
+                                  ? 150
                                   : 105,
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -240,6 +240,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                                 ['type'],
                                             textScaleFactor: 1,
                                             overflow: TextOverflow.ellipsis,
+                                            maxLines: 2,
                                             style: GoogleFonts.montserrat(
                                               textStyle: TextStyle(
                                                 color: results[results.length -

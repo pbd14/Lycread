@@ -386,18 +386,23 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        widget.data.data()['name'],
-                                        textScaleFactor: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: TextStyle(
-                                              color: darkPrimaryColor,
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.bold),
+                                      Container(
+                                        width: size.width * 0.6,
+                                        child: Text(
+                                          widget.data.data()['name'],
+                                          textScaleFactor: 1,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: darkPrimaryColor,
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                       ),
-                                      SizedBox(width: 5),
+                                      SizedBox(width: 10),
                                       Icon(
                                         CupertinoIcons.checkmark_seal_fill,
                                         color: footyColor,
@@ -405,32 +410,41 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                                     ],
                                   ),
                                 )
-                              : Center(
-                                  child: Text(
-                                    widget.data.data()['name'],
-                                    textScaleFactor: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                          color: darkPrimaryColor,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold),
+                              : Container(
+                                  width: size.width * 0.8,
+                                  child: Center(
+                                    child: Text(
+                                      widget.data.data()['name'],
+                                      textScaleFactor: 1,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: darkPrimaryColor,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                   ),
                                 )
-                          : Center(
-                              child: Text(
-                                widget.data.data()['name'],
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
+                          : Container(
+                            width: size.width * 0.8,
+                            child: Center(
+                                child: Text(
+                                  widget.data.data()['name'],
+                                  textScaleFactor: 1,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
-                            ),
+                          ),
                       SizedBox(height: 25),
                       Center(
                         child: Text(

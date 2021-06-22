@@ -327,15 +327,20 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        data.data()['name'],
-                                        textScaleFactor: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: TextStyle(
-                                              color: darkPrimaryColor,
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.bold),
+                                      Container(
+                                        width: size.width * 0.6,
+                                        child: Text(
+                                          data.data()['name'],
+                                          textScaleFactor: 1,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.montserrat(
+                                            textStyle: TextStyle(
+                                                color: darkPrimaryColor,
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                       ),
                                       SizedBox(width: 5),
@@ -348,32 +353,41 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                                 ),
                               )
                             : SlideInDown(
-                                child: Center(
-                                  child: Text(
-                                    FirebaseAuth
-                                        .instance.currentUser.displayName,
-                                    textScaleFactor: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.montserrat(
-                                      textStyle: TextStyle(
-                                          color: darkPrimaryColor,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold),
+                                child: Container(
+                                  width: size.width * 0.8,
+                                  child: Center(
+                                    child: Text(
+                                      FirebaseAuth
+                                          .instance.currentUser.displayName,
+                                      textScaleFactor: 1,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: TextStyle(
+                                            color: darkPrimaryColor,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                   ),
                                 ),
                               )
                         : SlideInDown(
-                            child: Center(
-                              child: Text(
-                                FirebaseAuth.instance.currentUser.displayName,
-                                textScaleFactor: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.montserrat(
-                                  textStyle: TextStyle(
-                                      color: darkPrimaryColor,
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold),
+                            child: Container(
+                              width: size.width * 0.8,
+                              child: Center(
+                                child: Text(
+                                  FirebaseAuth.instance.currentUser.displayName,
+                                  textScaleFactor: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                        color: darkPrimaryColor,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ),
