@@ -362,14 +362,15 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
                                       loading = true;
                                     });
                                     Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ReadingScreen(
-                                            data: wr,
-                                            author: FirebaseAuth.instance
-                                                .currentUser.displayName,
-                                          ),
-                                        ));
+                                      context,
+                                      SlideRightRoute(
+                                        page: ReadingScreen(
+                                          data: wr,
+                                          author: FirebaseAuth
+                                              .instance.currentUser.displayName,
+                                        ),
+                                      ),
+                                    );
                                     setState(() {
                                       loading = false;
                                     });

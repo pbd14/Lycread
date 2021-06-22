@@ -17,7 +17,9 @@ import 'package:intro_slider/intro_slider.dart';
 import 'package:intro_slider/slide_object.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Models/Tags.dart';
+import 'package:lycread/Screens/HomeScreen/home_screen.dart';
 import 'package:lycread/widgets/rounded_button.dart';
+import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:lycread/widgets/text_field_container.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,16 +159,18 @@ class _WritingScreenState extends State<WritingScreen> {
 
   String getFnum(int fnum) {
     String fnum1 = '';
-    if (fnum > 999999) {
-      double numb = fnum / 1000000;
-      fnum1 = numb.toStringAsFixed(1) + 'M';
-    } else if (fnum > 999) {
-      double numb = fnum / 1000;
-      fnum1 = numb.toStringAsFixed(1) + 'K';
-    } else {
-      fnum1 = fnum.toString();
+    if (fnum != null) {
+      if (fnum > 999999) {
+        double numb = fnum / 1000000;
+        fnum1 = numb.toStringAsFixed(1) + 'M';
+      } else if (fnum > 999) {
+        double numb = fnum / 1000;
+        fnum1 = numb.toStringAsFixed(1) + 'K';
+      } else {
+        fnum1 = fnum.toString();
+      }
+      return fnum1;
     }
-    return fnum1;
   }
 
   Future _getImage() async {
@@ -1419,7 +1423,7 @@ class _WritingScreenState extends State<WritingScreen> {
                                   configureSuggestion: (tag) {
                                     return SuggestionConfiguration(
                                       title: Text(tag.name),
-                                      subtitle: Text(getFnum(tag.number)),
+                                      subtitle: Text(getFnum(tag.number)!= null ?getFnum(tag.number)  : 'Нет тегов'),
                                       additionWidget: Chip(
                                         avatar: Icon(
                                           Icons.add_circle,
@@ -1815,6 +1819,12 @@ class _WritingScreenState extends State<WritingScreen> {
                                           text = 'Text';
                                           loading = false;
                                         });
+                                        Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: HomeScreen(),
+                                          ),
+                                        );
                                       }
                                     } else {
                                       setState(() {
