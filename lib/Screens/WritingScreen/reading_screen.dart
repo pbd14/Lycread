@@ -61,6 +61,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   Map photos = {};
   BannerAd bannerAd;
   QuerySnapshot childLinks;
+  TextEditingController controller = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -1344,6 +1345,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       children: [
                                         Expanded(
                                           child: TextFormField(
+                                            controller: controller,
                                             cursorColor: secondColor,
                                             maxLines: null,
                                             style:
@@ -1461,6 +1463,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 background: footyColor,
                                               );
                                               setState(() {
+                                                controller.clear();
                                                 commentText = '';
                                               });
                                             }
