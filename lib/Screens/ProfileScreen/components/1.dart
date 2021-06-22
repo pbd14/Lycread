@@ -23,10 +23,7 @@ class VProfileScreen1 extends StatefulWidget {
   _VPlaceScreen1State createState() => _VPlaceScreen1State();
 }
 
-class _VPlaceScreen1State extends State<VProfileScreen1>
-    with AutomaticKeepAliveClientMixin<VProfileScreen1> {
-  @override
-  bool get wantKeepAlive => true;
+class _VPlaceScreen1State extends State<VProfileScreen1> {
   String name;
   bool loading = true;
   DocumentSnapshot data;
@@ -618,133 +615,242 @@ class _VPlaceScreen1State extends State<VProfileScreen1>
                                   );
                                 },
                                 child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    Navigator.push(
-                                        context,
-                                        SlideRightRoute(
-                                          page: ReadingScreen(
-                                            data: writings[index],
-                                            author: data.data()['name'],
-                                          ),
-                                        ));
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      writings[index].data()['images'] !=
-                                              'No Image'
-                                          ? Container(
-                                              width: size.width * 0.2,
-                                              height: size.width * 0.2,
-                                              child: CachedNetworkImage(
-                                                filterQuality:
-                                                    FilterQuality.none,
-                                                height: 100,
-                                                width: 100,
-                                                placeholder: (context, url) =>
-                                                    Transform.scale(
-                                                  scale: 0.8,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    strokeWidth: 2.0,
-                                                    backgroundColor: footyColor,
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation<
-                                                                Color>(
-                                                            primaryColor),
-                                                  ),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: ReadingScreen(
+                                              data: writings[index],
+                                              author: data.data()['name'],
+                                            ),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: size.width * 0.95,
+                                      height: writings[index]
+                                                  .data()['images'] !=
+                                              null
+                                          ? writings[index].data()['images'] !=
+                                                  'No Image'
+                                              ? 290
+                                              : 100
+                                          : 100,
+                                      padding: EdgeInsets.all(10),
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                            padding: MaterialStateProperty.all(
+                                                EdgeInsets.zero)),
+                                        onPressed: () {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          Navigator.push(
+                                              context,
+                                              SlideRightRoute(
+                                                page: ReadingScreen(
+                                                  data: writings[index],
+                                                  author: writings[index]
+                                                                  .data()[
+                                                              'project_name'] !=
+                                                          null
+                                                      ? writings[index].data()[
+                                                          'project_name']
+                                                      : FirebaseAuth
+                                                          .instance
+                                                          .currentUser
+                                                          .displayName,
                                                 ),
-                                                imageUrl: writings[index]
-                                                    .data()['images'][0],
-                                              ),
-                                            )
-                                          : Container(),
-                                      Expanded(
-                                        child: Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        writings[index]
-                                                            .data()['name'],
-                                                        textScaleFactor: 1,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle: TextStyle(
-                                                            color: primaryColor,
-                                                            fontSize: 25,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 10,
-                                                      ),
-                                                      Text(
-                                                        writings[index].data()[
-                                                                    'reads'] !=
-                                                                null
-                                                            ? getFnum1(
-                                                                writings[index]
-                                                                        .data()[
-                                                                    'reads'])
-                                                            : writings[index]
+                                              ));
+                                          setState(() {
+                                            loading = false;
+                                          });
+                                        },
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(30.0),
+                                          ),
+                                          clipBehavior: Clip.antiAlias,
+                                          elevation: 11,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              writings[index]
+                                                          .data()['images'] !=
+                                                      null
+                                                  ? writings[index].data()[
+                                                              'images'] !=
+                                                          'No Image'
+                                                      ? Container(
+                                                          height: 200,
+                                                          width: size.width,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            fit: BoxFit.cover,
+                                                            filterQuality:
+                                                                FilterQuality
+                                                                    .none,
+                                                            height: 100,
+                                                            width: 100,
+                                                            placeholder:
+                                                                (context,
+                                                                        url) =>
+                                                                    Container(
+                                                              height: 50,
+                                                              width: 50,
+                                                              child: Transform
+                                                                  .scale(
+                                                                scale: 0.1,
+                                                                child:
+                                                                    CircularProgressIndicator(
+                                                                  strokeWidth:
+                                                                      2.0,
+                                                                  backgroundColor:
+                                                                      footyColor,
+                                                                  valueColor: AlwaysStoppedAnimation<
+                                                                          Color>(
+                                                                      primaryColor),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    Icon(
+                                                              Icons.error,
+                                                              color: footyColor,
+                                                            ),
+                                                            imageUrl: writings[
+                                                                        index]
                                                                     .data()[
-                                                                'genre'],
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        textScaleFactor: 1,
-                                                        style: GoogleFonts
-                                                            .montserrat(
-                                                          textStyle: TextStyle(
-                                                            color: primaryColor,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.w300,
+                                                                'images'][0],
+                                                          ),
+                                                        )
+                                                      : Container()
+                                                  : Container(),
+                                              SizedBox(height: 10),
+                                              Container(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          width:
+                                                              size.width * 0.6,
+                                                          child: Text(
+                                                            writings[index]
+                                                                .data()['name'],
+                                                            textScaleFactor: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .montserrat(
+                                                              textStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    primaryColor,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          writings[index].data()[
+                                                                      'project_name'] !=
+                                                                  null
+                                                              ? writings[index]
+                                                                      .data()[
+                                                                  'project_name']
+                                                              : FirebaseAuth
+                                                                          .instance
+                                                                          .currentUser
+                                                                          .displayName !=
+                                                                      null
+                                                                  ? FirebaseAuth
+                                                                      .instance
+                                                                      .currentUser
+                                                                      .displayName
+                                                                  : 'Loading',
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          textScaleFactor: 1,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        Text(
+                                                          getDate(writings[
+                                                                  index]
+                                                              .data()['date']
+                                                              .seconds),
+                                                          textScaleFactor: 1,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle:
+                                                                TextStyle(
+                                                              color:
+                                                                  primaryColor,
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Text(
-                                          getDate(writings[index]
-                                              .data()['date']
-                                              .seconds),
-                                          textScaleFactor: 1,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: primaryColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    )),
                               ),
                             ),
                           )

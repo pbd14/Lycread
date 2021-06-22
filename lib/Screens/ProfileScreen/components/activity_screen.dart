@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Models/PushNotificationMessage.dart';
 import 'package:lycread/Screens/ProfileScreen/view_profile_screen.dart';
+import 'package:lycread/Screens/WritingScreen/reading_screen.dart';
 import 'package:lycread/Screens/loading_screen.dart';
 import 'package:lycread/widgets/card.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
 import 'package:overlay_support/overlay_support.dart';
-
 import '../../../constants.dart';
 
 class ActivityScreen extends StatefulWidget {
@@ -22,6 +21,9 @@ class ActivityScreen extends StatefulWidget {
 }
 
 class _ActivityScreenState extends State<ActivityScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
   List results = [];
   List results1 = [];
   List update = [];
@@ -104,7 +106,18 @@ class _ActivityScreenState extends State<ActivityScreen> {
         .doc(FirebaseAuth.instance.currentUser.uid)
         .update({
       'actions': update,
+    }).catchError((error) {
+      PushNotificationMessage notification = PushNotificationMessage(
+        title: 'Fail',
+        body: 'Failed to update activity',
+      );
+      showSimpleNotification(
+        Container(child: Text(notification.body)),
+        position: NotificationPosition.top,
+        background: Colors.red,
+      );
     });
+    ;
   }
 
   @override
@@ -155,22 +168,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
               // ),
               body: Column(
                 children: [
-                  SizedBox(height: 20),
-                  // Center(
-                  //   child: Text(
-                  //     'Новыe события',
-                  //     overflow: TextOverflow.ellipsis,
-                  //     textScaleFactor: 1,
-                  //     style: GoogleFonts.montserrat(
-                  //       textStyle: TextStyle(
-                  //         color: primaryColor,
-                  //         fontSize: 20,
-                  //         fontWeight: FontWeight.w400,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 30),
                   Expanded(
                     child: ListView.builder(
                       padding: EdgeInsets.only(bottom: 10),
@@ -197,37 +195,20 @@ class _ActivityScreenState extends State<ActivityScreen> {
                                 ),
                               );
                             }
-                            // if (results[results.length - 1 - index]['type'] ==
-                            //     'New comment') {
-                            //   if (results[results.length - 1 - index]['post_id'] !=
-                            //       null) {
-                            //     DocumentSnapshot story = await FirebaseFirestore.instance
-                            //         .collection('writings')
-                            //         .doc(results[results.length - 1 - index]
-                            //             ['post_id'])
-                            //         .get();
-                            //     Navigator.push(
-                            //       context,
-                            //       SlideRightRoute(
-                            //         page: ReadingScreen(
-                            //           data: story,
-                            //           author: story.data()['author'],
-                            //         ),
-                            //       ),
-                            //     );
-                            //   }
-                            // }
-                            // Navigator.push(
-                            //   context,
-                            //   SlideRightRoute(
-                            //     page: ServiceScreen(
-                            //       data: service,
-                            //       serviceId: widget.data['services']
-                            //           .indexOf(service),
-                            //       placeId: widget.data['id'],
-                            //     ),
-                            //   ),
-                            // );
+                            if (results[results.length - 1 - index]['type'] ==
+                                'New comment') {
+                              Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                  page: ReadingScreen(
+                                    id: results[results.length - 1 - index]
+                                        ['post_id'],
+                                    author: results[results.length - 1 - index]
+                                        ['author'],
+                                  ),
+                                ),
+                              );
+                            }
                             setState(() {
                               loading = false;
                             });

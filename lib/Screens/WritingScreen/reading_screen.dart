@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:docx_template/docx_template.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/models/documents/document.dart';
@@ -37,7 +35,9 @@ import 'package:flutter/services.dart' show rootBundle;
 class ReadingScreen extends StatefulWidget {
   QueryDocumentSnapshot data;
   String author;
-  ReadingScreen({Key key, this.data, this.author}) : super(key: key);
+  String id;
+  ReadingScreen({Key key, this.data, this.author, this.id: null})
+      : super(key: key);
   @override
   _ReadingScreenState createState() => _ReadingScreenState();
 }
@@ -242,13 +242,18 @@ class _ReadingScreenState extends State<ReadingScreen> {
   }
 
   Future<void> prepare() async {
+    if (widget.id != null) {
+      QuerySnapshot datas = await FirebaseFirestore.instance
+          .collection('writings')
+          .where('id', isEqualTo: widget.id)
+          .get();
+      widget.data = datas.docs.first;
+    }
     if (widget.data.data()['children'] != null &&
         widget.data.data()['children'].length != 0) {
       for (Map m in widget.data.data()['children']) {
         ids.add(m['id']);
       }
-      print('HERE');
-      print(ids);
       QuerySnapshot middleChildLnks = await FirebaseFirestore.instance
           .collection('writings')
           .where('id', whereIn: ids)
@@ -263,11 +268,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         childLinks = middleChildLnks;
       }
     }
-  }
 
-  @override
-  void initState() {
-    prepare();
     if (widget.data.data()['rich_text'] != null) {
       var myJSON = jsonDecode(widget.data.data()['rich_text']);
       _controller = QuillController(
@@ -347,6 +348,11 @@ class _ReadingScreenState extends State<ReadingScreen> {
         }
       }
     });
+  }
+
+  @override
+  void initState() {
+    prepare();
     super.initState();
   }
 
@@ -1286,8 +1292,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                       appDocPath + widget.data.id + ".docx");
                                   final d = await docx.generate(content);
                                   if (d != null) await file.writeAsBytes(d);
-                                  print('YEEAAAAAH');
-                                  print(file.path);
                                   OpenFile.open(file.path);
                                 },
                                 padding: EdgeInsets.zero,
@@ -1391,7 +1395,6 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                         .instance
                                                         .currentUser
                                                         .uid,
-                                                    'replies': [],
                                                   }
                                                 ])
                                               }).catchError((error) {

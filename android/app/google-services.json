@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "131662116631-dqf3inar0jum4v7i3okmjm3hc705spl2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.lycread",
+            "certificate_hash": "4d1d6562444709344141ef91b041026555dca267"
+          }
+        },
+        {
           "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -62,19 +70,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "131662116631-dn6o7vakeucj9a951jh0us393nirf7fg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.lycread",
-            "certificate_hash": "ec582b172307b0ca759ff8dfc5cdbaa7fbc75544"
-          }
-        },
-        {
           "client_id": "131662116631-inphiq43rrasjvdaa9jf2rtl749b51tp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.lycread",
             "certificate_hash": "191592fa6dee798988637a595c45758330267433"
+          }
+        },
+        {
+          "client_id": "131662116631-jo5m2d9rsn0vcot5efhkfc2vge1i41c3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lycread",
+            "certificate_hash": "4d1d6562444709344141ef91b041026555dca267"
           }
         },
         {
