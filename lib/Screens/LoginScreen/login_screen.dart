@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lycread/Services/auth_service.dart';
@@ -217,14 +218,61 @@ class _LoginScreenState extends State<LoginScreen> {
                                         0,
                                         size.width * 0.05,
                                         0),
-                                    child: Text(
-                                      'Продолжая вы принимаете все правила пользования приложением и нашу Политику Конфиденциальности',
-                                      textScaleFactor: 1,
-                                      style: GoogleFonts.montserrat(
-                                        textStyle: TextStyle(
-                                          color: primaryColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w100,
+                                    child: CupertinoButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        showDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Правила Пользования'),
+                                              content: SingleChildScrollView(
+                                                child: Container(
+                                                    child: Center(
+                                                  child: Text(
+                                                    policy,
+                                                    textScaleFactor: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1000,
+                                                    style:
+                                                        GoogleFonts.montserrat(
+                                                      textStyle: TextStyle(
+                                                          color: primaryColor,
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                )),
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.of(context)
+                                                          .pop(false),
+                                                  child: const Text(
+                                                    'Отменить',
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Text(
+                                        'Продолжая вы принимаете все правила пользования приложением и нашу Политику Конфиденциальности',
+                                        textScaleFactor: 1,
+                                        style: GoogleFonts.montserrat(
+                                          textStyle: TextStyle(
+                                            color: darkPrimaryColor,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w100,
+                                          ),
                                         ),
                                       ),
                                     ),

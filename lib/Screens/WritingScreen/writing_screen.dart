@@ -1991,14 +1991,59 @@ class _WritingScreenState extends State<WritingScreen> {
                               Container(
                                 padding: EdgeInsets.fromLTRB(
                                     size.width * 0.05, 0, size.width * 0.05, 0),
-                                child: Text(
-                                  'Контент должен соответствовать всем правилам приложения. Вы как автор несете ответственность за выполнение всех условий',
-                                  textScaleFactor: 1,
-                                  style: GoogleFonts.montserrat(
-                                    textStyle: TextStyle(
-                                      color: primaryColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w100,
+                                child: CupertinoButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title:
+                                              const Text('Правила Пользования'),
+                                          content: SingleChildScrollView(
+                                            child: Container(
+                                                child: Center(
+                                              child: Text(
+                                                policy,
+                                                textScaleFactor: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1000,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                      color: primaryColor,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                ),
+                                              ),
+                                            )),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: const Text(
+                                                'Отменить',
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  padding: EdgeInsets.zero,
+                                  child: Text(
+                                    'Контент должен соответствовать всем правилам приложения. Вы как автор несете ответственность за выполнение всех условий',
+                                    textScaleFactor: 1,
+                                    style: GoogleFonts.montserrat(
+                                      textStyle: TextStyle(
+                                        color: primaryColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w100,
+                                      ),
                                     ),
                                   ),
                                 ),
