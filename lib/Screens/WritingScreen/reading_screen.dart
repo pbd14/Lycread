@@ -1124,6 +1124,36 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                           Tuple2<double, double>(3, 3),
                                           BoxDecoration(),
                                         ),
+                                        h1: DefaultTextBlockStyle(
+                                            TextStyle(
+                                              fontSize: 38,
+                                              color: primaryColor,
+                                              height: 1.15,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                            const Tuple2(16, 0),
+                                            const Tuple2(0, 0),
+                                            null),
+                                        h2: DefaultTextBlockStyle(
+                                            TextStyle(
+                                              fontSize: 33,
+                                              color: primaryColor,
+                                              height: 1.15,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                            const Tuple2(8, 0),
+                                            const Tuple2(0, 0),
+                                            null),
+                                        h3: DefaultTextBlockStyle(
+                                            TextStyle(
+                                              fontSize: 28,
+                                              color: primaryColor,
+                                              height: 1.25,
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                            const Tuple2(8, 0),
+                                            const Tuple2(0, 0),
+                                            null),
                                         // h1: DefaultTextBlockStyle(
                                         //   TextStyle(color: secondColor),
                                         //   Tuple2<double, double>(5, 5),

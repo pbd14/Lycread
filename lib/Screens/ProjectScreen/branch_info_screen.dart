@@ -281,7 +281,9 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                       ),
                       FadeInDown(
                         child: Text(
-                          branch.data()['bio'],
+                          branch.data()['bio'] != null
+                              ? branch.data()['bio']
+                              : 'No bio',
                           textScaleFactor: 1,
                           maxLines: 5,
                           overflow: TextOverflow.ellipsis,

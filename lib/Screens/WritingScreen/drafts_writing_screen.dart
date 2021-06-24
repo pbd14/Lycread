@@ -257,7 +257,10 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                               initialValue: widget.data['name'],
                               // maxLength: length != null ? length : double.infinity.toInt(),
                               maxLength: 30,
-                              style: TextStyle(color: primaryColor),
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 30,
+                              ),
                               validator: (val) =>
                                   val.length > 1 ? null : 'Минимум 2 символов',
                               keyboardType: TextInputType.text,
@@ -268,7 +271,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                                   border: OutlineInputBorder(
                                       borderSide: BorderSide.none),
                                   hintText: "Название",
-                                  hintStyle: TextStyle(fontSize: 20)),
+                                  hintStyle: TextStyle(fontSize: 30)),
                             ),
                           ),
                         ),
@@ -329,17 +332,47 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                               placeholder: 'Text',
                               customStyles: DefaultStyles(
                                 placeHolder: DefaultTextBlockStyle(
-                                  TextStyle(color: lightPrimaryColor),
+                                  TextStyle(color: lightPrimaryColor, fontSize: 20,),
                                   Tuple2<double, double>(10, 10),
                                   Tuple2<double, double>(3, 3),
                                   BoxDecoration(),
                                 ),
                                 paragraph: DefaultTextBlockStyle(
-                                  TextStyle(color: primaryColor),
+                                  TextStyle(color: primaryColor, fontSize: 20,),
                                   Tuple2<double, double>(10, 10),
                                   Tuple2<double, double>(3, 3),
                                   BoxDecoration(),
                                 ),
+                                h1: DefaultTextBlockStyle(
+                                          TextStyle(
+                                            fontSize: 38,
+                                            color: primaryColor,
+                                            height: 1.15,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                          const Tuple2(16, 0),
+                                          const Tuple2(0, 0),
+                                          null),
+                                      h2: DefaultTextBlockStyle(
+                                          TextStyle(
+                                            fontSize: 33,
+                                            color: primaryColor,
+                                            height: 1.15,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                          const Tuple2(8, 0),
+                                          const Tuple2(0, 0),
+                                          null),
+                                      h3: DefaultTextBlockStyle(
+                                          TextStyle(
+                                            fontSize: 28,
+                                            color: primaryColor,
+                                            height: 1.25,
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                          const Tuple2(8, 0),
+                                          const Tuple2(0, 0),
+                                          null),
                                 // h1: DefaultTextBlockStyle(
                                 //   TextStyle(color: secondColor),
                                 //   Tuple2<double, double>(5, 5),
