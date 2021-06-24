@@ -93,12 +93,35 @@ class _ActivityScreenState extends State<ActivityScreen> {
       }
     }
 
+    // if (qs.data()['actions'].length >= 30) {
+    //   for (int i = 1; i <= 30; i++) {
+    //     if (qs.data()['actions'][qs.data()['actions'].length - i]['seen']) {
+    //       update.add(qs.data()['actions'][qs.data()['actions'].length - i]);
+    //     } else {
+    //       qs.data()['actions'][qs.data()['actions'].length - i] = true;
+    //       update.add(qs.data()['actions'][qs.data()['actions'].length - i]);
+    //     }
+    //   }
+    // } else {
+    //   for (var i in qs.data()['actions']) {
+    //     if (i['seen']) {
+    //       update.add(i);
+    //     } else {
+    //       i['seen'] = true;
+    //       update.add(i);
+    //     }
+    //   }
+    // }
+
     for (var i in qs.data()['actions']) {
-      if (i['seen']) {
-        update.add(i);
-      } else {
-        i['seen'] = true;
-        update.add(i);
+      int difference = Timestamp.now().seconds - i['date'].seconds;
+      if (difference < 2592000) {
+        if (i['seen']) {
+          update.add(i);
+        } else {
+          i['seen'] = true;
+          update.add(i);
+        }
       }
     }
     FirebaseFirestore.instance

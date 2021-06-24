@@ -446,18 +446,21 @@ class _VPlaceScreenState extends State<VProfileScreen> {
                               ),
                           ),
                       SizedBox(height: 25),
-                      Center(
-                        child: Text(
-                          widget.data.data()['bio'] != null
-                              ? widget.data.data()['bio']
-                              : 'No Bio',
-                          maxLines: 1000,
-                          textScaleFactor: 1,
-                          style: GoogleFonts.montserrat(
-                            textStyle: TextStyle(
-                                color: darkPrimaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400),
+                      Container(
+                        width: size.width * 0.7,
+                        child: Center(
+                          child: Text(
+                            widget.data.data()['bio'] != null
+                                ? widget.data.data()['bio']
+                                : 'No Bio',
+                            maxLines: 1000,
+                            textScaleFactor: 1,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: darkPrimaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400),
+                            ),
                           ),
                         ),
                       ),

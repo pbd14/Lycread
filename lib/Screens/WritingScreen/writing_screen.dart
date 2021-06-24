@@ -144,6 +144,17 @@ class _WritingScreenState extends State<WritingScreen> {
     for (var tag in dc.data()['tags']) {
       tempTags.add(Tag(name: tag, number: dc.data()['tags_num'][tag]));
     }
+    _controller.addListener(() {
+      if (_controller.document.toPlainText().trim().isNotEmpty) {
+        if (_controller.document.toPlainText().characters.length != 0) {
+          prefs.setString('draft', _controller.document.toPlainText());
+        } else {
+          prefs.setString('draft', 'Text');
+        }
+      } else {
+        prefs.setString('draft', 'Text');
+      }
+    });
     if (this.mounted) {
       setState(() {
         user = dcuser;
@@ -195,20 +206,6 @@ class _WritingScreenState extends State<WritingScreen> {
     manageInstr();
     prepare();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    if (_controller.document.toPlainText().trim().isNotEmpty) {
-      if (_controller.document.toPlainText().characters.length != 0) {
-        prefs.setString('draft', _controller.document.toPlainText());
-      } else {
-        prefs.setString('draft', 'Text');
-      }
-    } else {
-      prefs.setString('draft', 'Text');
-    }
-    super.dispose();
   }
 
   @override

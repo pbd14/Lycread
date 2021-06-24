@@ -394,18 +394,21 @@ class _VPlaceScreen1State extends State<VProfileScreen1> {
                           ),
                     SizedBox(height: 25),
                     SlideInDown(
-                      child: Center(
-                        child: Text(
-                          data.data()['bio'] != null
-                              ? data.data()['bio']
-                              : 'No Bio',
-                          maxLines: 1000,
-                          textScaleFactor: 1,
-                          style: GoogleFonts.montserrat(
-                            textStyle: TextStyle(
-                                color: darkPrimaryColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400),
+                      child: Container(
+                        width: size.width * 0.7,
+                        child: Center(
+                          child: Text(
+                            data.data()['bio'] != null
+                                ? data.data()['bio']
+                                : 'No Bio',
+                            maxLines: 1000,
+                            textScaleFactor: 1,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                  color: darkPrimaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w400),
+                            ),
                           ),
                         ),
                       ),
