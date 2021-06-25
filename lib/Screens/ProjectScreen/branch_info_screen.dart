@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -187,7 +186,9 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
 
   @override
   void dispose() {
-    writingSubscription.cancel();
+    if (writingSubscription != null) {
+      writingSubscription.cancel();
+    }
     subscription.cancel();
     super.dispose();
   }
@@ -237,23 +238,124 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
               actions: [
                 widget.project_owner == FirebaseAuth.instance.currentUser.uid
                     ? IconButton(
-                        color: whiteColor,
+                        color: Colors.red,
                         icon: Icon(
-                          CupertinoIcons.pencil,
+                          CupertinoIcons.trash,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            SlideRightRoute(
-                              page: EditBranchScreen(
-                                  project_id: widget.project_id,
-                                  branch: branch.data(),
-                                  id: branch.id),
-                            ),
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Удалить?'),
+                                content: Text('Хотите ли вы удалить ветку?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('projects')
+                                            .doc(widget.project_id)
+                                            .update({
+                                          'branches': FieldValue.arrayRemove(
+                                              [branch.id]),
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('writings')
+                                            .where('branch_id',
+                                                isEqualTo: branch.id)
+                                            .get()
+                                            .then((value) {
+                                          for (QueryDocumentSnapshot element
+                                              in value.docs) {
+                                            FirebaseFirestore.instance
+                                                .collection('writings')
+                                                .doc(element.id)
+                                                .delete();
+                                          }
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('hidden_writings')
+                                            .where('branch_id',
+                                                isEqualTo: branch.id)
+                                            .get()
+                                            .then((value) {
+                                          for (QueryDocumentSnapshot element
+                                              in value.docs) {
+                                            FirebaseFirestore.instance
+                                                .collection('hidden_writings')
+                                                .doc(element.id)
+                                                .delete();
+                                          }
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('branches')
+                                            .doc(branch.id)
+                                            .delete()
+                                            .catchError((error) {
+                                          print('MISTAKE HERE');
+                                          print(error);
+                                          Navigator.of(context).pop(false);
+                                          PushNotificationMessage notification =
+                                              PushNotificationMessage(
+                                            title: 'Ошибка',
+                                            body: 'Неудалось удалить ветку',
+                                          );
+                                          showSimpleNotification(
+                                            Container(
+                                                child: Text(notification.body)),
+                                            position: NotificationPosition.top,
+                                            background: Colors.red,
+                                          );
+                                        });
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                        Navigator.of(context).pop(true);
+                                        Navigator.pop(context);
+                                    },
+                                    child: const Text(
+                                      'Yes',
+                                      style: TextStyle(color: footyColor),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text(
+                                      'No',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                       )
-                    : Container(),
+                    : widget.project_owner ==
+                            FirebaseAuth.instance.currentUser.uid
+                        ? IconButton(
+                            color: whiteColor,
+                            icon: Icon(
+                              CupertinoIcons.pencil,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                  page: EditBranchScreen(
+                                      project_id: widget.project_id,
+                                      branch: branch.data(),
+                                      id: branch.id),
+                                ),
+                              );
+                            },
+                          )
+                        : Container(),
               ],
             ),
             body: RefreshIndicator(
@@ -600,6 +702,7 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                                                               position: NotificationPosition.top,
                                                                               background: footyColor,
                                                                             );
+                                                                            Navigator.of(context).pop(true);
                                                                           },
                                                                           child:
                                                                               const Text(

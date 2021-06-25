@@ -199,6 +199,212 @@ class _ProjectInfoScreenState extends State<ProjectInfoScreen> {
                   project.data()['owner'] ==
                           FirebaseAuth.instance.currentUser.uid
                       ? IconButton(
+                          color: Colors.red,
+                          icon: Icon(
+                            CupertinoIcons.trash,
+                          ),
+                          onPressed: () {
+                            bool can = false;
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Удалить?'),
+                                  content: Container(
+                                    height: size.height * 0.2,
+                                    child: Column(
+                                      children: [
+                                        Text('Хотите ли вы удалить проект?'),
+                                        RoundedTextInput(
+                                          validator: (val) {
+                                            if (val.trim() !=
+                                                project.data()['name']) {
+                                              return "Напишите правильно";
+                                            }
+                                          },
+                                          hintText: project.data()['name'],
+                                          type: TextInputType.text,
+                                          onChanged: (value) {
+                                            if (value.trim() ==
+                                                project.data()['name']) {
+                                              can = true;
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        if (can) {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          FirebaseFirestore.instance
+                                              .collection('projects')
+                                              .doc(project.id)
+                                              .delete()
+                                              .catchError((error) {
+                                            print('MISTAKE HERE');
+                                            print(error);
+                                            Navigator.of(context).pop(false);
+                                            PushNotificationMessage
+                                                notification =
+                                                PushNotificationMessage(
+                                              title: 'Ошибка',
+                                              body: 'Неудалось удалить проект',
+                                            );
+                                            showSimpleNotification(
+                                              Container(
+                                                  child:
+                                                      Text(notification.body)),
+                                              position:
+                                                  NotificationPosition.top,
+                                              background: Colors.red,
+                                            );
+                                          });
+                                          FirebaseFirestore.instance
+                                              .collection('branches')
+                                              .where('project_id',
+                                                  isEqualTo: widget.id)
+                                              .get()
+                                              .then((value) {
+                                            for (QueryDocumentSnapshot element
+                                                in value.docs) {
+                                              FirebaseFirestore.instance
+                                                  .collection('branches')
+                                                  .doc(element.id)
+                                                  .delete();
+                                            }
+                                          });
+                                          FirebaseFirestore.instance
+                                              .collection('writings')
+                                              .where('project_id',
+                                                  isEqualTo: widget.id)
+                                              .get()
+                                              .then((value) {
+                                            for (QueryDocumentSnapshot element
+                                                in value.docs) {
+                                              FirebaseFirestore.instance
+                                                  .collection('writings')
+                                                  .doc(element.id)
+                                                  .delete();
+                                            }
+                                          });
+                                          FirebaseFirestore.instance
+                                              .collection('hidden_writings')
+                                              .where('project_id',
+                                                  isEqualTo: widget.id)
+                                              .get()
+                                              .then((value) {
+                                            for (QueryDocumentSnapshot element
+                                                in value.docs) {
+                                              FirebaseFirestore.instance
+                                                  .collection('hidden_writings')
+                                                  .doc(element.id)
+                                                  .delete();
+                                            }
+                                          });
+                                          setState(() {
+                                            loading = false;
+                                          });
+                                          Navigator.of(context).pop(true);
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Yes',
+                                        style: TextStyle(color: footyColor),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text(
+                                        'No',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        )
+                      : IconButton(
+                          color: Colors.red,
+                          icon: Icon(
+                            CupertinoIcons.square_arrow_left,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Покинуть проект?'),
+                                  content: const Text(
+                                      'Хотите ли вы покинуть проект?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          loading = true;
+                                        });
+                                        FirebaseFirestore.instance
+                                            .collection('projects')
+                                            .doc(project.id)
+                                            .update({
+                                          'authors': FieldValue.arrayRemove([
+                                            FirebaseAuth
+                                                .instance.currentUser.uid
+                                          ])
+                                        }).catchError((error) {
+                                          print('MISTAKE HERE');
+                                          print(error);
+                                          Navigator.of(context).pop(false);
+                                          PushNotificationMessage notification =
+                                              PushNotificationMessage(
+                                            title: 'Ошибка',
+                                            body: 'Неудалось покинуть проект',
+                                          );
+                                          showSimpleNotification(
+                                            Container(
+                                                child: Text(notification.body)),
+                                            position: NotificationPosition.top,
+                                            background: Colors.red,
+                                          );
+                                        });
+                                        setState(() {
+                                          loading = false;
+                                        });
+                                        Navigator.of(context).pop(true);
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text(
+                                        'Yes',
+                                        style: TextStyle(color: footyColor),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: const Text(
+                                        'No',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                  project.data()['owner'] ==
+                          FirebaseAuth.instance.currentUser.uid
+                      ? IconButton(
                           color: whiteColor,
                           icon: Icon(
                             CupertinoIcons.pencil,
