@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
+// ignore: unused_import
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 
 // ignore: must_be_immutable
@@ -55,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
           canCancel: false);
     }
     if (FirebaseAuth.instance.currentUser != null) {
+      // ignore: unused_local_variable
       DocumentSnapshot dc = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser.uid)

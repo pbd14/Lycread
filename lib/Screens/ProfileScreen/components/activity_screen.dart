@@ -22,6 +22,7 @@ class ActivityScreen extends StatefulWidget {
 
 class _ActivityScreenState extends State<ActivityScreen> {
   @override
+  // ignore: override_on_non_overriding_member
   bool get wantKeepAlive => true;
 
   List results = [];
@@ -140,7 +141,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
         background: Colors.red,
       );
     });
-    ;
+    
   }
 
   @override
