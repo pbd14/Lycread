@@ -1,16 +1,27 @@
 import 'dart:io';
 
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdService {
   Future<InitializationStatus> initialization;
   AdService(this.initialization);
 
-  String get bannerAdUnitId => Platform.isAndroid
-      ? 
-      'ca-app-pub-3940256099942544/6300978111'
-      // 'ca-app-pub-1051793823103334/7146335347'
-      : 'ca-app-pub-3940256099942544/2934735716';
+  // RemoteConfig remoteConfig = RemoteConfig.instance;
+
+  String get bannerAdUnitId {
+    // remoteConfig.fetchAndActivate();
+    // print('ADKRN');
+    // print(remoteConfig.getString('android_banner_ad'));
+    return Platform.isAndroid
+        ?
+        // remoteConfig.getString('android_banner_ad')
+        'ca-app-pub-3940256099942544/6300978111'
+        // 'ca-app-pub-1051793823103334/7146335347'
+        :
+        // remoteConfig.getString('ios_banner_ad');
+        'ca-app-pub-3940256099942544/2934735716';
+  }
 
   AdListener get adListener => _adListener;
 

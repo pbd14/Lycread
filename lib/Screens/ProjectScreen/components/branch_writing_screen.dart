@@ -568,7 +568,7 @@ class _BranchWritingScreenState extends State<BranchWritingScreen> {
                         //     : Container(),
 
                         Container(
-                          height: 110,
+                          height: 120,
                           child: TextFieldContainer(
                             child: TextFormField(
                               // maxLength: length != null ? length : double.infinity.toInt(),

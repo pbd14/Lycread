@@ -231,7 +231,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
         .collection('users')
         .doc(widget.data.data()['author'])
         .update({
-      'balance': FieldValue.increment(1.0),
+      'balance': FieldValue.increment(0.0005),
       'membershipLogs': FieldValue.arrayUnion([
         {
           'date': DateTime.now().toString(),

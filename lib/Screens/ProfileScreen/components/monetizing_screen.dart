@@ -251,6 +251,26 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
                         padding: EdgeInsets.all(10),
                         child: Column(
                           children: [
+                            Card(
+                              elevation: 10,
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Text(
+                                  'Монетизация находится в тестовом режиме. Ваш баланс сохранится после окончания тестов',
+                                  overflow: TextOverflow.ellipsis,
+                                  textScaleFactor: 1,
+                                  maxLines: 5,
+                                  textAlign: TextAlign.start,
+                                  style: GoogleFonts.montserrat(
+                                    textStyle: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                             Text(
                               'Баланс',
                               overflow: TextOverflow.ellipsis,

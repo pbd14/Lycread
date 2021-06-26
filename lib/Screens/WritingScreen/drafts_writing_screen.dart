@@ -251,7 +251,7 @@ class _DraftsWritingScreenState extends State<DraftsWritingScreen> {
                             : Container(),
                         SizedBox(height: 20),
                         Container(
-                          height: 110,
+                          height: 120,
                           child: TextFieldContainer(
                             child: TextFormField(
                               initialValue: widget.data['name'],
