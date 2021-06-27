@@ -21,6 +21,7 @@ class AdService {
         :
         // remoteConfig.getString('ios_banner_ad');
         'ca-app-pub-3940256099942544/2934735716';
+        // 'ca-app-pub-1051793823103334/9772498683';
   }
 
   AdListener get adListener => _adListener;

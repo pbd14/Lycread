@@ -298,17 +298,17 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            RoundedButton(
-                              width: 0.4,
-                              ph: 45,
-                              text: 'Вывод',
-                              press: () async {},
-                              color: darkPrimaryColor,
-                              textColor: whiteColor,
-                            ),
+                            // SizedBox(
+                            //   height: 10,
+                            // ),
+                            // RoundedButton(
+                            //   width: 0.4,
+                            //   ph: 45,
+                            //   text: 'Вывод',
+                            //   press: () async {},
+                            //   color: darkPrimaryColor,
+                            //   textColor: whiteColor,
+                            // ),
                             SizedBox(height: 50),
                             Text(
                               'Монетизация',
