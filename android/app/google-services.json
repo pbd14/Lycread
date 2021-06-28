@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "131662116631-aauheuqcdt16vlb0j1udkrap4sqmtr1a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.lycread",
+            "certificate_hash": "316e5108d19b64da6bb9653bad74733124313ff4"
+          }
+        },
+        {
           "client_id": "131662116631-af5tstb4ua4nj72smhqg6cog348i3080.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -83,53 +91,6 @@
           "android_info": {
             "package_name": "com.example.lycread",
             "certificate_hash": "4d1d6562444709344141ef91b041026555dca267"
-          }
-        },
-        {
-          "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC342xS6kRkj9ie8PnQShRlK1zCNDkugR8"
-        },
-        {
-          "current_key": "AIzaSyA3pNI-g2xjTDfIfwHtpT_NtfHaGcQLihM"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "131662116631-18d9va86eqv9sa2ulqhk5jci773m4qjv.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "131662116631-1ej3ea9gfvm0488fok5k1oos8rv308ds.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.lycread"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:131662116631:android:134cb488f6839f5047e952",
-        "android_client_info": {
-          "package_name": "com.lycread"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "131662116631-855ncqvn7fb1v1r3cahs7vmfto35uvt9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.lycread",
-            "certificate_hash": "ec582b172307b0ca759ff8dfc5cdbaa7fbc75544"
           }
         },
         {
