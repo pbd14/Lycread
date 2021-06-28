@@ -256,7 +256,7 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
                               child: Padding(
                                 padding: EdgeInsets.all(10),
                                 child: Text(
-                                  'Монетизация находится в тестовом режиме. Ваш баланс сохранится после окончания тестов',
+                                  'Монетизация находится в тестовом режиме. Ваш баланс НЕ сохранится после окончания тестов',
                                   overflow: TextOverflow.ellipsis,
                                   textScaleFactor: 1,
                                   maxLines: 5,
@@ -396,94 +396,88 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
                                     });
                                   },
                                   child: Card(
-                                    color: colorWrData[wr.id],
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30.0),
                                     ),
                                     clipBehavior: Clip.antiAlias,
                                     elevation: 11,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          child: Row(
+                                    child: Container(
+                                      height: 100,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Center(
+                                            child: Container(
+                                              width: size.width * 0.4,
+                                              child: Text(
+                                                wr.data()['name'],
+                                                textScaleFactor: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
-                                              Center(
-                                                child: Container(
-                                                  width: size.width * 0.6,
-                                                  child: Text(
-                                                    wr.data()['name'],
-                                                    textScaleFactor: 1,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style:
-                                                        GoogleFonts.montserrat(
-                                                      textStyle: TextStyle(
-                                                        color: primaryColor,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
+                                              Text(
+                                                getFnum1(
+                                                    wrData[wr.id].toDouble()),
+                                                textScaleFactor: 1,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: [
-                                                    Text(
-                                                      getFnum1(wrData[wr.id]
-                                                          .toDouble()),
-                                                      textScaleFactor: 1,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      getDate(wr
-                                                          .data()['date']
-                                                          .seconds),
-                                                      textScaleFactor: 1,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                          color: primaryColor,
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                              SizedBox(height: 5),
+                                              Text(
+                                                getDate(
+                                                    wr.data()['date'].seconds),
+                                                textScaleFactor: 1,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: primaryColor,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                              )
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Container(
+                                              margin: EdgeInsets.zero,
+                                              height: 100,
+                                              width: 70,
+                                              color: colorWrData[wr.id],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
