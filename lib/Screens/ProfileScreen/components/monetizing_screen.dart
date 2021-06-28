@@ -140,7 +140,7 @@ class _MonetizingScreenState extends State<MonetizingScreen> {
         wrData[log['wr_id']] = log['sum'];
       }
       colorWrData[log['wr_id']] = Color.fromRGBO(_random.nextInt(256),
-          _random.nextInt(256), _random.nextInt(256), 0.5);
+          _random.nextInt(256), _random.nextInt(256), 1.0);
 
       DateTime mDate = DateTime.parse(log['date']);
       DateTime dDate = DateTime(mDate.year, mDate.month, mDate.day);
