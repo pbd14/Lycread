@@ -7,11 +7,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intro_slider/intro_slider.dart';
+import 'package:intro_slider/slide_object.dart';
 import 'package:lycread/Screens/ProjectScreen/components/add_project.dart';
 import 'package:lycread/Screens/ProjectScreen/components/background.dart';
 import 'package:lycread/Screens/ProjectScreen/project_info_screen.dart';
 import 'package:lycread/widgets/rounded_button.dart';
 import 'package:lycread/widgets/slide_right_route_animation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../constants.dart';
 import '../loading_screen.dart';
 
@@ -24,6 +27,36 @@ class _ProjectScreenState extends State<ProjectScreen> {
   Size size;
   bool loading = true;
   List projects = [];
+  SharedPreferences prefs;
+  List<Slide> slides = [
+    Slide(
+      title: "Проекты",
+      description: "Проекты позволяют писать на общие темы командам авторов",
+      pathImage: "assets/images/project_instr1.png",
+      backgroundColor: primaryColor,
+    ),
+    Slide(
+      title: "Авторы",
+      description:
+          "У каждого проекта есть несколько авторов, которые могут изменять и писать истории. Но только владелец может добавлять авторов и публиковать истории.",
+      pathImage: "assets/images/project_instr2.png",
+      backgroundColor: primaryColor,
+    ),
+    Slide(
+      title: "Ветки",
+      description:
+          "Проекты состоят из веток, которые отвечают за специфические темы",
+      pathImage: "assets/images/project_instr3.png",
+      backgroundColor: primaryColor,
+    ),
+    Slide(
+      title: "Истории",
+      description:
+          "В каждой ветке есть истории(опубликованные и неопубликованные).",
+      pathImage: "assets/images/project_instr4.png",
+      backgroundColor: primaryColor,
+    ),
+  ];
 
   String getDate(int millisecondsSinceEpoch) {
     String date = '';
@@ -111,6 +144,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
   @override
   void initState() {
     prepare();
+    manageInstr();
     super.initState();
   }
 
@@ -123,6 +157,19 @@ class _ProjectScreenState extends State<ProjectScreen> {
     Completer<Null> completer = new Completer<Null>();
     completer.complete();
     return completer.future;
+  }
+
+  bool needInstr = false;
+
+  void manageInstr() async {
+    prefs = await SharedPreferences.getInstance();
+    if (this.mounted) {
+      setState(() {
+        needInstr = prefs.getBool('ni_project_screen') ?? true;
+      });
+    } else {
+      needInstr = prefs.getBool('ni_project_screen') ?? true;
+    }
   }
 
   @override
@@ -162,165 +209,370 @@ class _ProjectScreenState extends State<ProjectScreen> {
                 ],
               ),
               body: projects.length != 0
-                  ? SingleChildScrollView(
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                  ? needInstr
+                      ? Stack(
+                          alignment: Alignment.center,
                           children: [
-                            for (var project in projects)
-                              projects.length != 0
-                                  ? SlideInLeft(
-                                      child: Container(
-                                        margin: EdgeInsets.all(3),
-                                        child: CupertinoButton(
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () {
-                                            setState(() {
-                                              loading = true;
-                                            });
-                                            Navigator.push(
-                                                context,
-                                                SlideRightRoute(
-                                                  page: ProjectInfoScreen(
-                                                    id: project.id,
+                            SingleChildScrollView(
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    for (var project in projects)
+                                      projects.length != 0
+                                          ? SlideInLeft(
+                                              child: Container(
+                                                margin: EdgeInsets.all(3),
+                                                child: CupertinoButton(
+                                                  padding: EdgeInsets.zero,
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      loading = true;
+                                                    });
+                                                    Navigator.push(
+                                                        context,
+                                                        SlideRightRoute(
+                                                          page:
+                                                              ProjectInfoScreen(
+                                                            id: project.id,
+                                                          ),
+                                                        ));
+                                                    setState(() {
+                                                      loading = false;
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    width: size.width * 0.9,
+                                                    child: Card(
+                                                      elevation: 10,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Column(
+                                                          children: [
+                                                            Text(
+                                                              project.data()[
+                                                                  'name'],
+                                                              textScaleFactor:
+                                                                  1,
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: GoogleFonts
+                                                                  .montserrat(
+                                                                textStyle: TextStyle(
+                                                                    color:
+                                                                        darkPrimaryColor,
+                                                                    fontSize:
+                                                                        17,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 5),
+                                                            Text(
+                                                              getDate(project
+                                                                  .data()[
+                                                                      'last_update']
+                                                                  .millisecondsSinceEpoch),
+                                                              // 'Update: ' +
+                                                              //     DateTime.fromMicrosecondsSinceEpoch(
+                                                              //             projects[index]
+                                                              //                 .data()[
+                                                              //                     'last_update']
+                                                              //                 .microsecondsSinceEpoch)
+                                                              //         .day
+                                                              //         .toString() +
+                                                              //     '.' +
+                                                              //     DateTime.fromMicrosecondsSinceEpoch(
+                                                              //             projects[index]
+                                                              //                 .data()[
+                                                              //                     'last_update']
+                                                              //                 .microsecondsSinceEpoch)
+                                                              //         .month
+                                                              //         .toString() +
+                                                              //     '.' +
+                                                              //     DateTime.fromMicrosecondsSinceEpoch(
+                                                              //             projects[index]
+                                                              //                 .data()[
+                                                              //                     'last_update']
+                                                              //                 .microsecondsSinceEpoch)
+                                                              //         .year
+                                                              //         .toString(),
+                                                              textScaleFactor:
+                                                                  1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: GoogleFonts
+                                                                  .montserrat(
+                                                                textStyle: TextStyle(
+                                                                    color:
+                                                                        darkPrimaryColor,
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ));
-                                            setState(() {
-                                              loading = false;
-                                            });
-                                          },
-                                          child: Container(
-                                            width: size.width * 0.9,
-                                            child: Card(
-                                              elevation: 10,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      project.data()['name'],
-                                                      textScaleFactor: 1,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                darkPrimaryColor,
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 5),
-                                                    Text(
-                                                      getDate(project
-                                                          .data()['last_update']
-                                                          .millisecondsSinceEpoch),
-                                                      // 'Update: ' +
-                                                      //     DateTime.fromMicrosecondsSinceEpoch(
-                                                      //             projects[index]
-                                                      //                 .data()[
-                                                      //                     'last_update']
-                                                      //                 .microsecondsSinceEpoch)
-                                                      //         .day
-                                                      //         .toString() +
-                                                      //     '.' +
-                                                      //     DateTime.fromMicrosecondsSinceEpoch(
-                                                      //             projects[index]
-                                                      //                 .data()[
-                                                      //                     'last_update']
-                                                      //                 .microsecondsSinceEpoch)
-                                                      //         .month
-                                                      //         .toString() +
-                                                      //     '.' +
-                                                      //     DateTime.fromMicrosecondsSinceEpoch(
-                                                      //             projects[index]
-                                                      //                 .data()[
-                                                      //                     'last_update']
-                                                      //                 .microsecondsSinceEpoch)
-                                                      //         .year
-                                                      //         .toString(),
-                                                      textScaleFactor: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: GoogleFonts
-                                                          .montserrat(
-                                                        textStyle: TextStyle(
-                                                            color:
-                                                                darkPrimaryColor,
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ),
-                                                  ],
                                                 ),
                                               ),
+                                            )
+                                          : Container(),
+                                    Center(
+                                      child: CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          Navigator.push(
+                                              context,
+                                              SlideRightRoute(
+                                                page: AddProjectScreen(),
+                                              ));
+                                          setState(() {
+                                            loading = false;
+                                          });
+                                        },
+                                        child: Container(
+                                          width: size.width * 0.8,
+                                          padding: EdgeInsets.all(15),
+                                          child: Card(
+                                            elevation: 0,
+                                            margin: EdgeInsets.all(15),
+                                            child: Column(
+                                              children: [
+                                                Icon(
+                                                  CupertinoIcons
+                                                      .plus_square_on_square,
+                                                  color: footyColor,
+                                                  size: 25,
+                                                ),
+                                                SizedBox(height: 5),
+                                                Text(
+                                                  'Добавьте новый проект',
+                                                  textScaleFactor: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.montserrat(
+                                                    textStyle: TextStyle(
+                                                        color: darkPrimaryColor,
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ),
-                                    )
-                                  : Container(),
-                            Center(
-                              child: CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  setState(() {
-                                    loading = true;
-                                  });
-                                  Navigator.push(
-                                      context,
-                                      SlideRightRoute(
-                                        page: AddProjectScreen(),
-                                      ));
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                },
-                                child: Container(
-                                  width: size.width * 0.8,
-                                  padding: EdgeInsets.all(15),
-                                  child: Card(
-                                    elevation: 0,
-                                    margin: EdgeInsets.all(15),
-                                    child: Column(
-                                      children: [
-                                        Icon(
-                                          CupertinoIcons.plus_square_on_square,
-                                          color: footyColor,
-                                          size: 25,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          'Добавьте новый проект',
-                                          textScaleFactor: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                                color: darkPrimaryColor,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                  ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            )
+                            Container(
+                              margin: EdgeInsets.all(15),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                elevation: 10,
+                                child: IntroSlider(
+                                  slides: slides,
+                                  onDonePress: () {
+                                    prefs.setBool('ni_project_screen', false);
+                                    if (this.mounted) {
+                                      setState(() {
+                                        needInstr = false;
+                                      });
+                                    } else {
+                                      needInstr = false;
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
                           ],
-                        ),
-                      ),
-                    )
+                        )
+                      : SingleChildScrollView(
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                for (var project in projects)
+                                  projects.length != 0
+                                      ? SlideInLeft(
+                                          child: Container(
+                                            margin: EdgeInsets.all(3),
+                                            child: CupertinoButton(
+                                              padding: EdgeInsets.zero,
+                                              onPressed: () {
+                                                setState(() {
+                                                  loading = true;
+                                                });
+                                                Navigator.push(
+                                                    context,
+                                                    SlideRightRoute(
+                                                      page: ProjectInfoScreen(
+                                                        id: project.id,
+                                                      ),
+                                                    ));
+                                                setState(() {
+                                                  loading = false;
+                                                });
+                                              },
+                                              child: Container(
+                                                width: size.width * 0.9,
+                                                child: Card(
+                                                  elevation: 10,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          project
+                                                              .data()['name'],
+                                                          textScaleFactor: 1,
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle: TextStyle(
+                                                                color:
+                                                                    darkPrimaryColor,
+                                                                fontSize: 17,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 5),
+                                                        Text(
+                                                          getDate(project
+                                                              .data()[
+                                                                  'last_update']
+                                                              .millisecondsSinceEpoch),
+                                                          // 'Update: ' +
+                                                          //     DateTime.fromMicrosecondsSinceEpoch(
+                                                          //             projects[index]
+                                                          //                 .data()[
+                                                          //                     'last_update']
+                                                          //                 .microsecondsSinceEpoch)
+                                                          //         .day
+                                                          //         .toString() +
+                                                          //     '.' +
+                                                          //     DateTime.fromMicrosecondsSinceEpoch(
+                                                          //             projects[index]
+                                                          //                 .data()[
+                                                          //                     'last_update']
+                                                          //                 .microsecondsSinceEpoch)
+                                                          //         .month
+                                                          //         .toString() +
+                                                          //     '.' +
+                                                          //     DateTime.fromMicrosecondsSinceEpoch(
+                                                          //             projects[index]
+                                                          //                 .data()[
+                                                          //                     'last_update']
+                                                          //                 .microsecondsSinceEpoch)
+                                                          //         .year
+                                                          //         .toString(),
+                                                          textScaleFactor: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .montserrat(
+                                                            textStyle: TextStyle(
+                                                                color:
+                                                                    darkPrimaryColor,
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                Center(
+                                  child: CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      Navigator.push(
+                                          context,
+                                          SlideRightRoute(
+                                            page: AddProjectScreen(),
+                                          ));
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                    },
+                                    child: Container(
+                                      width: size.width * 0.8,
+                                      padding: EdgeInsets.all(15),
+                                      child: Card(
+                                        elevation: 0,
+                                        margin: EdgeInsets.all(15),
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              CupertinoIcons
+                                                  .plus_square_on_square,
+                                              color: footyColor,
+                                              size: 25,
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text(
+                                              'Добавьте новый проект',
+                                              textScaleFactor: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.montserrat(
+                                                textStyle: TextStyle(
+                                                    color: darkPrimaryColor,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
                   : Background(
                       child: SingleChildScrollView(
                         child: SlideInUp(

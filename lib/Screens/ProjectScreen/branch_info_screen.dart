@@ -253,69 +253,69 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                                 actions: <Widget>[
                                   TextButton(
                                     onPressed: () {
-                                        setState(() {
-                                          loading = true;
-                                        });
-                                        FirebaseFirestore.instance
-                                            .collection('projects')
-                                            .doc(widget.project_id)
-                                            .update({
-                                          'branches': FieldValue.arrayRemove(
-                                              [branch.id]),
-                                        });
-                                        FirebaseFirestore.instance
-                                            .collection('writings')
-                                            .where('branch_id',
-                                                isEqualTo: branch.id)
-                                            .get()
-                                            .then((value) {
-                                          for (QueryDocumentSnapshot element
-                                              in value.docs) {
-                                            FirebaseFirestore.instance
-                                                .collection('writings')
-                                                .doc(element.id)
-                                                .delete();
-                                          }
-                                        });
-                                        FirebaseFirestore.instance
-                                            .collection('hidden_writings')
-                                            .where('branch_id',
-                                                isEqualTo: branch.id)
-                                            .get()
-                                            .then((value) {
-                                          for (QueryDocumentSnapshot element
-                                              in value.docs) {
-                                            FirebaseFirestore.instance
-                                                .collection('hidden_writings')
-                                                .doc(element.id)
-                                                .delete();
-                                          }
-                                        });
-                                        FirebaseFirestore.instance
-                                            .collection('branches')
-                                            .doc(branch.id)
-                                            .delete()
-                                            .catchError((error) {
-                                          print('MISTAKE HERE');
-                                          print(error);
-                                          Navigator.of(context).pop(false);
-                                          PushNotificationMessage notification =
-                                              PushNotificationMessage(
-                                            title: 'Ошибка',
-                                            body: 'Неудалось удалить ветку',
-                                          );
-                                          showSimpleNotification(
-                                            Container(
-                                                child: Text(notification.body)),
-                                            position: NotificationPosition.top,
-                                            background: Colors.red,
-                                          );
-                                        });
-                                        setState(() {
-                                          loading = false;
-                                        });
-                                        Navigator.of(context).pop(true);
-                                        Navigator.pop(context);
+                                      setState(() {
+                                        loading = true;
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('projects')
+                                          .doc(widget.project_id)
+                                          .update({
+                                        'branches':
+                                            FieldValue.arrayRemove([branch.id]),
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('writings')
+                                          .where('branch_id',
+                                              isEqualTo: branch.id)
+                                          .get()
+                                          .then((value) {
+                                        for (QueryDocumentSnapshot element
+                                            in value.docs) {
+                                          FirebaseFirestore.instance
+                                              .collection('writings')
+                                              .doc(element.id)
+                                              .delete();
+                                        }
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('hidden_writings')
+                                          .where('branch_id',
+                                              isEqualTo: branch.id)
+                                          .get()
+                                          .then((value) {
+                                        for (QueryDocumentSnapshot element
+                                            in value.docs) {
+                                          FirebaseFirestore.instance
+                                              .collection('hidden_writings')
+                                              .doc(element.id)
+                                              .delete();
+                                        }
+                                      });
+                                      FirebaseFirestore.instance
+                                          .collection('branches')
+                                          .doc(branch.id)
+                                          .delete()
+                                          .catchError((error) {
+                                        print('MISTAKE HERE');
+                                        print(error);
+                                        Navigator.of(context).pop(false);
+                                        PushNotificationMessage notification =
+                                            PushNotificationMessage(
+                                          title: 'Ошибка',
+                                          body: 'Неудалось удалить ветку',
+                                        );
+                                        showSimpleNotification(
+                                          Container(
+                                              child: Text(notification.body)),
+                                          position: NotificationPosition.top,
+                                          background: Colors.red,
+                                        );
+                                      });
+                                      setState(() {
+                                        loading = false;
+                                      });
+                                      Navigator.of(context).pop(true);
+                                      Navigator.pop(context);
                                     },
                                     child: const Text(
                                       'Yes',
@@ -442,6 +442,23 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                               widget.id = value;
                               prepare();
                             },
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Center(
+                        child: Text(
+                          'Неопубликованные',
+                          overflow: TextOverflow.ellipsis,
+                          textScaleFactor: 1,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              color: primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w300,
+                            ),
                           ),
                         ),
                       ),
@@ -997,6 +1014,20 @@ class _BranchInfoScreenState extends State<BranchInfoScreen> {
                       Divider(
                         thickness: 1,
                         color: darkPrimaryColor,
+                      ),
+                      Center(
+                        child: Text(
+                          'Опубликованные',
+                          overflow: TextOverflow.ellipsis,
+                          textScaleFactor: 1,
+                          style: GoogleFonts.montserrat(
+                            textStyle: TextStyle(
+                              color: primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ),
                       ),
                       for (QueryDocumentSnapshot writing in writings)
                         writings.isNotEmpty
