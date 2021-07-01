@@ -233,7 +233,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
     Map userStats = user.data()['stats'];
     List tags = [];
     List tagsRec = [];
-    List recoms = widget.data.data()['tags'];
+    List recoms = [];
     for (String tag in widget.data.data()['tags']) {
       if (userStats[tag] != null) {
         userStats[tag] = userStats[tag] + 1;
@@ -243,20 +243,43 @@ class _ReadingScreenState extends State<ReadingScreen> {
     }
     tags = userStats.values.toList();
     tags.sort();
-    tagsRec.add(tags.reversed.first);
-    tagsRec.add(tags.reversed.elementAt(1));
-    tagsRec.add(tags.reversed.elementAt(2));
-    userStats.forEach((key, value) {
-      if (tagsRec.contains(value)) {
-        recoms.add(key);
+    if (tags.length < 3) {
+      for (String tag in widget.data.data()['tags']) {
+        recoms.add(tag);
       }
-    });
+      for (String usertag in userStats.keys.toList()) {
+        recoms.add(usertag);
+      }
+    } else {
+      tagsRec.add(tags.reversed.first);
+      tagsRec.add(tags.reversed.elementAt(1));
+      tagsRec.add(tags.reversed.elementAt(2));
+      userStats.forEach((key, value) {
+        if (tagsRec.contains(value)) {
+          recoms.add(key);
+        }
+      });
+    }
     print("RECOMS");
     print(recoms);
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .update({'stats': userStats, 'recommendations': recoms});
+    if (recoms.length < 3) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .update({'stats': userStats, 'recommendations': recoms});
+    } else {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .update({
+        'stats': userStats,
+        'recommendations': [
+          recoms.first,
+          recoms[1],
+          recoms[2],
+        ]
+      });
+    }
   }
 
   Future<void> manageFinances() async {
