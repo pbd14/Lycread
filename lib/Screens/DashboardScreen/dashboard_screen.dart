@@ -194,8 +194,10 @@ class _DashboardScreenState extends State<DashboardScreen>
             .orderBy('date', descending: true)
             .where('author', whereIn: user.data()['following'])
             .limit(25)
-            .get();
-        writings = posts.docs;
+            .get()
+            .then((value) {
+          writings = value.docs;
+        });
       } else {
         int max = (25 / user.data()['following'].length).round();
         for (String userId in user.data()['following']) {

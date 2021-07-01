@@ -63,6 +63,7 @@ class _ReadingScreenState extends State<ReadingScreen> {
   List ids = [];
   Map photos = {};
   BannerAd bannerAd;
+  BannerAd bannerAd2;
   QuerySnapshot childLinks;
   TextEditingController controller = TextEditingController();
   SharedPreferences prefs;
@@ -97,6 +98,12 @@ class _ReadingScreenState extends State<ReadingScreen> {
           setState(() {
             bannerAd = BannerAd(
               adUnitId: adState.bannerAdUnitId,
+              request: AdRequest(),
+              size: AdSize.largeBanner,
+              listener: adState.adListener,
+            )..load();
+            bannerAd2 = BannerAd(
+              adUnitId: adState.bannerAdUnitId2,
               request: AdRequest(),
               size: AdSize.largeBanner,
               listener: adState.adListener,
@@ -2422,6 +2429,19 @@ class _ReadingScreenState extends State<ReadingScreen> {
                                                 height: 100,
                                                 child: AdWidget(
                                                   ad: bannerAd,
+                                                ),
+                                              )
+                                            : Container()
+                                        : Container(),
+                                  if (bannerAd2 == null)
+                                    Container()
+                                  else
+                                    widget.data.data()['isMonetized'] != null
+                                        ? widget.data.data()['isMonetized']
+                                            ? Container(
+                                                height: 100,
+                                                child: AdWidget(
+                                                  ad: bannerAd2,
                                                 ),
                                               )
                                             : Container()

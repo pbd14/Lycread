@@ -53,6 +53,7 @@ dependencies:
   open_file: ^3.2.1
   intro_slider: ^2.4.3
   firebase_remote_config: ^0.10.0+2
+  # huawei_ads: ^13.4.35+301
 
 
   # The following adds the Cupertino Icons font to your application.
