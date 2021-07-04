@@ -114,14 +114,16 @@ class _ActivityScreenState extends State<ActivityScreen> {
     //   }
     // }
 
-    for (var i in qs.data()['actions']) {
+    for (var i in qs.data()['actions'].reversed) {
       int difference = Timestamp.now().seconds - i['date'].seconds;
       if (difference < 2592000) {
-        if (i['seen']) {
-          update.add(i);
-        } else {
-          i['seen'] = true;
-          update.add(i);
+        if (update.length < 21) {
+          if (i['seen']) {
+            update.insertAll(0, [i]);
+          } else {
+            i['seen'] = true;
+            update.insertAll(0, [i]);
+          }
         }
       }
     }
@@ -141,7 +143,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
         background: Colors.red,
       );
     });
-    
   }
 
   @override
